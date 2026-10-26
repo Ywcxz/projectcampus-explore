@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project CAMPUS</title>
+<meta name="description" content="Project CAMPUS, told as an interactive documentary. An independent proposal, not affiliated with Visayas State University.">
+<!-- Kept out of search results until Q-71 settles how students reach the site only after the survey (D-084). -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta name="theme-color" content="#F3F4EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151B17" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="css/site.css?v=0.1.0">
+<script src="js/main.js?v=0.1.0" defer></script>
+</head>
+<body>
+
+<a class="skip" href="#story">Skip to the story</a>
+
+<header class="masthead">
+  <div class="masthead-row">
+    <a class="brand" href="./">Project <span>CAMPUS</span></a>
+    <div class="masthead-actions">
+      <button type="button" class="btn" id="menu-toggle" aria-expanded="false" aria-controls="menu">Chapters</button>
+      <button type="button" class="btn" id="present-toggle" aria-pressed="false" title="Presenter mode (P)">Present</button>
+    </div>
+  </div>
+  <p class="notice">An independent proposal by one alumnus. Not affiliated with Visayas State University.</p>
+</header>
+
+<nav class="menu" id="menu" aria-label="Chapters and paths" hidden>
+  <h2 class="menu-heading">Paths</h2>
+  <ul class="menu-paths" id="menu-paths"></ul>
+  <h2 class="menu-heading">Chapters</h2>
+  <ol class="menu-chapters" id="menu-chapters"></ol>
+</nav>
+
+<main class="story" id="story" tabindex="-1">
+  <noscript>
+    <p class="placeholder">This site needs JavaScript to tell its story. Everything it draws on is in the <a href="https://project-campus-gilt.vercel.app/">master doc</a>.</p>
+  </noscript>
+</main>
+
+<div class="presenter-bar" id="presenter-bar" aria-live="polite" hidden></div>
+<div class="blank-screen" id="blank-screen" hidden></div>
+
+<footer class="footer">
+  <p class="notice">An independent proposal by one alumnus. Not affiliated with Visayas State University.</p>
+  <p>Every claim here links to the <a id="master-doc-link" href="https://project-campus-gilt.vercel.app/">master doc</a>, which wins wherever the two differ.</p>
+  <p>This site collects nothing: no forms, accounts, cookies, or tracking.</p>
+</footer>
+
+</body>
+</html>

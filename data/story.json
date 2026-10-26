@@ -1,0 +1,27 @@
+{
+  "site": {
+    "title": "Project CAMPUS",
+    "masterDoc": "https://project-campus-gilt.vercel.app/"
+  },
+  "defaultPath": "free",
+  "paths": [
+    { "id": "free", "label": "Free reading", "depth": "explain", "chapters": ["cold-open", "existing-network", "every-batch", "who-do-i-ask", "who-runs-the-room", "what-vsu-has", "the-network", "governed", "how-wed-know", "bigger-picture", "where-this-stands"], "openDoors": [] },
+    { "id": "offices", "label": "Offices", "depth": "explain", "chapters": ["cold-open", "who-do-i-ask", "every-batch", "what-vsu-has", "the-network", "governed", "how-wed-know", "where-this-stands"], "openDoors": [] },
+    { "id": "ict", "label": "VSU ICT", "depth": "explain", "chapters": ["cold-open", "what-vsu-has", "the-network", "bigger-picture", "how-wed-know", "where-this-stands"], "openDoors": [] },
+    { "id": "faculty-staff", "label": "Faculty and staff", "depth": "explain", "chapters": ["cold-open", "who-do-i-ask", "every-batch", "the-network", "governed", "where-this-stands"], "openDoors": [] },
+    { "id": "students", "label": "Students, after the survey", "depth": "explain", "chapters": ["cold-open", "existing-network", "every-batch", "who-do-i-ask", "the-network", "how-wed-know", "where-this-stands"], "openDoors": [] }
+  ],
+  "chapters": [
+    { "id": "cold-open", "number": 0, "title": "Cold open: 4:30 a.m.", "sources": [{ "chapter": "social-network", "label": "Ch 3" }, { "chapter": "network-design", "label": "Ch 3.2" }], "topics": [], "deeper": [], "status": null },
+    { "id": "existing-network", "number": 1, "title": "A network that already exists", "sources": [{ "chapter": "social-network", "label": "Ch 3" }, { "chapter": "related-work", "label": "Ch 10" }], "topics": [], "deeper": [], "status": null },
+    { "id": "every-batch", "number": 2, "title": "Every batch starts over", "sources": [{ "chapter": "social-network", "label": "Ch 3" }, { "chapter": "network-design", "label": "Ch 3.2" }], "topics": [], "deeper": [], "status": null },
+    { "id": "who-do-i-ask", "number": 3, "title": "Who do I ask?", "sources": [{ "chapter": "social-network", "label": "Ch 3" }], "topics": [], "deeper": [], "status": null },
+    { "id": "who-runs-the-room", "number": 4, "title": "Who runs the room?", "sources": [{ "chapter": "social-network", "label": "Ch 3" }], "topics": [], "deeper": [], "status": null },
+    { "id": "what-vsu-has", "number": 5, "title": "What VSU already has", "sources": [{ "chapter": "network-fit", "label": "Ch 3.3" }, { "chapter": "vsu-context", "label": "Ch 7" }, { "chapter": "related-work", "label": "Ch 10" }], "topics": [], "deeper": [], "status": null },
+    { "id": "the-network", "number": 6, "title": "The network: three jobs, kept by memory", "sources": [{ "chapter": "social-network", "label": "Ch 3" }, { "chapter": "network-design", "label": "Ch 3.2" }], "topics": [], "deeper": [], "status": null },
+    { "id": "governed", "number": 7, "title": "How it would be governed", "sources": [{ "chapter": "network-design", "label": "Ch 3.2" }, { "chapter": "network-proposal", "label": "Ch 3.4" }, { "chapter": "governance", "label": "Ch 9" }], "topics": [], "deeper": [], "status": null },
+    { "id": "how-wed-know", "number": 8, "title": "How we'd know we're wrong", "sources": [{ "chapter": "evidence", "label": "Ch 8" }, { "chapter": "facebook-study", "label": "Ch 8.1" }, { "chapter": "network-proposal", "label": "Ch 3.4" }, { "chapter": "risks", "label": "Ch 11" }], "topics": [], "deeper": [], "status": null },
+    { "id": "bigger-picture", "number": 9, "title": "The bigger picture", "sources": [{ "chapter": "intranet", "label": "Ch 2" }, { "chapter": "emergencies", "label": "Ch 2.1" }, { "chapter": "digital-twin", "label": "Ch 4" }, { "chapter": "later-directions", "label": "Ch 6" }], "topics": [], "deeper": [], "status": null },
+    { "id": "where-this-stands", "number": 10, "title": "Where this stands, and what comes next", "sources": [{ "chapter": "overview", "label": "Ch 0" }, { "chapter": "network-proposal", "label": "Ch 3.4" }, { "chapter": "roadmap", "label": "Ch 12" }], "topics": [], "deeper": [], "status": null }
+  ]
+}
