@@ -5,23 +5,977 @@
   },
   "defaultPath": "free",
   "paths": [
-    { "id": "free", "label": "Free reading", "depth": "explain", "chapters": ["cold-open", "existing-network", "every-batch", "who-do-i-ask", "who-runs-the-room", "what-vsu-has", "the-network", "governed", "how-wed-know", "bigger-picture", "where-this-stands"], "openDoors": [] },
-    { "id": "offices", "label": "Offices", "depth": "explain", "chapters": ["cold-open", "who-do-i-ask", "every-batch", "what-vsu-has", "the-network", "governed", "how-wed-know", "where-this-stands"], "openDoors": [] },
-    { "id": "ict", "label": "VSU ICT", "depth": "explain", "chapters": ["cold-open", "what-vsu-has", "the-network", "bigger-picture", "how-wed-know", "where-this-stands"], "openDoors": [] },
-    { "id": "faculty-staff", "label": "Faculty and staff", "depth": "explain", "chapters": ["cold-open", "who-do-i-ask", "every-batch", "the-network", "governed", "where-this-stands"], "openDoors": [] },
-    { "id": "students", "label": "Students, after the survey", "depth": "explain", "chapters": ["cold-open", "existing-network", "every-batch", "who-do-i-ask", "the-network", "how-wed-know", "where-this-stands"], "openDoors": [] }
+    {
+      "id": "free",
+      "label": "Free reading",
+      "depth": "explain",
+      "chapters": [
+        "cold-open",
+        "existing-network",
+        "every-batch",
+        "who-do-i-ask",
+        "who-runs-the-room",
+        "what-vsu-has",
+        "the-network",
+        "governed",
+        "how-wed-know",
+        "bigger-picture",
+        "where-this-stands"
+      ],
+      "openDoors": []
+    },
+    {
+      "id": "offices",
+      "label": "Offices",
+      "depth": "explain",
+      "chapters": [
+        "cold-open",
+        "who-do-i-ask",
+        "every-batch",
+        "what-vsu-has",
+        "the-network",
+        "governed",
+        "how-wed-know",
+        "where-this-stands"
+      ],
+      "openDoors": []
+    },
+    {
+      "id": "ict",
+      "label": "VSU ICT",
+      "depth": "explain",
+      "chapters": [
+        "cold-open",
+        "what-vsu-has",
+        "the-network",
+        "bigger-picture",
+        "how-wed-know",
+        "where-this-stands"
+      ],
+      "openDoors": []
+    },
+    {
+      "id": "faculty-staff",
+      "label": "Faculty and staff",
+      "depth": "explain",
+      "chapters": [
+        "cold-open",
+        "who-do-i-ask",
+        "every-batch",
+        "the-network",
+        "governed",
+        "where-this-stands"
+      ],
+      "openDoors": []
+    },
+    {
+      "id": "students",
+      "label": "Students, after the survey",
+      "depth": "explain",
+      "chapters": [
+        "cold-open",
+        "existing-network",
+        "every-batch",
+        "who-do-i-ask",
+        "the-network",
+        "how-wed-know",
+        "where-this-stands"
+      ],
+      "openDoors": []
+    }
   ],
   "chapters": [
-    { "id": "cold-open", "number": 0, "title": "Cold open: 4:30 a.m.", "sources": [{ "chapter": "social-network", "label": "Ch 3" }, { "chapter": "network-design", "label": "Ch 3.2" }], "topics": [], "deeper": [], "status": null },
-    { "id": "existing-network", "number": 1, "title": "A network that already exists", "sources": [{ "chapter": "social-network", "label": "Ch 3" }, { "chapter": "related-work", "label": "Ch 10" }], "topics": [], "deeper": [], "status": null },
-    { "id": "every-batch", "number": 2, "title": "Every batch starts over", "sources": [{ "chapter": "social-network", "label": "Ch 3" }, { "chapter": "network-design", "label": "Ch 3.2" }], "topics": [], "deeper": [], "status": null },
-    { "id": "who-do-i-ask", "number": 3, "title": "Who do I ask?", "sources": [{ "chapter": "social-network", "label": "Ch 3" }], "topics": [], "deeper": [], "status": null },
-    { "id": "who-runs-the-room", "number": 4, "title": "Who runs the room?", "sources": [{ "chapter": "social-network", "label": "Ch 3" }], "topics": [], "deeper": [], "status": null },
-    { "id": "what-vsu-has", "number": 5, "title": "What VSU already has", "sources": [{ "chapter": "network-fit", "label": "Ch 3.3" }, { "chapter": "vsu-context", "label": "Ch 7" }, { "chapter": "related-work", "label": "Ch 10" }], "topics": [], "deeper": [], "status": null },
-    { "id": "the-network", "number": 6, "title": "The network: three jobs, kept by memory", "sources": [{ "chapter": "social-network", "label": "Ch 3" }, { "chapter": "network-design", "label": "Ch 3.2" }], "topics": [], "deeper": [], "status": null },
-    { "id": "governed", "number": 7, "title": "How it would be governed", "sources": [{ "chapter": "network-design", "label": "Ch 3.2" }, { "chapter": "network-proposal", "label": "Ch 3.4" }, { "chapter": "governance", "label": "Ch 9" }], "topics": [], "deeper": [], "status": null },
-    { "id": "how-wed-know", "number": 8, "title": "How we'd know we're wrong", "sources": [{ "chapter": "evidence", "label": "Ch 8" }, { "chapter": "facebook-study", "label": "Ch 8.1" }, { "chapter": "network-proposal", "label": "Ch 3.4" }, { "chapter": "risks", "label": "Ch 11" }], "topics": [], "deeper": [], "status": null },
-    { "id": "bigger-picture", "number": 9, "title": "The bigger picture", "sources": [{ "chapter": "intranet", "label": "Ch 2" }, { "chapter": "emergencies", "label": "Ch 2.1" }, { "chapter": "digital-twin", "label": "Ch 4" }, { "chapter": "later-directions", "label": "Ch 6" }], "topics": [], "deeper": [], "status": null },
-    { "id": "where-this-stands", "number": 10, "title": "Where this stands, and what comes next", "sources": [{ "chapter": "overview", "label": "Ch 0" }, { "chapter": "network-proposal", "label": "Ch 3.4" }, { "chapter": "roadmap", "label": "Ch 12" }], "topics": [], "deeper": [], "status": null }
+    {
+      "id": "cold-open",
+      "number": 0,
+      "title": "4:30 a.m.",
+      "sources": [
+        {
+          "chapter": "social-network",
+          "section": "why-vsu-needs-it",
+          "label": "Ch 3, Information that loses its authority"
+        },
+        {
+          "chapter": "network-design",
+          "section": "scenes",
+          "label": "Ch 3.2, Scenes"
+        }
+      ],
+      "topics": [
+        {
+          "id": "the-notice",
+          "title": "A notice before dawn",
+          "glance": {
+            "line": "A typhoon signal goes up overnight. Under VSU's guidelines, a suspension of classes goes out by 4:30 a.m.",
+            "visual": {
+              "src": null,
+              "alt": "a dark campus at night, rain on a dormitory window, a phone on a bunk bed showing 4:30"
+            }
+          },
+          "sources": [
+            {
+              "chapter": "social-network",
+              "section": "why-vsu-needs-it",
+              "label": "Ch 3, Information that loses its authority"
+            },
+            {
+              "chapter": "network-design",
+              "section": "scenes",
+              "label": "Ch 3.2, Scenes"
+            }
+          ],
+          "claims": [
+            {
+              "text": "Under VSU's guidelines, typhoon suspensions are announced through radio, television, SMS, the website, and other social media, no later than 4:30 a.m.",
+              "tag": "Established",
+              "source": {
+                "ref": "E-025",
+                "label": "E-025"
+              }
+            }
+          ],
+          "parts": [
+            {
+              "id": "the-rule",
+              "kind": "example",
+              "title": "The rule",
+              "madeUp": null,
+              "narration": "VSU's guidelines say a typhoon suspension is announced no later than 4:30 a.m., through radio, television, SMS, the website, and other social media.",
+              "visual": {
+                "src": null,
+                "alt": "a clock at 4:30 with five channels fanning out from it: radio, television, text message, website, social media"
+              },
+              "claims": [
+                {
+                  "text": "Under VSU's guidelines, typhoon suspensions are announced through radio, television, SMS, the website, and other social media, no later than 4:30 a.m.",
+                  "tag": "Established",
+                  "source": {
+                    "ref": "E-025",
+                    "label": "E-025"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "by-sunrise",
+              "kind": "example",
+              "title": "By sunrise",
+              "madeUp": "composite",
+              "narration": "Picture a first-year student waking up. The notice reaches her as a screenshot of a screenshot, forwarded into her batch group chat. The date is cropped off.",
+              "visual": {
+                "src": null,
+                "alt": "a generic group chat on a phone, a blurred screenshot of a notice with its top edge cropped away; invented wording, no seal, no real app's look"
+              },
+              "claims": [
+                {
+                  "text": "A notice may reach many students as a share or a screenshot, with nothing to show whether it is still current.",
+                  "tag": "Proposed",
+                  "source": {
+                    "chapter": "social-network",
+                    "section": "why-vsu-needs-it",
+                    "label": "Ch 3, Information that loses its authority"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "two-questions",
+              "kind": "example",
+              "title": "Two questions",
+              "madeUp": "composite",
+              "narration": "Is this today's notice, or last year's? Does it cover tomorrow too? Nothing in the picture can say.",
+              "visual": {
+                "src": null,
+                "alt": "the same cropped screenshot, with two question marks over the missing date"
+              },
+              "claims": []
+            },
+            {
+              "id": "channels-door",
+              "kind": "door",
+              "title": "The channels, one by one",
+              "to": "the-channels"
+            }
+          ]
+        }
+      ],
+      "deeper": [
+        {
+          "id": "the-channels",
+          "title": "The channels, one by one",
+          "glance": {
+            "line": "Each channel is reasonable on its own. Together, they make many copies of one notice.",
+            "visual": {
+              "src": null,
+              "alt": "one notice splitting into many copies as it passes through five channels"
+            }
+          },
+          "sources": [
+            {
+              "chapter": "social-network",
+              "section": "why-vsu-needs-it",
+              "label": "Ch 3, Information that loses its authority"
+            }
+          ],
+          "claims": [],
+          "parts": [
+            {
+              "id": "the-guidelines",
+              "kind": "card",
+              "title": "The guidelines",
+              "madeUp": null,
+              "narration": "The rule comes from VSU's guidelines on suspending classes and work for typhoons, floods, and other calamities.",
+              "source": {
+                "href": "https://www.vsu.edu.ph/university-policies-2/2862-proposed-guidelines-on-cancellation-suspension-of-classes-work-in-the-visayas-state-university-due-to-typhoon-flooding-other-weather-disturbances-and-calamities-bor-resolution-no-162-s-2024",
+                "label": "BOR Resolution No. 162, s. 2024"
+              },
+              "claims": [
+                {
+                  "text": "Under VSU's guidelines, typhoon suspensions are announced through radio, television, SMS, the website, and other social media, no later than 4:30 a.m.",
+                  "tag": "Established",
+                  "source": {
+                    "ref": "E-025",
+                    "label": "E-025"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "many-copies",
+              "kind": "example",
+              "title": "Many copies",
+              "madeUp": null,
+              "narration": "Each channel reaches some students first. Together, they mean a notice may arrive as a share or a screenshot, with nothing to show whether it is still current.",
+              "visual": {
+                "src": null,
+                "alt": "five channels as pipes, each carrying a slightly different copy of the same notice"
+              },
+              "claims": [
+                {
+                  "text": "A notice may reach many students as a share or a screenshot, with nothing to show whether it is still current.",
+                  "tag": "Proposed",
+                  "source": {
+                    "chapter": "social-network",
+                    "section": "why-vsu-needs-it",
+                    "label": "Ch 3, Information that loses its authority"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "wais",
+              "kind": "card",
+              "title": "WAIS",
+              "madeUp": null,
+              "narration": "VSU's WAIS adds localized weather advisories for VSU account holders. A mobile app with push notifications is planned.",
+              "source": {
+                "ref": "E-026",
+                "label": "E-026"
+              },
+              "claims": [
+                {
+                  "text": "WAIS adds localized advisories for VSU account holders.",
+                  "tag": "Established",
+                  "source": {
+                    "chapter": "social-network",
+                    "section": "why-vsu-needs-it",
+                    "label": "Ch 3, Information that loses its authority"
+                  }
+                },
+                {
+                  "text": "WAIS is open only to VSU account holders, and plans a mobile app with push notifications.",
+                  "tag": "Established",
+                  "source": {
+                    "ref": "E-026",
+                    "label": "E-026"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "the-feed",
+              "kind": "card",
+              "title": "The website's feed",
+              "madeUp": null,
+              "narration": "In early October 2026, the website's announcements feed listed 21 items from July 2021 to September 2026, mostly enrollment and exam schedules. Day-to-day notices seem to travel elsewhere.",
+              "source": {
+                "ref": "E-024",
+                "label": "E-024"
+              },
+              "claims": [
+                {
+                  "text": "In early October 2026, VSU's website announcements feed listed 21 items from July 2021 to September 2026, mostly enrollment and exam schedules.",
+                  "tag": "Established",
+                  "source": {
+                    "ref": "E-024",
+                    "label": "E-024"
+                  }
+                },
+                {
+                  "text": "The day-to-day notices students act on, such as office advisories, scholarship calls, and organization announcements, appear to travel elsewhere, mostly through Facebook.",
+                  "tag": "Unresolved",
+                  "source": {
+                    "chapter": "social-network",
+                    "section": "why-vsu-needs-it",
+                    "label": "Ch 3, Information that loses its authority"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "status": {
+        "know": [
+          {
+            "text": "Under VSU's guidelines, typhoon suspensions are announced through radio, television, SMS, the website, and other social media, no later than 4:30 a.m.",
+            "tag": "Established",
+            "source": {
+              "ref": "E-025",
+              "label": "E-025"
+            }
+          }
+        ],
+        "think": [
+          {
+            "text": "A notice may reach many students as a share or a screenshot, with nothing to show whether it is still current.",
+            "tag": "Proposed",
+            "source": {
+              "chapter": "social-network",
+              "section": "why-vsu-needs-it",
+              "label": "Ch 3, Information that loses its authority"
+            }
+          },
+          {
+            "text": "Official notices and rumor look alike where campus conversation happens.",
+            "tag": "Unresolved",
+            "source": {
+              "ref": "P-06",
+              "label": "P-06"
+            }
+          }
+        ],
+        "findOut": [
+          {
+            "text": "Whether official announcements change as they travel.",
+            "method": "The Facebook study's H1: reappearances of official announcements that were altered or contradicted",
+            "bar": "Supports it at 25% or more, counts against it under 10%, judged after 20 traced announcements",
+            "result": null,
+            "source": {
+              "chapter": "facebook-study",
+              "section": "how-it-could-be-proved-wrong",
+              "label": "Ch 8.1, How it could be proved wrong"
+            }
+          },
+          {
+            "text": "Whether students can tell an official post from one that isn't.",
+            "method": "The student survey's question Official or not (P-06), and the interviews",
+            "bar": "At least 30% of all respondents, judged once there are 100 valid answers; a problem also needs at least 4 of 12 interviews to describe a specific past incident",
+            "result": null,
+            "source": {
+              "chapter": "evidence",
+              "section": "the-survey-protocol-proposed",
+              "label": "Ch 8, How the D-038 bars are computed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "existing-network",
+      "number": 1,
+      "title": "A network that already exists",
+      "sources": [
+        {
+          "chapter": "social-network",
+          "label": "Ch 3"
+        },
+        {
+          "chapter": "related-work",
+          "label": "Ch 10"
+        }
+      ],
+      "topics": [],
+      "deeper": [],
+      "status": null
+    },
+    {
+      "id": "every-batch",
+      "number": 2,
+      "title": "Every batch starts over",
+      "sources": [
+        {
+          "chapter": "social-network",
+          "section": "why-vsu-needs-it",
+          "label": "Ch 3, Every batch starts over"
+        },
+        {
+          "chapter": "social-network",
+          "section": "why-vsu-needs-it",
+          "label": "Ch 3, Information that loses its authority"
+        },
+        {
+          "chapter": "network-design",
+          "section": "scenes",
+          "label": "Ch 3.2, Scenes"
+        }
+      ],
+      "topics": [
+        {
+          "id": "same-question",
+          "title": "The question every batch asks",
+          "madeUp": "composite",
+          "glance": {
+            "line": "By the author's observation, a first-year asks how to renew a scholarship, a senior answers, and the next year someone asks again. Is that true across VSU?",
+            "visual": {
+              "src": null,
+              "alt": "two group chats side by side, a year apart, with the same question at the top of each"
+            }
+          },
+          "sources": [
+            {
+              "chapter": "social-network",
+              "section": "why-vsu-needs-it",
+              "label": "Ch 3, Every batch starts over"
+            }
+          ],
+          "claims": [
+            {
+              "text": "By the author's observation, answers given in batch group chats are buried under newer messages within days, and each new batch asks the same questions again.",
+              "tag": "Unresolved",
+              "source": {
+                "chapter": "social-network",
+                "section": "why-vsu-needs-it",
+                "label": "Ch 3, Every batch starts over"
+              }
+            }
+          ],
+          "parts": [
+            {
+              "id": "the-answer-sinks",
+              "kind": "example",
+              "title": "The answer that sinks",
+              "madeUp": "composite",
+              "narration": "The senior's answer is a good one. Within days, it sinks under newer messages in the batch group chat.",
+              "visual": {
+                "src": null,
+                "alt": "a reply sliding down and out of view as new messages stack on top of it"
+              },
+              "claims": [
+                {
+                  "text": "By the author's observation, answers given in batch group chats are buried under newer messages within days, and each new batch asks the same questions again.",
+                  "tag": "Unresolved",
+                  "source": {
+                    "chapter": "social-network",
+                    "section": "why-vsu-needs-it",
+                    "label": "Ch 3, Every batch starts over"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "a-new-chat",
+              "kind": "example",
+              "title": "A new batch, a new chat",
+              "madeUp": "composite",
+              "narration": "The next batch starts its own group chat, and the same questions come back from the start.",
+              "visual": {
+                "src": null,
+                "alt": "a new, empty group chat; the first message is the same scholarship question"
+              },
+              "claims": [
+                {
+                  "text": "By the author's observation, answers given in batch group chats are buried under newer messages within days, and each new batch asks the same questions again.",
+                  "tag": "Unresolved",
+                  "source": {
+                    "chapter": "social-network",
+                    "section": "why-vsu-needs-it",
+                    "label": "Ch 3, Every batch starts over"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "the-senior-stops",
+              "kind": "example",
+              "title": "The senior who stops",
+              "madeUp": "composite",
+              "narration": "The senior who answered year after year stops answering. Not out of rudeness: out of fatigue.",
+              "visual": {
+                "src": null,
+                "alt": "the senior's phone face down on a desk, notifications piling up unread"
+              },
+              "claims": [
+                {
+                  "text": "By the author's observation, seniors who answered year after year eventually stop, out of fatigue rather than rudeness.",
+                  "tag": "Unresolved",
+                  "source": {
+                    "chapter": "social-network",
+                    "section": "why-vsu-needs-it",
+                    "label": "Ch 3, Every batch starts over"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "colleges-to-faculties",
+          "title": "The day the colleges changed",
+          "glance": {
+            "line": "In January 2025, VSU replaced its colleges with faculties. Every guide that named a college went out of date at once.",
+            "visual": {
+              "src": null,
+              "alt": "a wall of guides and screenshots, each naming a college, fading together on one date"
+            }
+          },
+          "sources": [
+            {
+              "chapter": "social-network",
+              "section": "why-vsu-needs-it",
+              "label": "Ch 3, Information that loses its authority"
+            },
+            {
+              "chapter": "network-design",
+              "section": "scenes",
+              "label": "Ch 3.2, Scenes"
+            }
+          ],
+          "claims": [
+            {
+              "text": "In January 2025, VSU replaced its colleges with faculties.",
+              "tag": "Established",
+              "source": {
+                "ref": "E-027",
+                "label": "E-027"
+              }
+            },
+            {
+              "text": "Every guide, post, and screenshot that named a college went out of date at once, with nothing to tell a reader so.",
+              "tag": "Proposed",
+              "source": {
+                "chapter": "social-network",
+                "section": "why-vsu-needs-it",
+                "label": "Ch 3, Information that loses its authority"
+              }
+            }
+          ],
+          "parts": [
+            {
+              "id": "january-2025",
+              "kind": "example",
+              "title": "January 2025",
+              "madeUp": null,
+              "narration": "In January 2025, VSU replaced its colleges with faculties.",
+              "visual": {
+                "src": null,
+                "alt": "an organization chart in which the word college changes to faculty, box by box; no unit names"
+              },
+              "claims": [
+                {
+                  "text": "In January 2025, VSU replaced its colleges with faculties.",
+                  "tag": "Established",
+                  "source": {
+                    "ref": "E-027",
+                    "label": "E-027"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "out-of-date",
+              "kind": "example",
+              "title": "Everything that named a college",
+              "madeUp": "composite",
+              "narration": "Guides, posts, and screenshots that named a college went out of date at once. Nothing told a reader so.",
+              "visual": {
+                "src": null,
+                "alt": "cards reading College of, with the rest left blank, all still circulating unchanged"
+              },
+              "claims": [
+                {
+                  "text": "Every guide, post, and screenshot that named a college went out of date at once, with nothing to tell a reader so.",
+                  "tag": "Proposed",
+                  "source": {
+                    "chapter": "social-network",
+                    "section": "why-vsu-needs-it",
+                    "label": "Ch 3, Information that loses its authority"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "nothing-marks-it",
+              "kind": "example",
+              "title": "Nothing marks it",
+              "madeUp": "composite",
+              "narration": "A Facebook post or a chat message can't be marked as replaced, or point to what replaced it.",
+              "visual": {
+                "src": null,
+                "alt": "an old post with no banner and no link forward, beside an empty space where a newer version would be"
+              },
+              "claims": [
+                {
+                  "text": "A Facebook post or a chat message cannot be marked as replaced or point to what replaced it.",
+                  "tag": "Proposed",
+                  "source": {
+                    "chapter": "social-network",
+                    "section": "why-vsu-needs-it",
+                    "label": "Ch 3, Information that loses its authority"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "officers-door",
+              "kind": "door",
+              "title": "When officers graduate",
+              "to": "officers-graduate"
+            }
+          ]
+        }
+      ],
+      "deeper": [
+        {
+          "id": "officers-graduate",
+          "title": "When officers graduate",
+          "glance": {
+            "line": "Does the same happen to organizations? By the author's observation, much of what they know leaves when their officers graduate.",
+            "visual": {
+              "src": null,
+              "alt": "an organization's shelf of files emptying as a graduating class walks out"
+            }
+          },
+          "sources": [
+            {
+              "chapter": "social-network",
+              "section": "why-vsu-needs-it",
+              "label": "Ch 3, Every batch starts over"
+            }
+          ],
+          "claims": [
+            {
+              "text": "By the author's observation, organizations' records live on Facebook pages and officers' personal accounts, and much is lost each time officers graduate.",
+              "tag": "Unresolved",
+              "source": {
+                "chapter": "social-network",
+                "section": "why-vsu-needs-it",
+                "label": "Ch 3, Every batch starts over"
+              }
+            }
+          ],
+          "parts": [
+            {
+              "id": "fifty-seven",
+              "kind": "card",
+              "title": "57 organizations",
+              "madeUp": null,
+              "narration": "VSU's list of accredited organizations for 2022–23 had 57 entries, under the college structure replaced in January 2025.",
+              "source": {
+                "href": "https://www.vsu.edu.ph/students/accredited-organizations",
+                "label": "VSU's accredited organizations"
+              },
+              "claims": [
+                {
+                  "text": "VSU's list of accredited organizations for 2022–23 had 57 entries, under the college structure VSU replaced with faculties in January 2025.",
+                  "tag": "Established",
+                  "source": {
+                    "ref": "E-027",
+                    "label": "E-027"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "the-handover",
+              "kind": "example",
+              "title": "The handover",
+              "madeUp": "composite",
+              "narration": "By the author's observation, an organization's records live on its page and its officers' personal accounts. When officers graduate, much of it leaves with them.",
+              "visual": {
+                "src": null,
+                "alt": "outgoing officers handing over a single folder while most files stay on their own phones"
+              },
+              "claims": [
+                {
+                  "text": "By the author's observation, organizations' records live on Facebook pages and officers' personal accounts, and much is lost each time officers graduate.",
+                  "tag": "Unresolved",
+                  "source": {
+                    "chapter": "social-network",
+                    "section": "why-vsu-needs-it",
+                    "label": "Ch 3, Every batch starts over"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "status": {
+        "know": [
+          {
+            "text": "In January 2025, VSU replaced its colleges with faculties.",
+            "tag": "Established",
+            "source": {
+              "ref": "E-027",
+              "label": "E-027"
+            }
+          },
+          {
+            "text": "VSU's list of accredited organizations for 2022–23 had 57 entries, under the college structure VSU replaced with faculties in January 2025.",
+            "tag": "Established",
+            "source": {
+              "ref": "E-027",
+              "label": "E-027"
+            }
+          }
+        ],
+        "think": [
+          {
+            "text": "By the author's observation, answers given in batch group chats are buried under newer messages within days, and each new batch asks the same questions again.",
+            "tag": "Unresolved",
+            "source": {
+              "chapter": "social-network",
+              "section": "why-vsu-needs-it",
+              "label": "Ch 3, Every batch starts over"
+            }
+          },
+          {
+            "text": "The same questions are asked and answered again in each batch, because answers given in group chats cannot be found later.",
+            "tag": "Unresolved",
+            "source": {
+              "ref": "P-10",
+              "label": "P-10"
+            }
+          },
+          {
+            "text": "Outdated information keeps circulating after rules or structures change, with nothing to mark it as out of date.",
+            "tag": "Unresolved",
+            "source": {
+              "ref": "P-11",
+              "label": "P-11"
+            }
+          },
+          {
+            "text": "Knowledge is lost when students graduate or organization officers change.",
+            "tag": "Unresolved",
+            "source": {
+              "ref": "P-08",
+              "label": "P-08"
+            }
+          }
+        ],
+        "findOut": [
+          {
+            "text": "Whether students can find an answer given before.",
+            "method": "The student survey's question Finding an old answer (P-10): no, so I asked again; no, and I gave up",
+            "bar": "At least 30% of all respondents, judged once there are 100 valid answers; a problem also needs at least 4 of 12 interviews to describe a specific past incident",
+            "result": null,
+            "source": {
+              "chapter": "evidence",
+              "section": "the-survey-protocol-proposed",
+              "label": "Ch 8, How the D-038 bars are computed"
+            }
+          },
+          {
+            "text": "Whether guides go out of date.",
+            "method": "The student survey's question How-to guides (P-07, P-11)",
+            "bar": "At least 30% of all respondents, judged once there are 100 valid answers; a problem also needs at least 4 of 12 interviews to describe a specific past incident",
+            "result": null,
+            "source": {
+              "chapter": "evidence",
+              "section": "the-survey-protocol-proposed",
+              "label": "Ch 8, How the D-038 bars are computed"
+            }
+          },
+          {
+            "text": "Whether these happen, in students' own words.",
+            "method": "Interview probes: when did you last ask something you suspected had been asked before, and where did you look first? Have you ever acted on information that turned out to be out of date?",
+            "bar": "At least 4 of 12 interviews describe a specific past incident",
+            "result": null,
+            "source": {
+              "chapter": "social-network",
+              "section": "why-vsu-needs-it",
+              "label": "Ch 3, What is not known"
+            }
+          },
+          {
+            "text": "Whether groups drift and get replaced when their founders leave.",
+            "method": "The Facebook study's H3: community groups that replace an earlier group",
+            "bar": "Supports it at 25% or more, counts against it under 10%, judged after 15 community groups",
+            "result": null,
+            "source": {
+              "chapter": "facebook-study",
+              "section": "how-it-could-be-proved-wrong",
+              "label": "Ch 8.1, How it could be proved wrong"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "who-do-i-ask",
+      "number": 3,
+      "title": "Who do I ask?",
+      "sources": [
+        {
+          "chapter": "social-network",
+          "label": "Ch 3"
+        }
+      ],
+      "topics": [],
+      "deeper": [],
+      "status": null
+    },
+    {
+      "id": "who-runs-the-room",
+      "number": 4,
+      "title": "Who runs the room?",
+      "sources": [
+        {
+          "chapter": "social-network",
+          "label": "Ch 3"
+        }
+      ],
+      "topics": [],
+      "deeper": [],
+      "status": null
+    },
+    {
+      "id": "what-vsu-has",
+      "number": 5,
+      "title": "What VSU already has",
+      "sources": [
+        {
+          "chapter": "network-fit",
+          "label": "Ch 3.3"
+        },
+        {
+          "chapter": "vsu-context",
+          "label": "Ch 7"
+        },
+        {
+          "chapter": "related-work",
+          "label": "Ch 10"
+        }
+      ],
+      "topics": [],
+      "deeper": [],
+      "status": null
+    },
+    {
+      "id": "the-network",
+      "number": 6,
+      "title": "The network: three jobs, kept by memory",
+      "sources": [
+        {
+          "chapter": "social-network",
+          "label": "Ch 3"
+        },
+        {
+          "chapter": "network-design",
+          "label": "Ch 3.2"
+        }
+      ],
+      "topics": [],
+      "deeper": [],
+      "status": null
+    },
+    {
+      "id": "governed",
+      "number": 7,
+      "title": "How it would be governed",
+      "sources": [
+        {
+          "chapter": "network-design",
+          "label": "Ch 3.2"
+        },
+        {
+          "chapter": "network-proposal",
+          "label": "Ch 3.4"
+        },
+        {
+          "chapter": "governance",
+          "label": "Ch 9"
+        }
+      ],
+      "topics": [],
+      "deeper": [],
+      "status": null
+    },
+    {
+      "id": "how-wed-know",
+      "number": 8,
+      "title": "How we'd know we're wrong",
+      "sources": [
+        {
+          "chapter": "evidence",
+          "label": "Ch 8"
+        },
+        {
+          "chapter": "facebook-study",
+          "label": "Ch 8.1"
+        },
+        {
+          "chapter": "network-proposal",
+          "label": "Ch 3.4"
+        },
+        {
+          "chapter": "risks",
+          "label": "Ch 11"
+        }
+      ],
+      "topics": [],
+      "deeper": [],
+      "status": null
+    },
+    {
+      "id": "bigger-picture",
+      "number": 9,
+      "title": "The bigger picture",
+      "sources": [
+        {
+          "chapter": "intranet",
+          "label": "Ch 2"
+        },
+        {
+          "chapter": "emergencies",
+          "label": "Ch 2.1"
+        },
+        {
+          "chapter": "digital-twin",
+          "label": "Ch 4"
+        },
+        {
+          "chapter": "later-directions",
+          "label": "Ch 6"
+        }
+      ],
+      "topics": [],
+      "deeper": [],
+      "status": null
+    },
+    {
+      "id": "where-this-stands",
+      "number": 10,
+      "title": "Where this stands, and what comes next",
+      "sources": [
+        {
+          "chapter": "overview",
+          "label": "Ch 0"
+        },
+        {
+          "chapter": "network-proposal",
+          "label": "Ch 3.4"
+        },
+        {
+          "chapter": "roadmap",
+          "label": "Ch 12"
+        }
+      ],
+      "topics": [],
+      "deeper": [],
+      "status": null
+    }
   ]
 }

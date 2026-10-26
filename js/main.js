@@ -185,6 +185,7 @@
         el(doc, "p", { text: f.text || PLACEHOLDER.status }),
         f.method ? el(doc, "p", { class: "find-meta" }, el(doc, "strong", { text: "Test: " }), f.method) : null,
         f.bar ? el(doc, "p", { class: "find-meta" }, el(doc, "strong", { text: "Bar: " }), f.bar) : null,
+        f.source ? el(doc, "p", { class: "find-meta" }, sourceLink(doc, f.source, site)) : null,
         el(doc, "p", { class: f.result ? "find-result" : "find-result placeholder-inline" },
           el(doc, "strong", { text: "Result: " }), f.result || PLACEHOLDER.result))));
   }
