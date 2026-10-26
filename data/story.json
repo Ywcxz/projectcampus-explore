@@ -217,7 +217,17 @@
               "label": "Ch 3, Information that loses its authority"
             }
           ],
-          "claims": [],
+          "claims": [
+            {
+              "text": "Each channel is reasonable on its own. Together they mean a notice may reach many students as a share or a screenshot, with nothing to show whether it is still current.",
+              "tag": "Proposed",
+              "source": {
+                "chapter": "social-network",
+                "section": "why-vsu-needs-it",
+                "label": "Ch 3, Information that loses its authority"
+              }
+            }
+          ],
           "parts": [
             {
               "id": "the-guidelines",
