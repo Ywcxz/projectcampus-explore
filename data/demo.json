@@ -1,0 +1,122 @@
+{
+  "site": {
+    "title": "Project CAMPUS demo",
+    "masterDoc": "https://project-campus-gilt.vercel.app/"
+  },
+  "defaultPath": "demo",
+  "paths": [
+    { "id": "demo", "label": "Demo: every feature", "depth": "explain", "chapters": ["how-it-works", "a-path-skips-this"], "openDoors": [] },
+    { "id": "demo-glance", "label": "Demo: glance only", "depth": "glance", "chapters": ["how-it-works"], "openDoors": ["deeper-demo"] }
+  ],
+  "chapters": [
+    {
+      "id": "how-it-works",
+      "number": 0,
+      "title": "How this site works",
+      "sources": [{ "ref": "D-147", "label": "D-147" }, { "ref": "D-148", "label": "D-148" }],
+      "topics": [
+        {
+          "id": "parts-demo",
+          "title": "A topic and its parts",
+          "madeUp": "demo",
+          "glance": {
+            "line": "Every topic has one line and one picture. Choose Explain to open its parts, or Evidence to see its sources.",
+            "visual": { "src": null, "alt": "a single picture that carries the topic" }
+          },
+          "sources": [{ "ref": "D-147", "label": "D-147" }],
+          "claims": [
+            { "text": "Chapters hold topics, and topics hold parts, each read at three depths.", "tag": "Established", "source": { "ref": "D-147", "label": "D-147" } }
+          ],
+          "parts": [
+            {
+              "id": "demo-example",
+              "kind": "example",
+              "title": "An example",
+              "madeUp": "demo",
+              "narration": "An example is drawn as a picture or an animation. Its narration stays short, and the picture carries the rest.",
+              "visual": { "src": null, "alt": "an illustration of the example" },
+              "claims": []
+            },
+            {
+              "id": "demo-mockup",
+              "kind": "mockup",
+              "title": "A mock-up",
+              "madeUp": "sample",
+              "narration": "Made-up content carries its label wherever it appears, like the one above.",
+              "visual": { "src": null, "alt": "a sample notice from a generic office" },
+              "claims": [
+                { "text": "Made-up content is labeled as made up.", "tag": "Established", "source": { "ref": "D-148", "label": "D-148" } }
+              ]
+            },
+            {
+              "id": "demo-card",
+              "kind": "card",
+              "title": "A card for a source",
+              "madeUp": null,
+              "narration": "A card links to a source: an official page, a register row, or a chapter of the master doc.",
+              "source": { "chapter": "decisions", "label": "The decision register" },
+              "claims": []
+            },
+            {
+              "id": "demo-door",
+              "kind": "door",
+              "title": "A door into a deeper topic",
+              "to": "deeper-demo"
+            },
+            {
+              "id": "demo-unscripted",
+              "kind": "example",
+              "title": "A part not yet written",
+              "madeUp": "demo",
+              "narration": null,
+              "visual": null,
+              "claims": []
+            }
+          ]
+        }
+      ],
+      "deeper": [
+        {
+          "id": "deeper-demo",
+          "title": "A deeper topic",
+          "madeUp": "demo",
+          "glance": {
+            "line": "A door opens a topic like this one. Back to the story returns to where the door was.",
+            "visual": { "src": null, "alt": "a door opening onto a second topic" }
+          },
+          "sources": [],
+          "claims": [],
+          "parts": [
+            {
+              "id": "deeper-part",
+              "kind": "example",
+              "title": "A part inside the door",
+              "madeUp": "demo",
+              "narration": "In presenter mode, Enter opens a door and Backspace returns to the main path.",
+              "visual": null,
+              "claims": []
+            }
+          ]
+        }
+      ],
+      "status": {
+        "know": [
+          { "text": "Every claim shows its tag and links to its source.", "tag": "Established", "source": { "ref": "D-148", "label": "D-148" } }
+        ],
+        "think": [],
+        "findOut": [
+          { "text": "Where a finding is still missing, the strip says so.", "method": "A survey item, interview probe, or study hypothesis", "bar": "The bar it must clear", "result": null }
+        ]
+      }
+    },
+    {
+      "id": "a-path-skips-this",
+      "number": 1,
+      "title": "A chapter not yet scripted",
+      "sources": [],
+      "topics": [],
+      "deeper": [],
+      "status": null
+    }
+  ]
+}
