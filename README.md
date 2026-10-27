@@ -1,18 +1,18 @@
 # projectcampus.org
 
-Project CAMPUS, told as an interactive documentary: the site the concept note's QR code leads to. An independent proposal by one alumnus, not affiliated with Visayas State University.
+Project CAMPUS, told as an interactive documentary. The concept note's QR code leads to the landing page at projectcampus.org, which shows this site's status (D-154). An independent proposal by one alumnus, not affiliated with Visayas State University.
 
-**Status:** a skeleton. The engine, paths, and presenter mode work; the chapters are not scripted yet, and each shows a placeholder until it is. Planned address: projectcampus.org (D-150).
+**Status:** a skeleton. The engine, paths, and presenter mode work; the chapters are not scripted yet, and each shows a placeholder until it is. Planned address: explore.projectcampus.org (D-154, revising D-150).
 
 ## Where it comes from
 
-Everything on this site is built from the [master doc](https://github.com/Ywcxz/project-campus), Project CAMPUS's reference layer (D-082). The master doc wins wherever the two differ, and a claim goes on this site only once it is there. The site's own decisions are rows D-146 to D-150 of the master doc's [decision register](https://github.com/Ywcxz/project-campus/blob/main/content/13-decisions.md).
+Everything on this site is built from the [master doc](https://github.com/Ywcxz/project-campus), Project CAMPUS's reference layer (D-082). The master doc wins wherever the two differ, and a claim goes on this site only once it is there. The site's own decisions are rows D-146 to D-155 of the master doc's [decision register](https://github.com/Ywcxz/project-campus/blob/main/content/13-decisions.md).
 
 - **D-146:** the explainer-video style, with original art and invented characters.
 - **D-147:** chapters hold topics, topics hold parts; three depths; audience paths; presenter mode.
 - **D-148:** the rules every scene follows.
 - **D-149:** this repository and Vercel project, apart from the master doc's.
-- **D-150:** the name, Project CAMPUS, and the address, projectcampus.org.
+- **D-150:** the name, Project CAMPUS. Its address, projectcampus.org, was revised by D-154: the site moves to explore.projectcampus.org and the root becomes the landing page.
 
 ## Layout
 
