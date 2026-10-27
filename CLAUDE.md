@@ -1,6 +1,6 @@
-# projectcampus.org: notes for Claude
+# projectcampus-explore: notes for Claude
 
-This repository is the documentary site of Project CAMPUS (D-084, D-149, D-150). It is built from the master doc, `Ywcxz/project-campus`, which is the reference layer (D-082). The master doc's `CLAUDE.md` and `content/README.md` apply here too; this file adds what is particular to the site.
+This repository is the documentary site of Project CAMPUS (D-084, D-149, D-150). It is built from the master doc, `Ywcxz/projectcampus-docs`, which is the reference layer (D-082). The master doc's `CLAUDE.md` and `content/README.md` apply here too; this file adds what is particular to the site.
 
 ## Before you edit
 

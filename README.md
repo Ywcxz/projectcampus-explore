@@ -1,4 +1,4 @@
-# projectcampus.org
+# projectcampus-explore
 
 Project CAMPUS, told as an interactive documentary. The concept note's QR code leads to the landing page at projectcampus.org, which shows this site's status (D-154). An independent proposal by one alumnus, not affiliated with Visayas State University.
 
@@ -6,7 +6,7 @@ Project CAMPUS, told as an interactive documentary. The concept note's QR code l
 
 ## Where it comes from
 
-Everything on this site is built from the [master doc](https://github.com/Ywcxz/project-campus), Project CAMPUS's reference layer (D-082). The master doc wins wherever the two differ, and a claim goes on this site only once it is there. The site's own decisions are rows D-146 to D-155 of the master doc's [decision register](https://github.com/Ywcxz/project-campus/blob/main/content/13-decisions.md).
+Everything on this site is built from the [master doc](https://github.com/Ywcxz/projectcampus-docs), Project CAMPUS's reference layer (D-082). The master doc wins wherever the two differ, and a claim goes on this site only once it is there. The site's own decisions are rows D-146 to D-155 of the master doc's [decision register](https://github.com/Ywcxz/projectcampus-docs/blob/main/content/13-decisions.md).
 
 - **D-146:** the explainer-video style, with original art and invented characters.
 - **D-147:** chapters hold topics, topics hold parts; three depths; audience paths; presenter mode.
@@ -17,7 +17,7 @@ Everything on this site is built from the [master doc](https://github.com/Ywcxz/
 ## Layout
 
 ```
-projectcampus.org/
+projectcampus-explore/
 ├── index.html            the one page: masthead, notice, menu, story, footer
 ├── data/story.json       the story: chapters, topics, parts, claims, and paths
 ├── data/demo.json        a short demo of every feature, opened with ?demo
