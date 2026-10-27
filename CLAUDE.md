@@ -1,12 +1,12 @@
-# projectcampus.org: notes for Claude
+# projectcampus-explore: notes for Claude
 
-This repository is the documentary site of Project CAMPUS (D-084, D-149, D-150). It is built from the master doc, `Ywcxz/project-campus`, which is the reference layer (D-082). The master doc's `CLAUDE.md` and `content/README.md` apply here too; this file adds what is particular to the site.
+This repository is the documentary site of Project CAMPUS (D-084, D-149, D-150). It is built from the master doc, `Ywcxz/projectcampus-docs`, which is the reference layer (D-082). The master doc's `CLAUDE.md` and `content/README.md` apply here too; this file adds what is particular to the site.
 
 ## Before you edit
 
 - Read the live file you are changing. Read the master doc chapters a scene draws on at main, live, before you script it. Never build a scene from memory or from a brief alone.
 - A new idea goes into the master doc before it goes on the site. If a scene needs a claim, a feature, or a decision the master doc doesn't have, propose it there first, as a row or a chapter edit by pull request.
-- The site's own decisions are D-146 to D-150 in the master doc's register. A decision about the site counts only once it is a row there.
+- The site's own decisions are D-146 to D-155 in the master doc's register. A decision about the site counts only once it is a row there.
 
 ## Rules every scene follows (D-148)
 
