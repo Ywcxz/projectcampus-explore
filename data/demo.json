@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "Project CAMPUS demo",
-    "masterDoc": "https://project-campus-gilt.vercel.app/"
+    "masterDoc": "https://docs.projectcampus.org/"
   },
   "defaultPath": "demo",
   "paths": [
