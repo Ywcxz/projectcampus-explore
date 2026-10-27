@@ -144,7 +144,11 @@ function checkStory(file) {
     (c.deeper || []).forEach((t) => checkTopic(t, where, ids, deeperIds));
     if (c.status) {
       [...(c.status.know || []), ...(c.status.think || [])].forEach((cl) => checkClaim(cl, `${where} status`));
-      (c.status.findOut || []).forEach((f) => check(!!f.text, `${where} status: each "how we'll find out" has text`));
+      // How we'll find out names the test and the bar it must clear, and links to where the bar is fixed.
+      for (const f of c.status.findOut || []) {
+        check(!!f.text && !!f.method && !!f.bar, `${where} status: each "how we'll find out" has text, a method, and a bar`);
+        checkSource(f.source, `${where} status: "${f.text}"`);
+      }
     }
   }
 
@@ -205,6 +209,15 @@ section("story placeholders", () => {
     check(!!doc.querySelector(`#ch-${c.id} .chapter-placeholder`), `chapter ${c.id}: shows a placeholder until it is scripted`);
   }
   check(doc.getElementById("master-doc-link").href === story.site.masterDoc, "the footer links to the master doc");
+
+  // Every claim on the page shows its tag and a working source link (D-148).
+  const claims = [...doc.querySelectorAll("#story .claim")];
+  check(claims.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), "every rendered claim shows a tag and links to its source");
+  check(!doc.querySelector("#story .source-missing"), "no rendered source is missing");
+
+  // A scripted chapter's made-up parts carry their labels where they render.
+  const madeUp = story.chapters.flatMap((c) => [...(c.topics || []), ...(c.deeper || [])]).flatMap((t) => t.parts || []).filter((p) => p.madeUp);
+  check(madeUp.every((p) => doc.querySelector(`#pb-${p.id} .made-up`)), "every made-up part in the story shows its label");
 });
 
 // The demo exercises every feature.

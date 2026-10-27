@@ -105,7 +105,7 @@
         ],
         "think": [],
         "findOut": [
-          { "text": "Where a finding is still missing, the strip says so.", "method": "A survey item, interview probe, or study hypothesis", "bar": "The bar it must clear", "result": null }
+          { "text": "Where a finding is still missing, the strip says so.", "method": "A survey item, interview probe, or study hypothesis", "bar": "The bar it must clear", "result": null, "source": { "chapter": "evidence", "label": "Ch 8" } }
         ]
       }
     },
