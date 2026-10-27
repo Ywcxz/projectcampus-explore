@@ -83,3 +83,7 @@ On Vercel, import this repository with the framework preset "Other", no build co
 ## Name guard
 
 On GitHub, open Settings > Secrets and variables > Actions, add a repository secret named `PRIVATE_NAMES`, and enter the names, one per line: the same list as the master doc's. Every pull request then fails the "Name guard" check if a line it adds contains one. To run the same check before each commit on your own computer: `git config core.hooksPath scripts/hooks`, with the names in `~/.config/project-campus/private-names.txt`.
+
+## Licence
+
+Code is under the [MIT License](LICENSE). Writing and pictures are under [CC BY 4.0](LICENSE-CONTENT.md), which says which files are which. Copyright © 2026 Leo M. Subingsubing (D-159).
