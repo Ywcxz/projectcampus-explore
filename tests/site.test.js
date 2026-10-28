@@ -312,6 +312,19 @@ section("demo-glance path", () => {
   presenter.stop();
 });
 
+/* ---------- register IDs in the repository's notes ---------- */
+
+// Every decision or evidence ID in the README and licence notes links to its
+// row in the master doc, so a reader on GitHub can open it.
+for (const f of ["README.md", "LICENSE-CONTENT.md"]) {
+  const plain = read(f)
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/`[^`]*`/g, "")
+    .replace(/\[[DQCEP]-\d{2,3}\]\(https:\/\/docs\.projectcampus\.org\/(decisions|evidence)\.html#[dqcep]-\d{2,3}\)/g, "")
+    .match(/\b[DQCEP]-\d{2,3}\b/g);
+  check(!plain, `${f}: register IDs link to the master doc${plain ? ` (unlinked: ${plain.join(", ")})` : ""}`);
+}
+
 /* ---------- report ---------- */
 
 for (const f of failures) console.error(`FAIL ${f}`);
