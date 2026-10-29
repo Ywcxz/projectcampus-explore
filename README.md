@@ -1,78 +1,85 @@
 # projectcampus-explore
 
-Project CAMPUS, told as an interactive documentary. The concept note's QR code leads to the landing page at projectcampus.org, which shows this site's status ([D-154](https://docs.projectcampus.org/decisions.html#d-154)). An independent proposal by one alumnus, not affiliated with Visayas State University.
+Project CAMPUS as scenes you can walk around in: the interactive site at explore.projectcampus.org ([D-154](https://docs.projectcampus.org/decisions.html#d-154)). It is drawn as one campus, with the intranet's rings on the ground and the social/academic network's routes above them, and a visit zooms from the campus into a building, a room, and a screen ([D-170](https://docs.projectcampus.org/decisions.html#d-170)). An independent proposal by one alumnus, not affiliated with Visayas State University.
 
-**Status:** a skeleton. The engine, paths, and presenter mode work; the chapters are not scripted yet, and each shows a placeholder until it is. Planned address: explore.projectcampus.org ([D-154](https://docs.projectcampus.org/decisions.html#d-154), revising [D-150](https://docs.projectcampus.org/decisions.html#d-150)).
+**Status:** a first slice. Six scenes: the campus, an academic building, a computer lab, the network on a monitor, a student outside, and the network on a phone. The problem scenes come next, as places on the same campus. [D-170](https://docs.projectcampus.org/decisions.html#d-170) and [D-171](https://docs.projectcampus.org/decisions.html#d-171) await the owner's confirmation in the master doc.
 
 ## Where it comes from
 
-Everything on this site is built from the [master doc](https://github.com/Ywcxz/projectcampus-docs), Project CAMPUS's reference layer ([D-082](https://docs.projectcampus.org/decisions.html#d-082)). The master doc wins wherever the two differ, and a claim goes on this site only once it is there. The site's own decisions are rows [D-146](https://docs.projectcampus.org/decisions.html#d-146) to [D-155](https://docs.projectcampus.org/decisions.html#d-155) of the master doc's [decision register](https://github.com/Ywcxz/projectcampus-docs/blob/main/content/13-decisions.md).
+Everything here is built from the [master doc](https://github.com/Ywcxz/projectcampus-docs), Project CAMPUS's reference layer ([D-082](https://docs.projectcampus.org/decisions.html#d-082)). The master doc wins wherever the two differ, and a claim goes on this site only once it is there.
 
-- **[D-146](https://docs.projectcampus.org/decisions.html#d-146):** the explainer-video style, with original art and invented characters.
-- **[D-147](https://docs.projectcampus.org/decisions.html#d-147):** chapters hold topics, topics hold parts; three depths; audience paths; presenter mode.
-- **[D-148](https://docs.projectcampus.org/decisions.html#d-148):** the rules every scene follows.
+- **[D-146](https://docs.projectcampus.org/decisions.html#d-146):** the explainer-video techniques, with original art and invented characters.
+- **[D-148](https://docs.projectcampus.org/decisions.html#d-148):** the rules every scene follows: tags, sources, made-up labels, no seal, collects nothing.
 - **[D-149](https://docs.projectcampus.org/decisions.html#d-149):** this repository and Vercel project, apart from the master doc's.
-- **[D-150](https://docs.projectcampus.org/decisions.html#d-150):** the name, Project CAMPUS. Its address, projectcampus.org, was revised by [D-154](https://docs.projectcampus.org/decisions.html#d-154): the site moves to explore.projectcampus.org and the root becomes the landing page.
+- **[D-151](https://docs.projectcampus.org/decisions.html#d-151):** the site is the pitch; no slides.
+- **[D-152](https://docs.projectcampus.org/decisions.html#d-152)** and **[D-153](https://docs.projectcampus.org/decisions.html#d-153):** scenes, objects that open deeper scenes or cards, a map by kind of place, paths, and addresses.
+- **[D-155](https://docs.projectcampus.org/decisions.html#d-155):** narration, English only, off by default (not built yet).
+- **[D-170](https://docs.projectcampus.org/decisions.html#d-170):** one drawn world in 2.5D paper layers, and the zoom from campus to screen.
+- **[D-171](https://docs.projectcampus.org/decisions.html#d-171):** words as a layer, shown or hidden together.
 
 ## Layout
 
 ```
 projectcampus-explore/
-├── index.html            the one page: masthead, notice, menu, story, footer
-├── data/story.json       the story: chapters, topics, parts, claims, and paths
-├── data/demo.json        a short demo of every feature, opened with ?demo
-├── js/main.js            the engine: renders a story file, runs paths, depths, doors, and presenter mode
-├── css/site.css          the master doc's palette, light and dark, phone first
+├── index.html            the one page: bar, notice, stage, caption, card, footer
+├── data/scenes.json      the scenes, their objects, the cards they open, and paths
+├── js/art.js             the drawings: one SVG per scene, in paper layers
+├── js/main.js            the engine: zooms, cards, words, paths, keys, addresses
+├── css/site.css          the landing page's palette, light, phone first
 ├── img/                  the project's icon
-├── tests/                the site test (rules, story files, and the page in jsdom)
+├── tests/                the site test (rules, scene file, drawings, and the page in jsdom)
 ├── scripts/hooks/        the name guard as a local pre-commit hook
 ├── .github/workflows/    the site test and the name guard on every pull request
 ├── CLAUDE.md             working rules for Claude sessions in this repository
 └── vercel.json           security policy, no indexing, and cache headers
 ```
 
-## The story file
+## The scene file
 
-`data/story.json` holds the whole story, so the script changes without touching the engine.
+`data/scenes.json` holds the words, so the script changes without touching the drawings or the engine.
 
-- **Chapters** have an `id`, a whole `number`, a `title`, their master doc `sources`, a list of `topics`, a list of `deeper` topics that doors open, and a `status` strip or `null`.
-- **Topics** have a `glance` (one `line` and one `visual`), a list of `parts`, their `claims`, and their `sources`.
-- **Parts** have a `kind`: `example`, `mockup`, `card`, or `door` (with `to`, a deeper topic's id). Every part but a door says whether it is made up in `madeUp`: `null`, or `composite`, `sample`, `mockup`, or `later-module`. The engine prints the matching label, such as "Composite: not a real post", so the label can't be left off.
-- **Claims** have `text`, a `tag` (Established, Proposed, or Unresolved), and a `source`: a register ID (`{ "ref": "E-023" }`), a master doc chapter (`{ "chapter": "social-network", "label": "Ch 3" }`), or an official page (`{ "href": "https://…", "label": "…" }`).
-- **Paths** list chapters in order, the `depth` topics open at, and the doors open by default. Every chapter stays reachable from the menu.
+- **Scenes** have an `id`, the `art` that draws them, a `parent` (the scene they zoom out to, or `null` for the start), a `title`, a `summary` of 40 words or fewer, `madeUp` (`null`, `layout`, `illustration`, `mockup`, `sample`, `composite`, or `later-module`), their `claims`, the `chapters` they summarize, and their `objects`.
+- **Objects** have an `id` matching a `data-object` group in the drawing, a short `label`, and `opens`: a child `scene`, or a `card`.
+- **Cards** have a `title`, a short `text`, `claims`, and a `chapter`.
+- **Claims** have `text`, a `tag` (Established, Proposed, or Unresolved), and a `source`: a register ID (`{ "ref": "E-009" }`), a master doc chapter (`{ "chapter": "intranet", "label": "Ch 2" }`), or an official page (`{ "href": "https://…", "label": "…" }`).
+- **Paths** list scenes in order, for a presenter's clicker.
 
-Anything left `null` shows a placeholder: "Narration to come", "Picture to come", "Not yet collected".
+## The drawings
 
-## Presenter mode
+`js/art.js` draws each scene as one SVG, 1600 by 1000, in up to four paper layers (`.lay.l1` farthest to `.lay.l4` nearest) that slide in at different speeds, as VSUrvey's scenes do ([D-167](https://docs.projectcampus.org/decisions.html#d-167)). The campus and the building are isometric; rooms and screens are front on. An object is a group with `data-object`, and `data-lx` and `data-ly` mark where its label sits. Drawings carry no words, except inside a labeled mock-up; places are kinds of place, never a named building, college, or department ([D-153](https://docs.projectcampus.org/decisions.html#d-153)).
 
-Press **P** or the Present button. A keyboard or clicker steps through the current path:
+## Words and keys
+
+Words (titles, summaries, sources, labels) show or hide together with the **Words** button or **W**. With words off, a gold dot still marks everything that opens, and made-up labels and the notice stay.
 
 | Key | Does |
 | --- | --- |
-| → ↓ Space PageDown | next step (opens the next part) |
-| ← ↑ PageUp | previous step (closes a part it opened) |
-| Enter | open the door at this step, as a side trip |
-| Backspace | leave a side trip, back to the main path |
-| ] and [ | next or previous chapter |
-| 0 to 9 | jump to that chapter |
-| B or . | blank the screen |
-| Esc or P | leave presenter mode |
+| Tab, then Enter | open the focused object |
+| Esc or Backspace | close a card, or go back up one scene |
+| → Space PageDown | next scene on the path |
+| ← PageUp | previous scene on the path |
+| Home | back to the campus |
+| W | words on or off |
+| P | presenting: hide the bar |
+| B or . | blank the screen; any key brings it back |
+
+Addresses: `?scene=lab`, `?path=first`, `?words=off`. A parameter only chooses how a visit starts; nothing is collected.
 
 ## Run and test locally
 
-The page fetches `data/story.json`, which browsers block over `file://`, so serve the folder:
+The page fetches `data/scenes.json`, which browsers block over `file://`, so serve the folder:
 
 ```bash
 python3 -m http.server 8000
-# http://localhost:8000/          the story
-# http://localhost:8000/?demo     the demo
-# http://localhost:8000/?path=ict a path
+# http://localhost:8000/                       the campus
+# http://localhost:8000/?scene=lab             a scene
+# http://localhost:8000/?scene=screen&words=off
 ```
 
 Before pushing:
 
 ```bash
-node --check js/main.js
+node --check js/main.js && node --check js/art.js
 cd tests && npm install && npm test
 ```
 

@@ -9,11 +9,12 @@ Copyright © 2026 Leo M. Subingsubing.
 
 ## What is under CC BY 4.0
 
-- the story and its text in `data/`;
+- the scenes and their text in `data/`;
+- the drawings in `js/art.js`: the scenes' art and characters, written as code;
 - the text of `index.html`;
 - the art, characters, and images in `img/` and `favicon.ico`, including the project's icon.
 
-The code, `js/`, `css/`, `scripts/`, `tests/`, `.github/`, `vercel.json`, and the HTML structure of `index.html`, is under the MIT License.
+The code, `js/` apart from the drawings in `js/art.js`, `css/`, `scripts/`, `tests/`, `.github/`, `vercel.json`, and the HTML structure of `index.html`, is under the MIT License.
 
 ## Credit
 

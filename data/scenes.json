@@ -1,0 +1,205 @@
+{
+  "site": {
+    "title": "Project CAMPUS",
+    "masterDoc": "https://docs.projectcampus.org/"
+  },
+  "start": "campus",
+  "paths": [
+    {
+      "id": "first",
+      "label": "The network and the intranet",
+      "scenes": ["campus", "building", "lab", "screen", "outside", "phone"]
+    }
+  ],
+  "cards": [
+    {
+      "id": "rings",
+      "title": "Four rings",
+      "text": "Device, campus, VSU-wide, and the internet. Each ring is meant to keep working when the rings outside it fail.",
+      "claims": [
+        { "text": "What VSU makes would live on VSU's own network and servers first, with the internet as the outer ring, still open for everything from outside.", "tag": "Proposed", "source": { "chapter": "intranet", "label": "Ch 2" } },
+        { "text": "VSU has already built a fiber backbone, Wi-Fi across most of the Main Campus, and a typhoon-hardened data center on solar backup.", "tag": "Established", "source": { "chapter": "intranet", "label": "Ch 2" } },
+        { "text": "The campus intranet is a direction, not an ask.", "tag": "Established", "source": { "ref": "D-022" } }
+      ],
+      "chapter": { "chapter": "intranet", "label": "Chapter 2" }
+    },
+    {
+      "id": "route",
+      "title": "A question finds its answer",
+      "text": "In the network, a question would go to the office or person who can answer it. The confirmed answer would stay, dated and findable, and every notice would show who stands behind it.",
+      "claims": [
+        { "text": "The network is built for three jobs: routing, memory, and trust.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 3" } },
+        { "text": "In the network's design, questions are routed, not broadcast, and move to the office responsible when only an office can settle them.", "tag": "Established", "source": { "ref": "D-071" } }
+      ],
+      "chapter": { "chapter": "social-network", "label": "Chapter 3" }
+    },
+    {
+      "id": "access-points",
+      "title": "Wi-Fi access points",
+      "text": "In the campus-first design, access points would sit on each building's switches, sized for the people in a room, with sign-in by university account. Being on campus Wi-Fi alone would grant no trust.",
+      "claims": [
+        { "text": "Access points would be sized by how many people use a space, with sign-in by university account.", "tag": "Proposed", "source": { "chapter": "intranet", "label": "Ch 2" } },
+        { "text": "Verified when accessed: every service checks who is asking, on campus or off.", "tag": "Proposed", "source": { "ref": "D-087" } }
+      ],
+      "chapter": { "chapter": "campus-network", "label": "Chapter 2.2" }
+    },
+    {
+      "id": "closet",
+      "title": "Switch and fiber",
+      "text": "In the campus-first design, the building's switch would join its access points to the fiber backbone, which runs to the data center at the campus core.",
+      "claims": [
+        { "text": "VSU finished a new fiber backbone in 2017, after Typhoon Haiyan destroyed most of the old one in 2013.", "tag": "Established", "source": { "ref": "E-009" } },
+        { "text": "Two fiber paths to each major building, so one cut does not isolate it.", "tag": "Proposed", "source": { "chapter": "intranet", "label": "Ch 2" } },
+        { "text": "The backbone's layout and redundancy are not public.", "tag": "Unresolved", "source": { "chapter": "intranet", "label": "Ch 2" } }
+      ],
+      "chapter": { "chapter": "intranet", "label": "Chapter 2" }
+    },
+    {
+      "id": "labels",
+      "title": "Every post says what it is",
+      "text": "Official, community knowledge, opinion, unverified, scholarly, or external. In the network's design, only offices in official spaces post as official, and a notice shows whether it is current, updated, superseded, or archived.",
+      "claims": [
+        { "text": "Every post carries one of six information types, and notices show whether they are current, updated, superseded, or archived.", "tag": "Established", "source": { "ref": "D-063" } }
+      ],
+      "chapter": { "chapter": "governance", "label": "Chapter 9" }
+    },
+    {
+      "id": "kept",
+      "title": "Kept for the next batch",
+      "text": "In the network's design, confirmed answers, guides, and notices stay, dated and findable. Discussion fades on a published schedule.",
+      "claims": [
+        { "text": "The network keeps knowledge and lets conversation fade.", "tag": "Established", "source": { "ref": "D-070" } },
+        { "text": "Because every kept answer makes the next question easier, the network's value compounds over the years.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 3" } }
+      ],
+      "chapter": { "chapter": "social-network", "label": "Chapter 3" }
+    },
+    {
+      "id": "device",
+      "title": "Saved on this phone",
+      "text": "The innermost ring would be the phone itself: it would keep the latest notices, so they open with no connection.",
+      "claims": [
+        { "text": "A phone out of coverage still shows the notices it last synced.", "tag": "Proposed", "source": { "chapter": "intranet", "label": "Ch 2" } }
+      ],
+      "chapter": { "chapter": "intranet", "label": "Chapter 2" }
+    },
+    {
+      "id": "to-come",
+      "title": "Scenes to come",
+      "text": "The problem scenes will sit here, at a kind of place. They are drawn next, and VSU evidence for them is still to come.",
+      "claims": [
+        { "text": "A problem sits at a kind of place, never a named building or office, until VSU evidence ties it there.", "tag": "Established", "source": { "ref": "D-153" } }
+      ],
+      "chapter": { "chapter": "social-network", "label": "Chapter 3" }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "campus",
+      "art": "campus",
+      "parent": null,
+      "title": "One campus, two layers",
+      "summary": "The intranet on the ground: what VSU makes would live on VSU's own network first. The network above it: a question would reach someone who can answer, and the answer would stay.",
+      "madeUp": "layout",
+      "claims": [
+        { "text": "CAMPUS proposes a digital layer over the physical university, connecting its people, places, knowledge, and services.", "tag": "Proposed", "source": { "chapter": "campus", "label": "Ch 1" } },
+        { "text": "One product, the social/academic network, with a campus intranet as its long-term infrastructure.", "tag": "Established", "source": { "ref": "D-098" } }
+      ],
+      "chapters": [{ "chapter": "social-network", "label": "Chapter 3" }, { "chapter": "intranet", "label": "Chapter 2" }],
+      "objects": [
+        { "id": "building", "label": "An academic building", "opens": { "scene": "building" } },
+        { "id": "student", "label": "A student between classes", "opens": { "scene": "outside" } },
+        { "id": "route", "label": "A question finds its answer", "opens": { "card": "route" } },
+        { "id": "rings", "label": "The intranet's rings", "opens": { "card": "rings" } },
+        { "id": "dorms", "label": "Dormitories", "opens": { "card": "to-come" } },
+        { "id": "offices", "label": "Offices", "opens": { "card": "to-come" } },
+        { "id": "orgs", "label": "Organizations", "opens": { "card": "to-come" } }
+      ]
+    },
+    {
+      "id": "building",
+      "art": "building",
+      "parent": "campus",
+      "title": "Inside an academic building",
+      "summary": "Rooms and a hall. In the campus-first design, each has Wi-Fi access points on the building's switch, joined by fiber to the campus core.",
+      "madeUp": "illustration",
+      "claims": [
+        { "text": "VSU finished a new fiber backbone in 2017, after Typhoon Haiyan destroyed most of the old one in 2013.", "tag": "Established", "source": { "ref": "E-009" } },
+        { "text": "Access points on each building's switches, joined by fiber to the campus core.", "tag": "Proposed", "source": { "chapter": "intranet", "label": "Ch 2" } }
+      ],
+      "chapters": [{ "chapter": "intranet", "label": "Chapter 2" }],
+      "objects": [
+        { "id": "lab", "label": "A computer lab", "opens": { "scene": "lab" } },
+        { "id": "ap", "label": "A Wi-Fi access point", "opens": { "card": "access-points" } },
+        { "id": "closet", "label": "The building's switch", "opens": { "card": "closet" } }
+      ]
+    },
+    {
+      "id": "lab",
+      "art": "lab",
+      "parent": "building",
+      "title": "A computer lab",
+      "summary": "A whiteboard, tables and chairs, computers, and on one screen, the network: a department's community, open between tasks.",
+      "madeUp": "illustration",
+      "claims": [
+        { "text": "The network is built first for the academic side of university life, with campus life around it.", "tag": "Established", "source": { "ref": "D-101" } },
+        { "text": "Its communities are tied to real units, such as a department, each with a named owner.", "tag": "Established", "source": { "ref": "D-062" } }
+      ],
+      "chapters": [{ "chapter": "social-network", "label": "Chapter 3" }],
+      "objects": [
+        { "id": "monitor", "label": "The network on a monitor", "opens": { "scene": "screen" } },
+        { "id": "ap", "label": "A Wi-Fi access point", "opens": { "card": "access-points" } }
+      ]
+    },
+    {
+      "id": "screen",
+      "art": "screen",
+      "parent": "lab",
+      "title": "The network, on a computer",
+      "summary": "A department's community: an office notice labeled official and current, and a question with a confirmed answer, kept for the next batch.",
+      "madeUp": "mockup",
+      "claims": [
+        { "text": "The first build is a small prototype of the network on made-up data.", "tag": "Established", "source": { "ref": "D-099" } },
+        { "text": "Made-up content is marked as made up wherever it appears.", "tag": "Established", "source": { "ref": "D-108" } }
+      ],
+      "chapters": [{ "chapter": "network-design", "label": "Chapter 3.2" }],
+      "objects": [
+        { "id": "notice", "label": "An office notice", "opens": { "card": "labels" } },
+        { "id": "answer", "label": "A confirmed answer", "opens": { "card": "kept" } }
+      ]
+    },
+    {
+      "id": "outside",
+      "art": "outside",
+      "parent": "campus",
+      "title": "Between classes",
+      "summary": "Outside the building, between classes, a student checks the same community on a phone.",
+      "madeUp": "illustration",
+      "claims": [
+        { "text": "Outdoor access points where people gather, and wireless bridges where fiber cannot reach.", "tag": "Proposed", "source": { "chapter": "intranet", "label": "Ch 2" } }
+      ],
+      "chapters": [{ "chapter": "intranet", "label": "Chapter 2" }],
+      "objects": [
+        { "id": "phone", "label": "The network on a phone", "opens": { "scene": "phone" } },
+        { "id": "ap", "label": "An outdoor access point", "opens": { "card": "access-points" } }
+      ]
+    },
+    {
+      "id": "phone",
+      "art": "phone",
+      "parent": "outside",
+      "title": "The same network, on a phone",
+      "summary": "The same notice and the same kept answer, with the latest notices saved on the phone for when the signal drops.",
+      "madeUp": "mockup",
+      "claims": [
+        { "text": "The first build is a small prototype of the network on made-up data.", "tag": "Established", "source": { "ref": "D-099" } },
+        { "text": "A phone out of coverage still shows the notices it last synced.", "tag": "Proposed", "source": { "chapter": "intranet", "label": "Ch 2" } }
+      ],
+      "chapters": [{ "chapter": "network-design", "label": "Chapter 3.2" }, { "chapter": "intranet", "label": "Chapter 2" }],
+      "objects": [
+        { "id": "notice", "label": "An office notice", "opens": { "card": "labels" } },
+        { "id": "answer", "label": "A confirmed answer", "opens": { "card": "kept" } },
+        { "id": "saved", "label": "Saved on this phone", "opens": { "card": "device" } }
+      ]
+    }
+  ]
+}
