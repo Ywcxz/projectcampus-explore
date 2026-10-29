@@ -1,6 +1,6 @@
-// The documentary site's test: the rules every page follows (D-148), the
-// story files' format (D-147), and the page itself, rendered in jsdom,
-// with its depths, doors, paths, and presenter mode.
+// The interactive site's test: the rules every page follows (D-148), the
+// scene file's format (D-152, D-170), the drawings (D-171), and the page
+// itself, rendered in jsdom: zooms, cards, words, paths, and keys.
 const fs = require("fs");
 const path = require("path");
 const { JSDOM } = require("jsdom");
@@ -36,9 +36,7 @@ const MASTER_CHAPTERS = [
   "related-work", "risks", "roadmap", "decisions",
 ];
 const TAGS = ["Established", "Proposed", "Unresolved"];
-const DEPTHS = ["glance", "explain", "evidence"];
-const KINDS = ["example", "mockup", "card", "door"];
-const MADE_UP = ["composite", "sample", "mockup", "later-module", "demo"];
+const MADE_UP = ["layout", "illustration", "mockup", "sample", "composite", "later-module"];
 const NOTICE = "Not affiliated with Visayas State University";
 
 /* ---------- rules for every page and file ---------- */
@@ -68,15 +66,19 @@ for (const f of TEXT) check(!META.test(read(f)), `${f}: names no Facebook or Met
 const RETIRED = new RegExp(["Connected", "Academic", "Matrix"].join("\\s+"), "i");
 for (const f of TEXT) check(!RETIRED.test(read(f)), `${f}: does not use the retired name (D-040)`);
 
-// The engine stores nothing, sends nothing, and names no web address.
+// The engine and the drawings store nothing, send nothing, and name no web address.
 const js = read("js/main.js");
-for (const word of ["localStorage", "sessionStorage", "indexedDB", "document.cookie", "sendBeacon", "XMLHttpRequest", "WebSocket"]) {
-  check(!js.includes(word), `js/main.js: does not use ${word} (D-148)`);
+const artJs = read("js/art.js");
+for (const [name, src] of [["js/main.js", js], ["js/art.js", artJs]]) {
+  for (const word of ["localStorage", "sessionStorage", "indexedDB", "document.cookie", "sendBeacon", "XMLHttpRequest", "WebSocket", "innerHTML", "<image"]) {
+    check(!src.includes(word), `${name}: does not use ${word} (D-148)`);
+  }
 }
 check(!/https?:\/\//.test(js), "js/main.js: names no web address");
-check(!/innerHTML/.test(js), "js/main.js: builds the page without innerHTML");
+check(!/https?:\/\/(?!www\.w3\.org\/2000\/svg)/.test(artJs), "js/art.js: names no web address but the SVG namespace");
+check(/fetch\("data\/scenes\.json"\)/.test(js) && (js.match(/fetch\(/g) || []).length === 1, "js/main.js: fetches only its own scene file");
 
-/* ---------- the story files ---------- */
+/* ---------- the scene file ---------- */
 
 function words(s) { return String(s).trim().split(/\s+/).filter(Boolean).length; }
 
@@ -87,229 +89,196 @@ function checkSource(src, where) {
   if (src.href) return check(/^https:\/\//.test(src.href) && !!src.label, `${where}: source link is https and labeled`);
   check(false, `${where}: source has a ref, chapter, or href`);
 }
-
 function checkClaim(claim, where) {
   check(typeof claim.text === "string" && claim.text.trim() !== "", `${where}: claim has text`);
   check(TAGS.includes(claim.tag), `${where}: claim tag ${claim.tag} is Established, Proposed, or Unresolved`);
   checkSource(claim.source, where);
 }
-
-function checkTopic(t, where, ids, deeperIds) {
-  const at = `${where} topic ${t.id}`;
-  check(/^[a-z0-9-]+$/.test(t.id || ""), `${at}: has a lowercase id`);
-  check(!ids.has(t.id), `${at}: id is unique`);
-  ids.add(t.id);
-  check(!!t.title, `${at}: has a title`);
-  check(t.madeUp === undefined || t.madeUp === null || MADE_UP.includes(t.madeUp), `${at}: madeUp is a known label`);
-  if (t.glance && t.glance.line) check(words(t.glance.line) <= 40, `${at}: glance line is 40 words or fewer`);
-  (t.claims || []).forEach((c) => checkClaim(c, at));
-  (t.sources || []).forEach((s) => checkSource(s, at));
-  for (const p of t.parts || []) {
-    const pat = `${at} part ${p.id}`;
-    check(/^[a-z0-9-]+$/.test(p.id || ""), `${pat}: has a lowercase id`);
-    check(!ids.has(p.id), `${pat}: id is unique`);
-    ids.add(p.id);
-    check(KINDS.includes(p.kind), `${pat}: kind ${p.kind} is example, mockup, card, or door`);
-    if (p.kind === "door") {
-      check(deeperIds.has(p.to), `${pat}: opens a deeper topic of its chapter`);
-      continue;
-    }
-    // Pictures and mock-ups say whether they are made up; a mock-up always is (D-148).
-    check("madeUp" in p, `${pat}: says whether it is made up (madeUp)`);
-    check(p.madeUp === null || MADE_UP.includes(p.madeUp), `${pat}: madeUp is null or a known label`);
-    if (p.kind === "mockup") check(!!p.madeUp, `${pat}: a mock-up is labeled as made up`);
-    if (p.kind === "card") checkSource(p.source, pat);
-    if (p.narration) check(words(p.narration) <= 40, `${pat}: narration is 40 words or fewer (D-146)`);
-    (p.claims || []).forEach((c) => checkClaim(c, pat));
-  }
+function checkChapter(ch, where) {
+  check(!!ch && MASTER_CHAPTERS.includes(ch.chapter) && !!ch.label, `${where}: links a master doc chapter with a label`);
 }
 
-function checkStory(file) {
-  const data = JSON.parse(read(file));
-  check(!!data.site && /^https:\/\/.+\/$/.test(data.site.masterDoc || ""), `${file}: names the master doc's address, ending in /`);
-  const chapters = data.chapters || [];
-  const chapterIds = new Set(chapters.map((c) => c.id));
-  check(chapterIds.size === chapters.length, `${file}: chapter ids are unique`);
-  check(new Set(chapters.map((c) => c.number)).size === chapters.length, `${file}: chapter numbers are unique`);
+const data = JSON.parse(read("data/scenes.json"));
+check(!!data.site && /^https:\/\/.+\/$/.test(data.site.masterDoc || ""), "scenes: names the master doc's address, ending in /");
+const scenes = new Map(data.scenes.map((s) => [s.id, s]));
+const cards = new Map((data.cards || []).map((c) => [c.id, c]));
+check(scenes.size === data.scenes.length, "scenes: ids are unique");
+check(cards.size === (data.cards || []).length, "cards: ids are unique");
+check(scenes.has(data.start) && scenes.get(data.start).parent === null, "scenes: the start scene exists and has no parent");
+
+// The drawings, loaded once, outside the page.
+const artWin = new JSDOM("<!DOCTYPE html><body></body>", { runScripts: "outside-only" }).window;
+artWin.eval(artJs);
+const ART = artWin.CampusArt || {};
+function drawingOf(scene) {
+  const make = ART[scene.art];
+  if (typeof make !== "function") return null;
+  const doc = new artWin.DOMParser().parseFromString(make(), "image/svg+xml");
+  return doc.querySelector("parsererror") ? null : doc.documentElement;
+}
+
+const reached = new Set([data.start]);
+for (const s of data.scenes) {
+  const at = `scene ${s.id}`;
+  check(/^[a-z0-9-]+$/.test(s.id || ""), `${at}: has a lowercase id`);
+  check(!!s.title && !!s.summary, `${at}: has a title and a summary`);
+  check(words(s.summary) <= 40, `${at}: summary is 40 words or fewer (D-146)`);
+  check(s.madeUp === null || MADE_UP.includes(s.madeUp), `${at}: madeUp is null or a known label`);
+  check(s.parent === null || scenes.has(s.parent), `${at}: its parent exists`);
+  (s.claims || []).forEach((c) => checkClaim(c, at));
+  check((s.chapters || []).length > 0, `${at}: ends with a link to its chapter (D-152)`);
+  (s.chapters || []).forEach((ch) => checkChapter(ch, at));
+
+  // Its drawing: well formed, kinds of place, and no words of its own outside a mock-up (D-171).
+  const svg = drawingOf(s);
+  check(!!svg && svg.nodeName === "svg", `${at}: its drawing ${s.art} exists and is well formed`);
+  if (!svg) continue;
+  check(svg.getAttribute("viewBox") === "0 0 1600 1000", `${at}: its drawing is 1600 by 1000`);
+  check(!!svg.getAttribute("aria-label"), `${at}: its drawing is described for screen readers`);
+  check(svg.querySelectorAll(".lay").length >= 2, `${at}: its drawing is in paper layers (D-167)`);
+  const lettered = [...svg.querySelectorAll("text")].filter((t) => /[A-Za-z]/.test(t.textContent));
+  if (s.madeUp !== "mockup") check(lettered.length === 0, `${at}: its drawing carries no words outside a mock-up (D-171)`);
+  else check(lettered.some((t) => /Mock-up/.test(t.textContent)), `${at}: its mock-up says so inside the picture (D-108)`);
+  if (lettered.some((t) => /notice/i.test(t.textContent) && /Official/.test(t.textContent)) || svg.textContent.includes("Official")) {
+    check(svg.textContent.includes("Sample: not an official VSU notice"), `${at}: a notice in a mock-up is marked as a sample (D-108)`);
+  }
 
   const ids = new Set();
-  const allDeeper = new Set();
-  for (const c of chapters) {
-    const where = `${file} chapter ${c.id}`;
-    check(Number.isInteger(c.number) && !!c.title, `${where}: has a whole number and a title`);
-    (c.sources || []).forEach((s) => checkSource(s, where));
-    const deeperIds = new Set((c.deeper || []).map((t) => t.id));
-    deeperIds.forEach((id) => allDeeper.add(id));
-    (c.topics || []).forEach((t) => checkTopic(t, where, ids, deeperIds));
-    (c.deeper || []).forEach((t) => checkTopic(t, where, ids, deeperIds));
-    if (c.status) {
-      [...(c.status.know || []), ...(c.status.think || [])].forEach((cl) => checkClaim(cl, `${where} status`));
-      // How we'll find out names the test and the bar it must clear, and links to where the bar is fixed.
-      for (const f of c.status.findOut || []) {
-        check(!!f.text && !!f.method && !!f.bar, `${where} status: each "how we'll find out" has text, a method, and a bar`);
-        checkSource(f.source, `${where} status: "${f.text}"`);
-      }
+  for (const o of s.objects || []) {
+    const oat = `${at} object ${o.id}`;
+    check(/^[a-z0-9-]+$/.test(o.id || "") && !ids.has(o.id), `${oat}: has a unique lowercase id`);
+    ids.add(o.id);
+    check(!!o.label && words(o.label) <= 6, `${oat}: has a short label`);
+    const g = svg.querySelector(`[data-object="${o.id}"]`);
+    check(!!g, `${oat}: is drawn`);
+    if (g) {
+      const lx = Number(g.getAttribute("data-lx")), ly = Number(g.getAttribute("data-ly"));
+      check(lx >= 0 && lx <= 1600 && ly >= 0 && ly <= 1000, `${oat}: its label point is inside the drawing`);
     }
+    const to = o.opens || {};
+    check(!!to.scene !== !!to.card, `${oat}: opens one scene or one card`);
+    if (to.scene) {
+      check(scenes.has(to.scene) && scenes.get(to.scene).parent === s.id, `${oat}: opens a scene whose parent is this one`);
+      reached.add(to.scene);
+    }
+    if (to.card) check(cards.has(to.card), `${oat}: opens a card that exists`);
   }
-
-  check(chapterIds.has((data.paths || []).find((p) => p.id === data.defaultPath) ? data.paths.find((p) => p.id === data.defaultPath).chapters[0] : null), `${file}: the default path exists and starts on a chapter`);
-  for (const p of data.paths || []) {
-    const where = `${file} path ${p.id}`;
-    check(!!p.label, `${where}: has a label`);
-    check(DEPTHS.includes(p.depth), `${where}: depth is glance, explain, or evidence`);
-    check(p.chapters.length > 0 && p.chapters.every((id) => chapterIds.has(id)), `${where}: names only chapters that exist`);
-    check(new Set(p.chapters).size === p.chapters.length, `${where}: names each chapter once`);
-    check((p.openDoors || []).every((id) => allDeeper.has(id)), `${where}: opens only doors that exist`);
-  }
-  return data;
 }
-
-const story = checkStory("data/story.json");
-const demo = checkStory("data/demo.json");
+for (const s of data.scenes) check(reached.has(s.id), `scene ${s.id}: can be reached from the start`);
+for (const c of data.cards || []) {
+  const at = `card ${c.id}`;
+  check(!!c.title && !!c.text, `${at}: has a title and text`);
+  check(words(c.text) <= 40, `${at}: text is 40 words or fewer`);
+  check((c.claims || []).length > 0, `${at}: shows at least one claim`);
+  (c.claims || []).forEach((cl) => checkClaim(cl, at));
+  checkChapter(c.chapter, at);
+}
+for (const p of data.paths || []) {
+  check(!!p.label && p.scenes.length > 0 && p.scenes.every((id) => scenes.has(id)) && new Set(p.scenes).size === p.scenes.length, `path ${p.id}: names each of its scenes once, and only scenes that exist`);
+}
 
 /* ---------- the page, rendered ---------- */
 
 const html = read("index.html");
-
 function page(url) {
   const dom = new JSDOM(html, { url, runScripts: "outside-only", pretendToBeVisual: true });
   dom.window.CAMPUS_NO_BOOT = true;
+  dom.window.eval(artJs);
   dom.window.eval(js);
   return dom.window;
 }
-
-// A section that throws is reported as a failure, not a crash, so the
-// summary still names what broke.
 function section(label, fn) {
   try { fn(); } catch (e) { check(false, `${label}: threw ${e.message}`); }
 }
-
 function key(win, k) {
   win.document.dispatchEvent(new win.KeyboardEvent("keydown", { key: k, bubbles: true, cancelable: true }));
 }
+const MASTER = data.site.masterDoc;
 
-// The story, on every path.
-for (const p of story.paths) section(`path ${p.id}`, () => {
-  const win = page(`https://projectcampus.org/?path=${p.id}`);
+// Every scene, opened by its address.
+for (const s of data.scenes) section(`page ?scene=${s.id}`, () => {
+  const win = page(`https://explore.projectcampus.org/?scene=${s.id}`);
   const doc = win.document;
-  win.CampusStory.start(story, { path: p.id, doc, win });
-  const main = [...doc.querySelectorAll("#story > .chapter:not(.off-path)")].map((s) => s.dataset.chapter);
-  check(JSON.stringify(main) === JSON.stringify(p.chapters), `path ${p.id}: shows its chapters in its order`);
-  check(doc.querySelectorAll("#story > .chapter").length === story.chapters.length, `path ${p.id}: every chapter stays reachable`);
-  check(doc.querySelectorAll("#menu-chapters a").length === story.chapters.length, `path ${p.id}: the menu lists every chapter`);
-  check(doc.querySelector('#menu-paths a[aria-current="true"]').textContent === p.label, `path ${p.id}: the menu marks it as the current path`);
-  check(doc.body.textContent.includes(NOTICE), `path ${p.id}: the rendered page carries the notice`);
-});
-
-section("story placeholders", () => {
-  const win = page("https://projectcampus.org/");
-  const doc = win.document;
-  win.CampusStory.start(story, { doc, win });
-  for (const c of story.chapters.filter((ch) => !(ch.topics || []).length)) {
-    check(!!doc.querySelector(`#ch-${c.id} .chapter-placeholder`), `chapter ${c.id}: shows a placeholder until it is scripted`);
+  const app = win.CampusScenes.start(data, { doc, win });
+  check(app.state.scene.id === s.id, `?scene=${s.id}: opens that scene`);
+  check(doc.getElementById("scene-title").textContent === s.title, `?scene=${s.id}: shows its title`);
+  check(doc.body.textContent.includes(NOTICE), `?scene=${s.id}: the rendered page carries the notice`);
+  const made = doc.getElementById("made-up");
+  check(s.madeUp ? !made.hidden && made.textContent === win.CampusScenes.MADE_UP[s.madeUp] : made.hidden, `?scene=${s.id}: says what is made up, and only then`);
+  for (const o of s.objects || []) {
+    const g = doc.querySelector(`#frame [data-object="${o.id}"]`);
+    check(!!g && g.getAttribute("role") === "button" && g.getAttribute("tabindex") === "0" && g.getAttribute("aria-label") === o.label, `?scene=${s.id} ${o.id}: is a button for keyboard and screen readers`);
+    check(!!doc.querySelector(`#labels .label[data-object="${o.id}"]`), `?scene=${s.id} ${o.id}: has its label`);
   }
-  check(doc.getElementById("master-doc-link").href === story.site.masterDoc, "the footer links to the master doc");
-
-  // Every claim on the page shows its tag and a working source link (D-148).
-  const claims = [...doc.querySelectorAll("#story .claim")];
-  check(claims.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), "every rendered claim shows a tag and links to its source");
-  check(!doc.querySelector("#story .source-missing"), "no rendered source is missing");
-
-  // A scripted chapter's made-up parts carry their labels where they render.
-  const madeUp = story.chapters.flatMap((c) => [...(c.topics || []), ...(c.deeper || [])]).flatMap((t) => t.parts || []).filter((p) => p.madeUp);
-  check(madeUp.every((p) => doc.querySelector(`#pb-${p.id} .made-up`)), "every made-up part in the story shows its label");
+  const claims = [...doc.querySelectorAll("#scene-claims .claim")];
+  check(claims.length === (s.claims || []).length && claims.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), `?scene=${s.id}: every claim shows its tag and links its source`);
+  check(doc.querySelectorAll("#scene-chapters a.chapter-link").length === (s.chapters || []).length, `?scene=${s.id}: links its chapters`);
+  const trail = [...doc.querySelectorAll("#trail a, #trail .here")].map((e) => e.textContent);
+  let chain = [], at = s;
+  while (at) { chain.unshift(at.title); at = at.parent ? scenes.get(at.parent) : null; }
+  check(JSON.stringify(trail) === JSON.stringify(chain), `?scene=${s.id}: the trail shows where you are`);
 });
 
-// The demo exercises every feature.
-section("demo", () => {
-  const win = page("https://projectcampus.org/?demo");
+section("zoom, cards, words, keys", () => {
+  const win = page("https://explore.projectcampus.org/");
   const doc = win.document;
-  const { presenter } = win.CampusStory.start(demo, { doc, win, demo: true });
+  const app = win.CampusScenes.start(data, { doc, win });
+  check(app.state.scene.id === data.start, "start: opens the start scene");
+  check(doc.getElementById("master-doc-link").href === MASTER, "the footer links to the master doc");
 
-  const topic = doc.getElementById("t-parts-demo");
-  check(topic.dataset.depth === "explain", "demo: a topic opens at its path's depth");
-  doc.querySelector('#t-parts-demo .depth-btn[data-depth="evidence"]').click();
-  check(topic.dataset.depth === "evidence", "depth: Evidence switches the topic to evidence");
-  check(doc.querySelector('#t-parts-demo .depth-btn[data-depth="evidence"]').getAttribute("aria-pressed") === "true", "depth: the pressed button shows it");
-
-  const toggle = doc.querySelector("#p-demo-mockup .part-toggle");
-  const body = doc.getElementById("pb-demo-mockup");
-  check(body.hidden, "part: starts closed");
-  toggle.click();
-  check(!body.hidden && toggle.getAttribute("aria-expanded") === "true", "part: a tap opens it");
-  toggle.click();
-  check(body.hidden, "part: a second tap closes it");
-
-  check(body.querySelector(".made-up").textContent === "Sample: not an official VSU notice", "made up: a sample carries its label (D-108)");
-  const madeUpParts = demo.chapters.flatMap((c) => [...(c.topics || []), ...(c.deeper || [])]).flatMap((t) => t.parts || []).filter((p) => p.madeUp);
-  check(madeUpParts.every((p) => doc.querySelector(`#pb-${p.id} .made-up`)), "made up: every made-up part shows a label");
-
-  const claim = doc.querySelector("#t-parts-demo .evidence .claim");
-  check(!!claim.querySelector(".tag.tag-established"), "claim: shows its tag as a badge");
-  check(claim.querySelector("a.source").href === `${demo.site.masterDoc}decisions.html#d-147`, "claim: links to its register row in the master doc");
-  check(doc.querySelector("#pb-demo-card a.source").href === `${demo.site.masterDoc}decisions.html`, "card: links to its master doc chapter");
-  check(doc.querySelector("#pb-demo-unscripted .narration").textContent === "Narration to come.", "placeholder: an empty narration says so");
-  check(doc.querySelector("#ch-how-it-works .find-result").textContent.includes("Not yet collected."), "status strip: a missing result says so");
-
-  const door = doc.getElementById("door-demo-door");
-  const deeper = doc.getElementById("t-deeper-demo");
-  check(deeper.hidden, "door: the deeper topic starts closed");
-  door.click();
-  check(!deeper.hidden && door.getAttribute("aria-expanded") === "true", "door: a tap opens the deeper topic");
-  deeper.querySelector(".back-to-path").click();
-  check(doc.activeElement === door, "door: Back to the story returns to the door");
-  door.click();
-  check(deeper.hidden, "door: a second tap closes it");
-
-  // Presenter mode, with a keyboard or clicker.
-  key(win, "p");
-  check(doc.body.classList.contains("presenting") && !doc.getElementById("presenter-bar").hidden, "presenter: P starts it");
-  const st = presenter.state;
-  check(st.steps[st.i].type === "chapter", "presenter: starts on the chapter");
-  key(win, "ArrowRight");
-  check(st.steps[st.i].node.id === "t-parts-demo", "presenter: next goes to the topic");
-  key(win, "PageDown");
-  check(!doc.getElementById("pb-demo-example").hidden, "presenter: a clicker's next opens the part");
-  key(win, "PageUp");
-  check(doc.getElementById("pb-demo-example").hidden, "presenter: going back closes the part it opened");
-  while (st.steps[st.i].type !== "door") key(win, "ArrowRight");
-  key(win, "Enter");
-  check(!deeper.hidden && st.trips.length === 1 && st.steps[st.i].node === deeper, "presenter: Enter opens the door as a side trip");
-  key(win, "Backspace");
-  check(st.trips.length === 0 && st.steps[st.i].type === "door", "presenter: Backspace returns to the main path where it left");
-  key(win, "ArrowRight");
-  check(st.steps[st.i].node.id === "p-demo-unscripted", "presenter: next after a door skips it");
-  key(win, "]");
-  check(st.steps[st.i].node.id === "ch-a-path-skips-this", "presenter: ] jumps to the next chapter");
-  check(doc.getElementById("ch-a-path-skips-this").classList.contains("is-current") &&
-    !doc.getElementById("ch-how-it-works").classList.contains("is-current"), "presenter: shows only the current chapter");
-  key(win, "[");
-  check(st.steps[st.i].node.id === "ch-how-it-works", "presenter: [ jumps back a chapter");
-  key(win, "1");
-  check(st.steps[st.i].node.id === "ch-a-path-skips-this", "presenter: a number key jumps to that chapter");
-  key(win, "b");
-  check(!doc.getElementById("blank-screen").hidden, "presenter: B blanks the screen");
-  key(win, "ArrowRight");
-  check(doc.getElementById("blank-screen").hidden && st.steps[st.i].node.id === "ch-a-path-skips-this", "presenter: any key brings the screen back without moving");
+  // Into a building, a room, a screen; out with Escape.
+  doc.querySelector('#frame [data-object="building"]').dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
+  check(app.state.scene.id === "building" && /scene=building/.test(win.location.search), "zoom: an object opens its scene and the address follows");
+  const lab = doc.querySelector('#frame [data-object="lab"]');
+  lab.dispatchEvent(new win.KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+  check(app.state.scene.id === "lab", "zoom: Enter on a focused object opens it");
   key(win, "Escape");
-  check(!doc.body.classList.contains("presenting") && doc.getElementById("presenter-bar").hidden, "presenter: Escape leaves it");
+  check(app.state.scene.id === "building", "back: Escape goes up one scene");
+  doc.querySelector("#trail a").dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
+  check(app.state.scene.id === data.start, "trail: a step in the trail goes back there");
+
+  // A card unfolds in place, with its claims and sources.
+  doc.querySelector('#labels .label[data-object="rings"]').click();
+  const card = doc.getElementById("card");
+  check(!card.hidden && card.dataset.card === "rings", "card: a label opens its object's card");
+  const cl = [...card.querySelectorAll(".claim")];
+  check(cl.length === cards.get("rings").claims.length && cl.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), "card: shows each claim's tag and source");
+  check(card.querySelector("a.chapter-link").href === `${MASTER}intranet.html`, "card: links its chapter");
+  key(win, "Escape");
+  check(card.hidden && app.state.scene.id === data.start, "card: Escape closes the card before leaving the scene");
+
+  // Sources point at the master doc's rows.
+  check(win.CampusScenes.sourceLink({ ref: "D-170" }, MASTER).href === `${MASTER}decisions.html#d-170`, "source: a decision links its register row");
+  check(win.CampusScenes.sourceLink({ ref: "E-009" }, MASTER).href === `${MASTER}evidence.html#e-009`, "source: evidence links the evidence register");
+
+  // Words: one key, one button, the same everywhere (D-171).
+  const btn = doc.getElementById("words-btn");
+  check(!doc.body.classList.contains("no-words") && btn.getAttribute("aria-pressed") === "true", "words: on by default");
+  key(win, "w");
+  check(doc.body.classList.contains("no-words") && btn.getAttribute("aria-pressed") === "false" && /words=off/.test(win.location.search), "words: W turns them off and the address says so");
+  btn.click();
+  check(!doc.body.classList.contains("no-words"), "words: the button turns them back on");
+
+  // A path, stepped with a clicker.
+  const path = data.paths[0].scenes;
+  key(win, "ArrowRight");
+  check(app.state.scene.id === path[1], "path: next goes to the path's next scene");
+  key(win, "PageUp");
+  check(app.state.scene.id === path[0], "path: a clicker's back goes to the previous scene");
+
+  key(win, "b");
+  check(!doc.getElementById("blank").hidden, "presenter: B blanks the screen");
+  key(win, "ArrowRight");
+  check(doc.getElementById("blank").hidden && app.state.scene.id === path[0], "presenter: any key brings the screen back without moving");
 });
 
-// A path that reads at a glance and opens a door by default.
-section("demo-glance path", () => {
-  const win = page("https://projectcampus.org/?path=demo-glance&demo");
+section("?words=off", () => {
+  const win = page("https://explore.projectcampus.org/?scene=screen&words=off");
   const doc = win.document;
-  const { presenter } = win.CampusStory.start(demo, { path: "demo-glance", doc, win, demo: true });
-  check(doc.getElementById("t-parts-demo").dataset.depth === "glance", "path depth: a glance path opens topics at a glance");
-  check(!doc.getElementById("t-deeper-demo").hidden, "path doors: a path can open a door by default");
-  check(doc.getElementById("ch-a-path-skips-this").classList.contains("off-path"), "off path: a chapter outside the path is set apart");
-
-  presenter.start();
-  presenter.goToChapter("a-path-skips-this");
-  check(presenter.state.trips.length === 1 && presenter.state.steps[presenter.state.i].node.id === "ch-a-path-skips-this", "presenter: an off-path chapter is a side trip");
-  key(win, "Backspace");
-  check(presenter.state.trips.length === 0, "presenter: Backspace returns from an off-path chapter");
-  presenter.stop();
+  win.CampusScenes.start(data, { doc, win });
+  check(doc.body.classList.contains("no-words"), "?words=off: starts with the words hidden");
+  check(!doc.getElementById("made-up").hidden, "?words=off: the made-up label still shows (D-171)");
+  check(doc.body.textContent.includes(NOTICE), "?words=off: the notice still shows");
 });
 
 /* ---------- register IDs in the repository's notes ---------- */

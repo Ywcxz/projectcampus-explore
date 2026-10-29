@@ -4,52 +4,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Project CAMPUS</title>
-<meta name="description" content="Project CAMPUS, told as an interactive documentary. An independent proposal, not affiliated with Visayas State University.">
+<meta name="description" content="Project CAMPUS, as scenes you can walk around in: the campus, its intranet, and the social/academic network. An independent proposal, not affiliated with Visayas State University.">
 <!-- Kept out of search results until Q-71 settles how students reach the site only after the survey (D-084). -->
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-<meta name="theme-color" content="#F3F4EE" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#151B17" media="(prefers-color-scheme: dark)">
-<link rel="stylesheet" href="css/site.css?v=0.1.1">
-<script src="js/main.js?v=0.1.1" defer></script>
+<meta name="theme-color" content="#F3F4EE">
+<link rel="stylesheet" href="css/site.css?v=0.2.0">
+<script src="js/art.js?v=0.2.0" defer></script>
+<script src="js/main.js?v=0.2.0" defer></script>
 </head>
 <body>
 
-<a class="skip" href="#story">Skip to the story</a>
+<a class="skip" href="#caption">Skip to the words</a>
 
-<header class="masthead">
-  <div class="masthead-row">
-    <a class="brand" href="./">Project <span>CAMPUS</span></a>
-    <div class="masthead-actions">
-      <button type="button" class="btn" id="menu-toggle" aria-expanded="false" aria-controls="menu">Chapters</button>
-      <button type="button" class="btn" id="present-toggle" aria-pressed="false" title="Presenter mode (P)">Present</button>
-    </div>
+<header class="bar">
+  <a class="brand" href="./">Project <span>CAMPUS</span></a>
+  <nav class="trail" id="trail" aria-label="Where you are"></nav>
+  <div class="actions">
+    <button type="button" class="btn" id="back-btn" hidden>← Back</button>
+    <button type="button" class="btn" id="words-btn" aria-pressed="true" title="Show or hide the words (W)">Words on</button>
   </div>
-  <p class="notice">An independent proposal by one alumnus. Not affiliated with Visayas State University.</p>
 </header>
+<p class="notice notice-top">An independent proposal by one alumnus. Not affiliated with Visayas State University.</p>
 
-<nav class="menu" id="menu" aria-label="Chapters and paths" hidden>
-  <h2 class="menu-heading">Paths</h2>
-  <ul class="menu-paths" id="menu-paths"></ul>
-  <h2 class="menu-heading">Chapters</h2>
-  <ol class="menu-chapters" id="menu-chapters"></ol>
-</nav>
+<main class="scene" id="scene">
+  <div class="stage">
+    <div class="frame" id="frame">
+      <noscript><p class="placeholder">These scenes need JavaScript. Everything they draw on is in the <a href="https://docs.projectcampus.org/">master doc</a>.</p></noscript>
+    </div>
+    <div class="labels" id="labels"></div>
+    <p class="made-up" id="made-up" hidden></p>
+  </div>
 
-<main class="story" id="story" tabindex="-1">
-  <noscript>
-    <p class="placeholder">This site needs JavaScript to tell its story. Everything it draws on is in the <a href="https://docs.projectcampus.org/">master doc</a>.</p>
-  </noscript>
+  <section class="caption" id="caption" tabindex="-1" aria-live="polite">
+    <h1 class="scene-title" id="scene-title"></h1>
+    <p class="scene-summary" id="scene-summary"></p>
+    <details class="scene-sources">
+      <summary>Sources</summary>
+      <ul class="claims" id="scene-claims"></ul>
+    </details>
+    <p class="chapters" id="scene-chapters"></p>
+  </section>
+
+  <aside class="card" id="card" aria-live="polite" hidden></aside>
 </main>
 
-<div class="presenter-bar" id="presenter-bar" aria-live="polite" hidden></div>
-<div class="blank-screen" id="blank-screen" hidden></div>
+<div class="blank" id="blank" hidden></div>
 
 <footer class="footer">
   <p class="notice">An independent proposal by one alumnus. Not affiliated with Visayas State University.</p>
+  <p class="byline">By Leo M. Subingsubing, a VSU Main Campus alumnus.</p>
   <p>Every claim here links to the <a id="master-doc-link" href="https://docs.projectcampus.org/">master doc</a>, which wins wherever the two differ.</p>
   <p>This site collects nothing: no forms, accounts, cookies, or tracking.</p>
+  <p class="keys">Tap anything that glows. <kbd>W</kbd> words · <kbd>Esc</kbd> back · <kbd>→</kbd> next on the path · <kbd>P</kbd> present · <kbd>B</kbd> blank</p>
 </footer>
 
 </body>
