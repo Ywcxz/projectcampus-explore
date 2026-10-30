@@ -48,18 +48,16 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 
 /* Navigation waits under the bottom edge and slides up when the cursor comes
    near it, or when it has focus; on a touch screen, a small button shows it. */
-.navzone { position: absolute; left: 0; right: 0; bottom: 0; height: 18px; z-index: 5; display: flex; align-items: flex-end; pointer-events: none; }
-.navzone .bar { pointer-events: auto; position: absolute; left: 0; right: 0; bottom: 0; border-top: 1px solid var(--rule); border-bottom: 0;
-  background: rgba(243, 244, 238, .96); box-shadow: 0 -8px 24px rgba(31, 42, 34, .1);
-  transform: translateY(100%); transition: transform .25s ease; }
+.navzone { position: absolute; left: 0; right: 0; top: 0; height: 18px; z-index: 5; display: flex; align-items: flex-end; pointer-events: none; }
+.navzone .bar { pointer-events: auto; position: absolute; left: 0; right: 0; top: 0;
+  background: rgba(243, 244, 238, .96); box-shadow: 0 8px 24px rgba(31, 42, 34, .1);
+  transform: translateY(-100%); transition: transform .25s ease; }
 .navzone:hover, .navzone:focus-within, .navzone.open { pointer-events: auto; }
 .navzone:hover .bar, .navzone:focus-within .bar, .navzone.open .bar { transform: none; }
 @media (hover: hover) { .navzone { pointer-events: auto; } }
 /* While it shows, what sits at the bottom of the scene moves up out of its way. */
-.about-btn, .states, .about, .arrival { transition: translate .25s ease; }
-@media (hover: hover) {
-  .screen:has(.navzone:hover, .navzone:focus-within) :is(.about-btn, .states, .about, .arrival) { translate: 0 -56px; }
-}
+.made-up, .card { transition: translate .25s ease; }
+.screen:has(.navzone:hover, .navzone:focus-within, .navzone.open) :is(.made-up, .card) { translate: 0 56px; }
 .menu-btn { display: none; }
 @media (hover: none) {
   .menu-btn {
@@ -68,7 +66,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
     background: rgba(255, 253, 246, .95); border: 1px solid var(--rule); box-shadow: 0 2px 10px rgba(31, 42, 34, .12); cursor: pointer;
   }
   .menu-btn span { display: block; width: 16px; height: 2px; border-radius: 1px; background: var(--ink); }
-  .navzone { top: 0; height: auto; }
+  .navzone { height: auto; }
   .navzone .bar { pointer-events: auto; }
   .navzone:not(.open) .bar { visibility: hidden; transition: transform .25s ease, visibility 0s .25s; }
 }
@@ -103,11 +101,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .frame > svg { display: block; width: 100%; height: 100%; }
 .frame .placeholder { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--ink-3); }
 
-/* A soft copy of the drawing fills the screen around it, so nothing is cut off. */
-.backdrop { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.backdrop > svg { width: 100%; height: 100%; filter: blur(14px); }
-.frame { background: transparent; }
-
 /* On arrival: the title and a line, for a few seconds. */
 .arrival {
   position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); margin: 0; z-index: 2;
@@ -137,24 +130,14 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .scene-summary { margin: 0 0 10px; font-size: 16px; line-height: 1.5; color: var(--ink-2); }
 
 /* The camera: a zoom into an object, or out of it. */
-.frame > svg.zoom-in { transition: transform .62s cubic-bezier(.55, 0, .45, 1), opacity .62s ease-in; opacity: .15; }
+.frame > svg.zoom-in { transition: transform .5s cubic-bezier(.4, 0, .2, 1), opacity .5s ease-in; opacity: 0; }
 .frame > svg.zoom-set { transition: none; }
-.frame > svg.zoom-out { transition: transform .62s cubic-bezier(.55, 0, .45, 1); }
+.frame > svg.zoom-out { transition: transform .5s cubic-bezier(.4, 0, .2, 1); }
 body.moving .labels { opacity: 0; }
 
-/* Paper layers slide in at different speeds as a scene arrives (D-167). */
-@keyframes lay-in {
-  from { transform: translate(var(--lx), var(--ly)); opacity: 0; }
-  to { transform: none; opacity: 1; }
-}
-.lay.l1 { --lx: -8px; --ly: 4px; }
-.lay.l2 { --lx: -16px; --ly: 8px; }
-.lay.l3 { --lx: -28px; --ly: 14px; }
-.lay.l4 { --lx: -44px; --ly: 22px; }
-.arrive .lay { animation: lay-in .9s cubic-bezier(.2, .8, .2, 1) both; }
-.arrive .lay.l2 { animation-delay: .05s; }
-.arrive .lay.l3 { animation-delay: .1s; }
-.arrive .lay.l4 { animation-delay: .15s; }
+/* A scene arrives with a short, plain fade. */
+@keyframes scene-in { from { opacity: 0; } to { opacity: 1; } }
+.arrive > svg { animation: scene-in .35s ease both; }
 
 /* Objects a visitor can open. */
 .obj { cursor: pointer; transition: filter .2s; }

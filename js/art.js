@@ -28,8 +28,8 @@
     '<filter id="soft" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#1F2A22" flood-opacity=".1"/></filter>' +
     '<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
     '<filter id="blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="16"/></filter>' +
-    '<radialGradient id="gold-light" cx=".86" cy=".06" r=".6"><stop offset="0" stop-color="#F2DD8C" stop-opacity=".75"/><stop offset="1" stop-color="#F2DD8C" stop-opacity="0"/></radialGradient>' +
-    '<radialGradient id="green-light" cx=".05" cy=".95" r=".55"><stop offset="0" stop-color="#D5E6D3" stop-opacity=".9"/><stop offset="1" stop-color="#D5E6D3" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="gold-light" gradientUnits="userSpaceOnUse" cx="1376" cy="60" r="900"><stop offset="0" stop-color="#F2DD8C" stop-opacity=".75"/><stop offset="1" stop-color="#F2DD8C" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="green-light" gradientUnits="userSpaceOnUse" cx="80" cy="950" r="820"><stop offset="0" stop-color="#D5E6D3" stop-opacity=".9"/><stop offset="1" stop-color="#D5E6D3" stop-opacity="0"/></radialGradient>' +
     '<radialGradient id="grass" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#E3EBD6"/><stop offset="1" stop-color="#CADDBB"/></radialGradient>' +
     '<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E3EEEF"/><stop offset="1" stop-color="#F3F4EE"/></linearGradient>' +
     '<linearGradient id="screen-glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9F4EC"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient>' +
@@ -37,8 +37,8 @@
 
   function svg(label, body, bg) {
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid meet" role="img" aria-label="' + label + '">' +
-      DEFS + '<rect width="1600" height="1000" fill="' + (bg || K.paper) + '"/>' +
-      '<rect width="1600" height="1000" fill="url(#green-light)"/><rect width="1600" height="1000" fill="url(#gold-light)"/>' +
+      DEFS + '<rect x="-1200" y="-1000" width="4000" height="3000" fill="' + (bg || K.paper) + '"/>' +
+      '<rect x="-1200" y="-1000" width="4000" height="3000" fill="url(#green-light)"/><rect x="-1200" y="-1000" width="4000" height="3000" fill="url(#gold-light)"/>' +
       body + "</svg>";
   }
   function lay(n, body) { return '<g class="lay l' + n + '">' + body + "</g>"; }
@@ -233,8 +233,8 @@
 
     // Far layer: hills.
     out += lay(1,
-      '<path d="M0,360 C220,280 380,330 560,280 C760,225 900,300 1080,260 C1260,220 1420,280 1600,245 L1600,1000 L0,1000Z" fill="#DCE5D2" opacity=".8"/>' +
-      '<path d="M0,410 C260,350 420,380 640,350 C860,320 1020,370 1240,330 C1400,305 1500,330 1600,320 L1600,1000 L0,1000Z" fill="#CFDDC3" opacity=".8"/>');
+      '<path d="M-1200,360 L0,360 C220,280 380,330 560,280 C760,225 900,300 1080,260 C1260,220 1420,280 1600,245 L2800,245 L2800,1000 L-1200,1000Z" fill="#DCE5D2" opacity=".8"/>' +
+      '<path d="M-1200,410 L0,410 C260,350 420,380 640,350 C860,320 1020,370 1240,330 C1400,305 1500,330 1600,320 L2800,320 L2800,1000 L-1200,1000Z" fill="#CFDDC3" opacity=".8"/>');
 
     // Ground: the campus, with the intranet's rings drawn on it.
     var ground = '<ellipse cx="' + c[0] + '" cy="' + (c[1] + 40) + '" rx="640" ry="250" fill="#1F2A22" opacity=".06" filter="url(#blur)"/>' +
@@ -311,7 +311,7 @@
   function building() {
     var P = Iso(560, 300, 58), H = 2.6, out = "";
     out += lay(1,
-      '<path d="M0,520 C240,460 420,500 640,470 C860,440 1040,490 1260,455 C1420,430 1520,450 1600,445 L1600,1000 L0,1000Z" fill="#DCE5D2" opacity=".7"/>' +
+      '<path d="M-1200,520 L0,520 C240,460 420,500 640,470 C860,440 1040,490 1260,455 C1420,430 1520,450 1600,445 L2800,445 L2800,1000 L-1200,1000Z" fill="#DCE5D2" opacity=".7"/>' +
       frontTree(1430, 520, 0.8) + frontTree(150, 470, 0.7));
 
     var wallL = "#E7EBE2", wallR = "#DADFD3", rim = "#C9D0C2";
@@ -403,7 +403,7 @@
   function lab() {
     var out = "";
     // Back wall, window, clock, whiteboard, access point.
-    var wall = '<rect width="1600" height="640" fill="' + K.paper2 + '"/><rect y="620" width="1600" height="24" fill="#DCDFD4"/>' +
+    var wall = '<rect x="-1200" width="4000" height="640" fill="' + K.paper2 + '"/><rect x="-1200" y="620" width="4000" height="24" fill="#DCDFD4"/>' +
       '<rect x="1180" y="130" width="320" height="270" rx="10" fill="' + K.sky + '"/><path d="M1180 330C1260 300 1330 320 1400 290S1480 300 1500 296V400H1180Z" fill="#9CC3C7"/>' +
       '<circle cx="1250" cy="330" r="30" fill="' + K.green3 + '"/><circle cx="1440" cy="320" r="40" fill="' + K.green4 + '"/>' +
       '<path d="M1340 130V400M1180 265H1500" stroke="' + K.white + '" stroke-width="10"/><rect x="1170" y="396" width="340" height="14" rx="4" fill="#DCDFD4"/>' +
@@ -432,7 +432,7 @@
     out += lay(3, back);
 
     // Front row: a table, three screens, and the one a visitor can open.
-    var front = piece('<rect x="0" y="820" width="1600" height="30" rx="6" fill="#D8CDB4"/><rect y="850" width="1600" height="150" fill="#E3DCC8"/>');
+    var front = piece('<rect x="-1200" y="820" width="4000" height="30" rx="6" fill="#D8CDB4"/><rect x="-1200" y="850" width="4000" height="150" fill="#E3DCC8"/>');
     [260, 700].forEach(function (x, n) {
       front += piece('<rect x="' + (x - 130) + '" y="640" width="260" height="170" rx="12" fill="' + K.ink + '"/><rect x="' + (x - 118) + '" y="652" width="236" height="146" rx="6" fill="#BFE0CC"/><rect x="' + (x - 20) + '" y="810" width="40" height="12" fill="#33413A"/>');
       front += backPerson(x, 880, n + 3, 1.2);
@@ -488,11 +488,11 @@
      Scene: outside the building, between classes
      ============================================================ */
   function outside() {
-    var out = lay(1, '<rect width="1600" height="620" fill="url(#sky)"/>' +
+    var out = lay(1, '<rect x="-1200" width="4000" height="620" fill="url(#sky)"/>' +
       '<g class="cloud c1"><path d="M220 150a24 24 0 0 1 42-14 30 30 0 0 1 54 8 18 18 0 0 1 3 36H223a15 15 0 0 1-3-30Z" fill="#FFFFFF" opacity=".8"/></g>' +
       '<g class="cloud c2"><path d="M980 100a18 18 0 0 1 33-12 24 24 0 0 1 42 6 15 15 0 0 1 3 27h-75a12 12 0 0 1-3-21Z" fill="#FFFFFF" opacity=".7"/></g>' +
-      '<path d="M0 470C200 400 380 430 600 390S1000 410 1200 380 1500 400 1600 390V700H0Z" fill="#DCE5D2"/>' +
-      '<path d="M0 520C260 470 460 500 700 470S1100 490 1350 460 1560 480 1600 476V700H0Z" fill="#CFDDC3"/>');
+      '<path d="M-1200 470L0 470C200 400 380 430 600 390S1000 410 1200 380 1500 400 1600 390H2800V700H-1200Z" fill="#DCE5D2"/>' +
+      '<path d="M-1200 520L0 520C260 470 460 500 700 470S1100 490 1350 460 1560 480 1600 476H2800V700H-1200Z" fill="#CFDDC3"/>');
     // A generic academic building: two floors of windows, an entrance, and an outdoor access point.
     var b = piece('<rect x="180" y="240" width="980" height="420" rx="6" fill="' + K.paper2 + '"/><rect x="900" y="240" width="260" height="420" fill="#DCE1D5"/>' +
       '<path d="M150 250H1190L1160 210H180Z" fill="' + K.sea2 + '"/><rect x="150" y="244" width="1040" height="14" fill="#1F5A68"/>' +
@@ -507,7 +507,7 @@
     out += lay(2, frontTree(1330, 660, 1.1) + frontTree(90, 660, 0.9));
 
     // The walk, a bench, and a student with a phone.
-    var g = '<rect y="640" width="1600" height="360" fill="#CADDBB"/><path d="M0 760C400 730 900 740 1600 720V840C900 860 400 850 0 880Z" fill="' + K.sand + '"/>';
+    var g = '<rect x="-1200" y="640" width="4000" height="360" fill="#CADDBB"/><path d="M-1200 760L0 760C400 730 900 740 1600 720H2800V840H1600C900 860 400 850 0 880H-1200Z" fill="' + K.sand + '"/>';
     g += piece('<rect x="1240" y="700" width="230" height="16" rx="6" fill="' + K.brown + '"/><rect x="1250" y="716" width="12" height="40" fill="#5C4529"/><rect x="1448" y="716" width="12" height="40" fill="#5C4529"/>');
     g += piece('<rect x="1290" y="610" width="56" height="96" rx="22" fill="' + K.gold2 + '"/><circle cx="1318" cy="584" r="26" fill="' + SKIN[3] + '"/><path d="M1292 580a26 26 0 0 1 52 0c-12-10-36-12-52 0Z" fill="' + HAIR[1] + '"/>') + face(1318, 588, 26);
     out += lay(3, g);
@@ -532,8 +532,8 @@
      Scene: the same network, on a phone, a labeled mock-up
      ============================================================ */
   function phone() {
-    var out = lay(1, '<rect width="1600" height="1000" fill="#DCE5D2"/><circle cx="260" cy="300" r="220" fill="#CADDBB" filter="url(#blur)"/><circle cx="1380" cy="700" r="260" fill="#CFDDC3" filter="url(#blur)"/>' +
-      '<rect x="0" y="640" width="1600" height="360" fill="' + K.sand + '" opacity=".6" filter="url(#blur)"/>');
+    var out = lay(1, '<rect x="-1200" width="4000" height="1000" fill="#DCE5D2"/><circle cx="260" cy="300" r="220" fill="#CADDBB" filter="url(#blur)"/><circle cx="1380" cy="700" r="260" fill="#CFDDC3" filter="url(#blur)"/>' +
+      '<rect x="-1200" y="640" width="4000" height="360" fill="' + K.sand + '" opacity=".6" filter="url(#blur)"/>');
     var sk = SKIN[0];
     // The hand behind the phone.
     out += lay(2, piece('<path d="M470 1000C470 860 520 780 600 760L620 1000Z" fill="' + sk + '"/><rect x="560" y="560" width="70" height="200" rx="35" fill="' + sk + '" transform="rotate(-8 595 660)"/>'));
@@ -592,7 +592,7 @@
   }
   function elsewhere() {
     var out = "";
-    out += lay(1, '<rect width="1600" height="1000" fill="#EEF1EA"/><circle cx="1320" cy="560" r="300" fill="#E3EBD6" filter="url(#blur)"/><circle cx="260" cy="820" r="260" fill="#E6ECE6" filter="url(#blur)"/>');
+    out += lay(1, '<rect x="-1200" width="4000" height="1000" fill="#EEF1EA"/><circle cx="1320" cy="560" r="300" fill="#E3EBD6" filter="url(#blur)"/><circle cx="260" cy="820" r="260" fill="#E6ECE6" filter="url(#blur)"/>');
 
     // The campus: small and dim beside the phone today, the whole stage with CAMPUS.
     var P = Iso(800, 610, 30), c = P(0, 0);
@@ -661,8 +661,8 @@
      still open (Q-69) stand as dashed outlines.
      ============================================================ */
   function aPlace() {
-    var out = lay(1, '<rect width="1600" height="1000" fill="url(#sky)"/><circle cx="1360" cy="260" r="260" fill="#E8EEE4" filter="url(#blur)"/>' +
-      '<rect y="860" width="1600" height="140" fill="' + K.sand + '"/><rect y="852" width="1600" height="12" fill="#E2D9BE"/>');
+    var out = lay(1, '<rect x="-1200" width="4000" height="1000" fill="url(#sky)"/><circle cx="1360" cy="260" r="260" fill="#E8EEE4" filter="url(#blur)"/>' +
+      '<rect x="-1200" y="860" width="4000" height="140" fill="' + K.sand + '"/><rect x="-1200" y="852" width="4000" height="12" fill="#E2D9BE"/>');
 
     // The place, on a board: its header, its boards, and what is pinned there.
     var bd = piece('<rect x="634" y="560" width="16" height="300" fill="#B0A385"/><rect x="950" y="560" width="16" height="300" fill="#B0A385"/>' +

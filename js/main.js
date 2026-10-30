@@ -18,7 +18,7 @@
     composite: "Composite: not a real post",
     "later-module": "Later module: not part of the network's first version"
   };
-  var ZOOM_MS = 620;
+  var ZOOM_MS = 500;
 
   function make(doc, tag, cls, text) {
     var e = doc.createElement(tag);
@@ -55,7 +55,8 @@
     var frame = $("frame"), labels = $("labels"), madeUp = $("made-up"), trail = $("trail");
     var title = $("scene-title"), summary = $("scene-summary"), claimList = $("scene-claims"), chapters = $("scene-chapters");
     var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), blank = $("blank"), switcher = $("states");
-    var backdrop = $("backdrop"), arrival = $("arrival"), arrivalTitle = $("arrival-title"), arrivalLine = $("arrival-line"), arrivalTimer = null;
+    var menuBtn = $("menu-btn"), navzone = $("navzone");
+    var arrival = $("arrival"), arrivalTitle = $("arrival-title"), arrivalLine = $("arrival-line"), arrivalTimer = null;
     var about = $("caption"), aboutBtn = $("about-btn"), aboutClose = $("about-close");
     var masterLink = $("master-doc-link");
     if (masterLink) masterLink.href = base;
@@ -86,8 +87,13 @@
     }
 
     /* ---------- the words layer (D-171) ---------- */
-    function setWords(on) {
+    function setWords(on, byUser) {
       state.words = !!on;
+      // Pressing W (or the button) also shows or hides the navigation with the words.
+      if (byUser && navzone) {
+        navzone.classList.toggle("open", state.words);
+        if (menuBtn) menuBtn.setAttribute("aria-expanded", String(state.words));
+      }
       doc.body.classList.toggle("no-words", !state.words);
       if (!state.words) hush();
       if (wordsBtn) {
@@ -260,21 +266,21 @@
       });
 
       if (backBtn) backBtn.hidden = !scene.parent;
-      // The drawing shows whole; a soft, blurred copy fills the screen around it.
-      if (backdrop) {
-        clear(backdrop);
-        if (svg) {
-          var back = svg.cloneNode(true);
-          back.setAttribute("preserveAspectRatio", "xMidYMid slice");
-          back.removeAttribute("aria-label");
-          back.setAttribute("aria-hidden", "true");
-          each(back.querySelectorAll("[data-object]"), function (g) { g.removeAttribute("data-object"); g.removeAttribute("class"); });
-          backdrop.appendChild(back);
-        }
-      }
+      // The drawing widens (or deepens) to the screen's shape: its middle,
+      // 1600 by 1000, always shows whole, and its backgrounds run on past it.
+      fitView();
       placeLabels();
       showView(true);
       return svg;
+    }
+
+    function fitView() {
+      var svg = frame.querySelector("svg"), r = frame.getBoundingClientRect();
+      if (!svg || !r.width || !r.height) return;
+      var a = r.width / r.height, vb;
+      if (a >= 1.6) { var w = Math.min(1000 * a, 4000); vb = [-(w - 1600) / 2, 0, w, 1000]; }
+      else { var h = Math.min(1600 / a, 3000); vb = [0, -(h - 1000) / 2, 1600, h]; }
+      svg.setAttribute("viewBox", vb.map(function (n) { return Math.round(n); }).join(" "));
     }
 
     /* Labels sit on their points in the drawing, wherever the drawing is cut. */
@@ -296,7 +302,7 @@
         }
       });
     }
-    win.addEventListener("resize", function () { if (!state.busy) placeLabels(); });
+    win.addEventListener("resize", function () { if (!state.busy) { fitView(); placeLabels(); } });
 
     /* What a scene shows in its current state: the drawing, the objects
        that belong to it, the words, what is made up, and the trail. */
@@ -306,8 +312,6 @@
       if (state.view) frame.dataset.state = state.view;
       else delete frame.dataset.state;
       if (svg && state.view) paint(svg, state.view, instant);
-      var back = backdrop && backdrop.querySelector("svg");
-      if (back && state.view) paint(back, state.view, instant);
       announce(v);
 
       (scene.objects || []).forEach(function (o) {
@@ -400,7 +404,7 @@
       var fr = frame.getBoundingClientRect(), r = target.getBoundingClientRect();
       if (!fr.width || !r.width || !r.height) return null;
       var s = Math.min(fr.width / r.width, fr.height / r.height) * 0.7;
-      s = Math.max(1.8, Math.min(s, 8));
+      s = Math.max(1.4, Math.min(s, 2.4));
       var cx = r.left + r.width / 2 - fr.left, cy = r.top + r.height / 2 - fr.top;
       return { origin: cx + "px " + cy + "px", transform: "translate(" + (fr.width / 2 - cx) + "px," + (fr.height / 2 - cy) + "px) scale(" + s + ")" };
     }
@@ -496,7 +500,7 @@
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       if (blank && !blank.hidden) { blank.hidden = true; e.preventDefault(); return; }
       var k = e.key;
-      if (k === "w" || k === "W") { setWords(!state.words); e.preventDefault(); }
+      if (k === "w" || k === "W") { setWords(!state.words, true); e.preventDefault(); }
       else if (k === "s" || k === "S") { nextState(); e.preventDefault(); }
       else if (k === "Escape") { if (state.card) closeCard(); else if (!closeAbout()) upOne(); }
       else if (k === "Backspace") { if (state.card) closeCard(); else if (!closeAbout()) upOne(); e.preventDefault(); }
@@ -508,10 +512,9 @@
       else if ((k === "b" || k === "B" || k === ".") && blank) { blank.hidden = false; }
     }
     doc.addEventListener("keydown", onKey);
-    if (wordsBtn) wordsBtn.addEventListener("click", function () { setWords(!state.words); });
+    if (wordsBtn) wordsBtn.addEventListener("click", function () { setWords(!state.words, true); });
     if (backBtn) backBtn.addEventListener("click", upOne);
     // Navigation waits at the bottom: near the cursor on a computer, behind a button on a phone.
-    var menuBtn = $("menu-btn"), navzone = $("navzone");
     if (menuBtn && navzone) menuBtn.addEventListener("click", function () {
       var open = !navzone.classList.contains("open");
       navzone.classList.toggle("open", open);

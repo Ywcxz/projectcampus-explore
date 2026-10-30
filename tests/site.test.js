@@ -351,7 +351,6 @@ section("about this scene, as a pop-up", () => {
   check(about.hidden && btn.getAttribute("aria-expanded") === "false", "about: the scene shows alone at first");
   const arr = doc.getElementById("arrival");
   check(!arr.hidden && doc.getElementById("arrival-title").textContent === scenes.get("building").title, "arrival: the title shows briefly on arrival");
-  check(doc.querySelector("#backdrop svg") && !doc.querySelector("#backdrop [data-object]"), "backdrop: a soft copy of the drawing fills the screen, with nothing to tap");
   btn.click();
   check(!about.hidden && doc.getElementById("scene-title").textContent === scenes.get("building").title, "about: the button opens the title, summary, and sources");
   doc.querySelector('#labels .label[data-object="ap"]').click();
@@ -368,11 +367,15 @@ section("navigation, out of the way", () => {
   const doc = win.document;
   win.CampusScenes.start(data, { doc, win });
   const zone = doc.getElementById("navzone"), btn = doc.getElementById("menu-btn");
-  check(!!zone && zone.contains(doc.getElementById("trail")) && !zone.classList.contains("open"), "nav: the bar waits at the bottom, closed");
+  check(!!zone && zone.contains(doc.getElementById("trail")) && !zone.classList.contains("open"), "nav: the bar waits at the top, closed");
   btn.click();
   check(zone.classList.contains("open") && btn.getAttribute("aria-expanded") === "true", "nav: the small button shows it on a phone");
   btn.click();
   check(!zone.classList.contains("open"), "nav: and hides it again");
+  key(win, "w");
+  check(!zone.classList.contains("open") && doc.body.classList.contains("no-words"), "nav: W hides the words and the navigation");
+  key(win, "w");
+  check(zone.classList.contains("open") && !doc.body.classList.contains("no-words"), "nav: W again shows both");
 });
 
 section("?state=", () => {
