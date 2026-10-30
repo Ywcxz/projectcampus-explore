@@ -55,7 +55,7 @@
     var frame = $("frame"), labels = $("labels"), madeUp = $("made-up"), trail = $("trail");
     var title = $("scene-title"), summary = $("scene-summary"), claimList = $("scene-claims"), chapters = $("scene-chapters");
     var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), switcher = $("states");
-    var site = data.site || {}, hereTitle = $("here-title"), dots = $("dots"), chap = $("chap"), levels = $("levels");
+    
     // The scene's own zoom: the drawing's view box, never the page, so words keep their size.
     var zoom = { k: 1, cx: null, cy: null }, baseVB = null;
     var about = $("caption"), aboutBtn = $("about-btn"), aboutClose = $("about-close");
@@ -469,31 +469,6 @@
       }
 
       // Where you are. A scene opened from one state shows that state's title.
-      // Where you are, as on VSUrvey: a dot for each level, this one long, and its title.
-      // The pill opens every level, to jump back to any.
-      var chain = ancestors(scene);
-      if (hereTitle) hereTitle.textContent = v.title;
-      if (dots) { clear(dots); chain.forEach(function (s) { dots.appendChild(make(doc, "i", s === scene ? "now" : "done")); }); }
-      // The panel maps every scene as a tree from the start: the way here is
-      // marked, this scene most of all, and any scene is one click away.
-      clear(trail);
-      var kids = {};
-      Object.keys(scenes).forEach(function (id) { var p = scenes[id].parent || ""; (kids[p] = kids[p] || []).push(scenes[id]); });
-      (function walk(list, depth) {
-        (list || []).forEach(function (s) {
-          var li = make(doc, "li", depth ? "depth" : null), b = make(doc, "button", chain.indexOf(s) > -1 ? "on-way" : null);
-          li.style.setProperty("--depth", depth);
-          b.type = "button";
-          var at = chain.indexOf(s), o = at > -1 && s !== scene ? objectOpening(s, chain[at + 1].id) : null;
-          var t = s === scene ? v.title : viewOf(s, (o && o.state) || firstState(s)).title;
-          b.appendChild(make(doc, "span", "mname", t));
-          if (s === scene) { b.setAttribute("aria-current", "step"); b.appendChild(make(doc, "small", null, "You are here")); }
-          b.addEventListener("click", function () { closeLevels(); if (s !== scene) go(s.id, true); });
-          li.appendChild(b);
-          trail.appendChild(li);
-          walk(kids[s.id], depth + 1);
-        });
-      })(kids[""], 0);
       doc.title = v.title + " · Project CAMPUS";
     }
 
@@ -598,14 +573,8 @@
       if (j >= 0 && j < list.length) go(list[j], true, d < 0 ? { view: "last" } : null);
     }
 
-    function openLevels() { if (!levels) return; closeCard(); closeAbout(); levels.hidden = false; chap.setAttribute("aria-expanded", "true"); var c = trail.querySelector("[aria-current]"); if (c) c.focus(); }
-    function closeLevels() { if (!levels || levels.hidden) return; levels.hidden = true; chap.setAttribute("aria-expanded", "false"); }
-    if (chap) chap.addEventListener("click", openLevels);
-    if ($("levels-close")) $("levels-close").addEventListener("click", function () { closeLevels(); chap.focus(); });
-    if (levels) levels.addEventListener("click", function (e) { if (e.target === levels) closeLevels(); });
     /* Esc leaves only the scene: it closes any pop-up. */
     function minimal() {
-      closeLevels();
       closeCard();
       closeAbout();
     }

@@ -238,20 +238,7 @@ for (const s of data.scenes) section(`page ?scene=${s.id}`, () => {
   const claims = [...doc.querySelectorAll("#scene-claims .claim")];
   check(claims.length === (s.claims || []).length && claims.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), `?scene=${s.id}: every claim shows its tag and links its source`);
   check(doc.querySelectorAll("#scene-chapters a.chapter-link").length === (s.chapters || []).length, `?scene=${s.id}: links its chapters`);
-  const trail = [...doc.querySelectorAll("#trail .on-way .mname")].map((e) => e.textContent);
-  check(doc.querySelectorAll("#trail button").length === scenes.size, `?scene=${s.id}: the panel maps every scene`);
-  check(doc.getElementById("here-title").textContent === trail[trail.length - 1] && doc.querySelectorAll("#dots i").length === trail.length, `?scene=${s.id}: the pill names the scene, a dot for each level`);
-  // A scene opened from one state of its parent shows that state's title in the trail.
-  let chain = [], at = s;
-  while (at) {
-    const child = chain.length ? chain[0].scene : null;
-    const o = child && (at.objects || []).find((x) => x.opens && x.opens.scene === child.id);
-    const st = o && o.state && (at.states || []).find((x) => x.id === o.state);
-    chain.unshift({ scene: at, title: (st && st.title) || at.title });
-    at = at.parent ? scenes.get(at.parent) : null;
-  }
-  chain = chain.map((c) => c.title);
-  check(JSON.stringify(trail) === JSON.stringify(chain), `?scene=${s.id}: the trail shows where you are`);
+  check(doc.getElementById("back-btn").hidden === !s.parent, `?scene=${s.id}: a back button only below the top level`);
 });
 
 section("zoom, cards, words, keys", () => {
@@ -259,7 +246,7 @@ section("zoom, cards, words, keys", () => {
   const doc = win.document;
   const app = win.CampusScenes.start(data, { doc, win });
   check(app.state.scene.id === data.start, "start: opens the start scene");
-  check(doc.getElementById("here-title").textContent === scenes.get(data.start).title && doc.querySelectorAll("#dots i").length === 1, "start: the pill names the scene, one level deep");
+  check(doc.getElementById("back-btn").hidden, "start: no back button at the top level");
   check(doc.getElementById("master-doc-link").href === MASTER, "the footer links to the master doc");
 
   // Into a building, a room, a screen; out with Escape.
@@ -270,10 +257,9 @@ section("zoom, cards, words, keys", () => {
   check(app.state.scene.id === "lab", "zoom: Enter on a focused object opens it");
   key(win, "Escape");
   check(app.state.scene.id === "lab", "Esc: stays in the scene");
-  const lv = () => [...doc.querySelectorAll("#trail button")];
-  doc.querySelector('#trail button[aria-current]').closest("li").previousElementSibling.querySelector("button").click();
+  doc.getElementById("back-btn").click();
   check(app.state.scene.id === "building", "back: the level above goes up one scene");
-  lv()[0].click();
+  key(win, "Home");
   check(app.state.scene.id === data.start, "trail: a step in the trail goes back there");
 
   // A card unfolds in place, with its claims and sources.
@@ -335,7 +321,7 @@ section("states: today and with CAMPUS", () => {
   check(app.state.scene.id === "elsewhere" && app.state.view === "campus", "path: next first switches a scene's state");
   label("org-place").click();
   check(app.state.scene.id === "a-place", "states: an object of a state opens its scene");
-  doc.querySelector('#trail button[aria-current]').closest("li").previousElementSibling.querySelector("button").click();
+  doc.getElementById("back-btn").click();
   check(app.state.scene.id === "elsewhere" && app.state.view === "campus", "back: going up returns to the state it was opened from");
   key(win, "ArrowLeft");
   check(app.state.view === "today", "path: back steps through the states too");
@@ -364,21 +350,6 @@ section("about this scene, as a pop-up", () => {
   check(!about.hidden, "about: the button opens it again");
   key(win, "Escape");
   check(about.hidden && app.state.scene.id === "building", "about: Esc closes it and stays in the scene");
-});
-
-section("navigation, as on VSUrvey", () => {
-  const win = page("https://explore.projectcampus.org/?scene=screen");
-  const doc = win.document;
-  const app = win.CampusScenes.start(data, { doc, win });
-  const where = doc.getElementById("where"), sceneEl = doc.getElementById("scene"), chap = doc.getElementById("chap"), levels = doc.getElementById("levels");
-  check(where.compareDocumentPosition(sceneEl) & win.Node.DOCUMENT_POSITION_FOLLOWING && !sceneEl.contains(where), "nav: the pill sits above the scene, not on it");
-  check(levels.hidden, "nav: the levels wait behind the pill");
-  chap.click();
-  check(!levels.hidden && chap.getAttribute("aria-expanded") === "true" && !!levels.querySelector('[aria-current="step"]'), "nav: the pill opens every level, this one marked");
-  levels.querySelector("#trail button").click();
-  check(levels.hidden && app.state.scene.id === data.start, "nav: a level jumps there");
-  chap.click(); key(win, "Escape");
-  check(levels.hidden, "nav: Esc closes the levels");
 });
 
 section("zoom, on the scene only", () => {

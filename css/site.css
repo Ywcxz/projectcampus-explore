@@ -46,30 +46,14 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 /* ---------- the screen: navigation on top, the scene filling the rest; scroll for the footer ---------- */
 .screen { position: relative; display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
 
-/* Where you are, as on VSUrvey: one pill above the scene, never on it; it opens every level. */
-.where { flex: none; height: 56px; display: flex; align-items: center; padding: 0 20px; }
-.chap { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 40px; padding: 6px 14px 6px 12px;
-  border: 1px solid var(--rule); border-radius: 999px; background: var(--card); box-shadow: 0 1px 2px rgba(31, 42, 34, .06);
-  color: var(--ink); cursor: pointer; font: 700 14px/1 var(--font-body); transition: border-color .2s; }
-.chap:hover { border-color: var(--green); }
-.chname { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dots { display: flex; gap: 4px; align-items: center; flex: none; }
-.dots i { display: block; width: 7px; height: 7px; border-radius: 4px; background: currentColor; opacity: .5; }
-.dots i.now { width: 18px; opacity: 1; background: var(--green); }
-body.no-words .where { visibility: hidden; }
-.menu[hidden] { display: none; }
-.menu { position: fixed; inset: 0; z-index: 10; background: rgba(31, 42, 34, .38); display: flex; align-items: center; justify-content: center; }
-.menu-card { width: min(460px, calc(100% - 24px)); max-height: 86vh; overflow: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 20px; padding: 20px 18px 18px; box-shadow: 0 16px 36px -18px rgba(31, 42, 34, .26); }
-.menu-card h2 { font: 600 22px/1.2 var(--font-display); margin: 0 0 12px; }
-.menu-list { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 5px; }
-.menu-list button { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--rule); background: var(--paper); color: var(--ink); cursor: pointer; text-align: left; font: 700 15px/1.2 var(--font-body); }
-.menu-list button:hover { border-color: var(--green); }
-.menu-list button[aria-current="step"] { background: #E9F2E5; border-color: var(--green); box-shadow: inset 0 0 0 1px var(--green); }
-.menu-list li { padding-left: calc(var(--depth, 0) * 22px); position: relative; }
-.menu-list li.depth::before { content: ""; position: absolute; left: calc(var(--depth) * 22px - 12px); top: 0; bottom: 50%; width: 8px; border-left: 1.5px solid var(--rule); border-bottom: 1.5px solid var(--rule); border-bottom-left-radius: 6px; }
-.menu-list button { padding: 9px 12px; font-size: 14px; }
-.menu-list button.on-way:not([aria-current]) { border-color: #9DC29A; }
-.menu-list small { flex: none; font: 400 13px var(--font-body); color: var(--ink-3); }
+/* Back up one level, as on VSUrvey: a small round button in the scene's top left,
+   on every scene but the start. The scenes themselves are the navigation. */
+.up { position: absolute; left: 16px; top: 16px; z-index: 3; width: 46px; height: 46px; border: 0; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer; background: var(--card); color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--rule), 0 6px 18px -6px rgba(31, 42, 34, .3); }
+.up svg { width: 20px; height: 20px; }
+.up:hover { color: var(--green); }
+.up[hidden] { display: none; }
 
 .btn {
   font: 500 14px/1 var(--font-body); color: var(--ink);

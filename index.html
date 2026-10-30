@@ -11,20 +11,15 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#F3F4EE">
-<link rel="stylesheet" href="css/site.css?v=0.29.0">
-<script src="js/art.js?v=0.29.0" defer></script>
-<script src="js/main.js?v=0.29.0" defer></script>
+<link rel="stylesheet" href="css/site.css?v=0.30.0">
+<script src="js/art.js?v=0.30.0" defer></script>
+<script src="js/main.js?v=0.30.0" defer></script>
 </head>
 <body>
 
 <a class="skip" href="#about-btn">Skip to the words</a>
 
 <div class="screen">
-<!-- Where you are, as on VSUrvey: one pill above the scene, never on it. -->
-<header class="where" id="where">
-  <button type="button" class="chap" id="chap" aria-haspopup="dialog" aria-controls="levels" aria-expanded="false"><span class="dots" id="dots" aria-hidden="true"></span><span class="chname" id="here-title"></span></button>
-</header>
-
 <main class="scene" id="scene">
   <div class="stage">
     <div class="canvas">
@@ -37,6 +32,7 @@
     </div>
   </div>
 
+  <button type="button" class="up" id="back-btn" aria-label="Back up one level" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
   <button type="button" class="btn about-btn" id="about-btn" aria-expanded="false" aria-controls="caption">About this scene</button>
   <aside class="pop about" id="caption" tabindex="-1" aria-label="About this scene" hidden>
     <button type="button" class="card-close" id="about-close" aria-label="Close">Close</button>
@@ -50,7 +46,6 @@
   </aside>
   <aside class="pop card" id="card" aria-live="polite" hidden></aside>
 </main>
-<div class="menu" id="levels" role="dialog" aria-modal="true" aria-labelledby="levels-t" hidden><div class="menu-card"><h2 id="levels-t">Scenes</h2><ol class="menu-list" id="trail"></ol><button type="button" class="btn" id="levels-close">Close</button></div></div>
 </div>
 
 
