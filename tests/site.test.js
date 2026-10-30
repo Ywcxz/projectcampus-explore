@@ -127,6 +127,20 @@ for (const s of data.scenes) {
   check(s.parent === null || scenes.has(s.parent), `${at}: its parent exists`);
   (s.claims || []).forEach((c) => checkClaim(c, at));
   check((s.chapters || []).length > 0, `${at}: ends with a link to its chapter (D-152)`);
+
+  // Its states, if it has them: today and with CAMPUS, switched in place (D-172).
+  const stateIds = (s.states || []).map((x) => x.id);
+  if (s.states) {
+    check(s.states.length >= 2 && new Set(stateIds).size === stateIds.length && stateIds.every((id) => /^[a-z0-9-]+$/.test(id)), `${at}: has two or more states with unique lowercase ids`);
+    s.states.forEach((x, n) => {
+      const sat = `${at} state ${x.id}`;
+      check(!!x.label && words(x.label) <= 3, `${sat}: has a short label`);
+      if (n === 0) check(!x.title && !x.summary && !x.claims && x.madeUp === undefined, `${sat}: the first state uses the scene's own words`);
+      if (x.summary !== undefined) check(words(x.summary) <= 40, `${sat}: summary is 40 words or fewer (D-146)`);
+      if (x.madeUp !== undefined) check(x.madeUp === null || MADE_UP.includes(x.madeUp), `${sat}: madeUp is null or a known label`);
+      (x.claims || []).forEach((c) => checkClaim(c, sat));
+    });
+  }
   (s.chapters || []).forEach((ch) => checkChapter(ch, at));
 
   // Its drawing: well formed, kinds of place, and no words of its own outside a mock-up (D-171).
@@ -139,6 +153,11 @@ for (const s of data.scenes) {
   const lettered = [...svg.querySelectorAll("text")].filter((t) => /[A-Za-z]/.test(t.textContent));
   if (s.madeUp !== "mockup") check(lettered.length === 0, `${at}: its drawing carries no words outside a mock-up (D-171)`);
   else check(lettered.some((t) => /Mock-up/.test(t.textContent)), `${at}: its mock-up says so inside the picture (D-108)`);
+  // Pieces that change with the state name only states the scene has.
+  const named = [...svg.querySelectorAll("[data-show], [data-dim]")].flatMap((e) => `${e.getAttribute("data-show") || ""} ${e.getAttribute("data-dim") || ""}`.trim().split(/\s+/));
+  const moved = [...svg.querySelectorAll(".mover")].flatMap((e) => [...e.attributes].filter((a) => a.name.startsWith("data-at-")).map((a) => a.name.slice(8)));
+  check(named.concat(moved).every((id) => stateIds.includes(id)), `${at}: its drawing's states are the scene's states`);
+  check([...svg.querySelectorAll(".mover")].every((e) => [...e.attributes].some((a) => a.name.startsWith("data-at-") && /^-?[\d.]+ -?[\d.]+ [\d.]+$/.test(a.value))), `${at}: every moving piece says where it moves`);
   if (lettered.some((t) => /notice/i.test(t.textContent) && /Official/.test(t.textContent)) || svg.textContent.includes("Official")) {
     check(svg.textContent.includes("Sample: not an official VSU notice"), `${at}: a notice in a mock-up is marked as a sample (D-108)`);
   }
@@ -149,6 +168,7 @@ for (const s of data.scenes) {
     check(/^[a-z0-9-]+$/.test(o.id || "") && !ids.has(o.id), `${oat}: has a unique lowercase id`);
     ids.add(o.id);
     check(!!o.label && words(o.label) <= 6, `${oat}: has a short label`);
+    if (o.state !== undefined) check(stateIds.includes(o.state), `${oat}: belongs to one of the scene's states`);
     const g = svg.querySelector(`[data-object="${o.id}"]`);
     check(!!g, `${oat}: is drawn`);
     if (g) {
@@ -205,17 +225,29 @@ for (const s of data.scenes) section(`page ?scene=${s.id}`, () => {
   check(doc.body.textContent.includes(NOTICE), `?scene=${s.id}: the rendered page carries the notice`);
   const made = doc.getElementById("made-up");
   check(s.madeUp ? !made.hidden && made.textContent === win.CampusScenes.MADE_UP[s.madeUp] : made.hidden, `?scene=${s.id}: says what is made up, and only then`);
+  const first = s.states ? s.states[0].id : null;
   for (const o of s.objects || []) {
+    const on = !o.state || o.state === first;
     const g = doc.querySelector(`#frame [data-object="${o.id}"]`);
-    check(!!g && g.getAttribute("role") === "button" && g.getAttribute("tabindex") === "0" && g.getAttribute("aria-label") === o.label, `?scene=${s.id} ${o.id}: is a button for keyboard and screen readers`);
-    check(!!doc.querySelector(`#labels .label[data-object="${o.id}"]`), `?scene=${s.id} ${o.id}: has its label`);
+    check(!!g && g.getAttribute("role") === "button" && g.getAttribute("tabindex") === (on ? "0" : "-1") && g.getAttribute("aria-label") === o.label, `?scene=${s.id} ${o.id}: is a button for keyboard and screen readers, focusable only in its state`);
+    const lb = doc.querySelector(`#labels .label[data-object="${o.id}"]`);
+    check(!!lb && lb.hidden === !on, `?scene=${s.id} ${o.id}: has its label, shown only in its state`);
   }
+  check(doc.getElementById("states").hidden === !s.states, `?scene=${s.id}: shows the switch only on a scene with states`);
   const claims = [...doc.querySelectorAll("#scene-claims .claim")];
   check(claims.length === (s.claims || []).length && claims.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), `?scene=${s.id}: every claim shows its tag and links its source`);
   check(doc.querySelectorAll("#scene-chapters a.chapter-link").length === (s.chapters || []).length, `?scene=${s.id}: links its chapters`);
   const trail = [...doc.querySelectorAll("#trail a, #trail .here")].map((e) => e.textContent);
+  // A scene opened from one state of its parent shows that state's title in the trail.
   let chain = [], at = s;
-  while (at) { chain.unshift(at.title); at = at.parent ? scenes.get(at.parent) : null; }
+  while (at) {
+    const child = chain.length ? chain[0].scene : null;
+    const o = child && (at.objects || []).find((x) => x.opens && x.opens.scene === child.id);
+    const st = o && o.state && (at.states || []).find((x) => x.id === o.state);
+    chain.unshift({ scene: at, title: (st && st.title) || at.title });
+    at = at.parent ? scenes.get(at.parent) : null;
+  }
+  chain = chain.map((c) => c.title);
   check(JSON.stringify(trail) === JSON.stringify(chain), `?scene=${s.id}: the trail shows where you are`);
 });
 
@@ -270,6 +302,55 @@ section("zoom, cards, words, keys", () => {
   check(!doc.getElementById("blank").hidden, "presenter: B blanks the screen");
   key(win, "ArrowRight");
   check(doc.getElementById("blank").hidden && app.state.scene.id === path[0], "presenter: any key brings the screen back without moving");
+});
+
+section("states: today and with CAMPUS", () => {
+  const win = page("https://explore.projectcampus.org/?scene=elsewhere&path=places");
+  const doc = win.document;
+  const app = win.CampusScenes.start(data, { doc, win });
+  const sc = scenes.get("elsewhere"), later = sc.states[1];
+  const title = () => doc.getElementById("scene-title").textContent;
+  const label = (id) => doc.querySelector(`#labels .label[data-object="${id}"]`);
+  check(app.state.view === "today" && title() === sc.title && doc.getElementById("frame").dataset.state === "today", "states: a scene opens in its first state");
+  check(doc.getElementById("made-up").textContent === win.CampusScenes.MADE_UP.composite, "states: today says it is a composite (D-148)");
+  const btns = [...doc.querySelectorAll("#states .state-btn")];
+  check(btns.length === 2 && btns[0].getAttribute("aria-pressed") === "true", "states: the switch shows both states, the first pressed");
+  key(win, "s");
+  check(app.state.view === "campus" && title() === later.title && /state=campus/.test(win.location.search), "states: S switches to with CAMPUS and the address says so");
+  check(doc.getElementById("made-up").textContent === win.CampusScenes.MADE_UP.layout, "states: each state says what is made up in it");
+  check(doc.querySelectorAll("#scene-claims .claim").length === later.claims.length, "states: each state shows its own claims");
+  check(label("feed").hidden && !label("org-place").hidden, "states: objects show only in their own state");
+  const post = doc.querySelector("#frame .post");
+  check(!!post && /translate\(/.test(post.style.transform), "states: a post moves to its place");
+  check(doc.querySelector('#frame [data-show="today"]').classList.contains("state-off"), "states: what belongs to today is hidden with CAMPUS");
+  btns[0].click();
+  check(app.state.view === "today" && !/state=/.test(win.location.search) && post.style.transform === "", "states: the switch goes back to today");
+
+  // A presenter's next steps through the states before the next scene.
+  key(win, "ArrowRight");
+  check(app.state.scene.id === "elsewhere" && app.state.view === "campus", "path: next first switches a scene's state");
+  label("org-place").click();
+  check(app.state.scene.id === "a-place", "states: an object of a state opens its scene");
+  const trail = [...doc.querySelectorAll("#trail a")].map((a) => a.textContent);
+  check(trail[1] === later.title && /state=campus/.test(doc.querySelectorAll("#trail a")[1].getAttribute("href")), "trail: a scene opened from a state shows that state");
+  key(win, "Escape");
+  check(app.state.scene.id === "elsewhere" && app.state.view === "campus", "back: going up returns to the state it was opened from");
+  key(win, "ArrowLeft");
+  check(app.state.view === "today", "path: back steps through the states too");
+  key(win, "ArrowLeft");
+  check(app.state.scene.id === "campus", "path: back from a scene's first state goes to the previous scene");
+  key(win, "ArrowRight");
+  check(app.state.scene.id === "elsewhere" && app.state.view === "today", "path: next arrives in a scene's first state");
+});
+
+section("?state=", () => {
+  const win = page("https://explore.projectcampus.org/?scene=elsewhere&state=campus");
+  const doc = win.document;
+  const app = win.CampusScenes.start(data, { doc, win });
+  check(app.state.view === "campus" && doc.getElementById("scene-title").textContent === scenes.get("elsewhere").states[1].title, "?state=: a visit can start in a state");
+  const win2 = page("https://explore.projectcampus.org/?scene=elsewhere&state=nowhere");
+  const app2 = win2.CampusScenes.start(data, { doc: win2.document, win: win2 });
+  check(app2.state.view === "today", "?state=: an unknown state falls back to the first");
 });
 
 section("?words=off", () => {

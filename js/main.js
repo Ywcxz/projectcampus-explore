@@ -2,8 +2,9 @@
    Project CAMPUS Scenes — the engine (D-152, D-170, D-171)
    Renders data/scenes.json with the drawings in js/art.js: one
    scene at a time, objects that open a deeper scene (with a zoom)
-   or a card, a words layer shown or hidden as one, paths a
-   presenter steps through, and addresses like ?scene=lab.
+   or a card, a scene's states switched in place (today, and with
+   CAMPUS), a words layer shown or hidden as one, paths a presenter
+   steps through, and addresses like ?scene=lab&state=campus.
    It stores nothing and sends nothing (D-148).
    ============================================================ */
 (function (root) {
@@ -48,12 +49,12 @@
 
     var params = new win.URLSearchParams(win.location.search);
     var path = (data.paths || []).filter(function (p) { return p.id === params.get("path"); })[0] || (data.paths || [])[0] || null;
-    var state = { scene: null, words: params.get("words") !== "off", busy: false, card: null, path: path };
+    var state = { scene: null, view: null, words: params.get("words") !== "off", busy: false, card: null, path: path };
 
     var $ = function (id) { return doc.getElementById(id); };
     var frame = $("frame"), labels = $("labels"), madeUp = $("made-up"), trail = $("trail");
     var title = $("scene-title"), summary = $("scene-summary"), claimList = $("scene-claims"), chapters = $("scene-chapters");
-    var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), blank = $("blank");
+    var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), blank = $("blank"), switcher = $("states");
     var masterLink = $("master-doc-link");
     if (masterLink) masterLink.href = base;
 
@@ -98,6 +99,7 @@
       if (!win.history || !state.scene) return;
       var q = new win.URLSearchParams();
       if (state.scene.id !== data.start) q.set("scene", state.scene.id);
+      if (state.view && state.view !== firstState(state.scene)) q.set("state", state.view);
       if (state.path && params.get("path")) q.set("path", state.path.id);
       if (!state.words) q.set("words", "off");
       var url = win.location.pathname + (q.toString() ? "?" + q.toString() : "");
@@ -146,6 +148,52 @@
       return (scene.objects || []).filter(function (o) { return o.opens && o.opens.scene === childId; })[0];
     }
 
+    /* ---------- a scene's states, switched in place ----------
+       A scene may have states, such as today and with CAMPUS. The first
+       state uses the scene's own title, summary, claims, and made-up
+       label; a later state may replace any of them. In the drawing,
+       data-show="state" shows a piece only in that state, data-dim dims
+       it, and a .mover with data-at-state="x y scale" moves there. */
+    function statesOf(s) { return s && s.states && s.states.length ? s.states : null; }
+    function firstState(s) { var st = statesOf(s); return st ? st[0].id : null; }
+    function stateIndex(s, id) {
+      var st = statesOf(s) || [];
+      for (var n = 0; n < st.length; n++) if (st[n].id === id) return n;
+      return -1;
+    }
+    function viewOf(s, id) {
+      var st = statesOf(s);
+      if (!st) return { id: null, title: s.title, summary: s.summary, claims: s.claims, madeUp: s.madeUp };
+      var v = st[Math.max(0, stateIndex(s, id))];
+      return {
+        id: v.id,
+        title: v.title || s.title,
+        summary: v.summary || s.summary,
+        claims: v.claims || s.claims,
+        madeUp: v.madeUp !== undefined ? v.madeUp : s.madeUp
+      };
+    }
+    function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+    function paint(svg, view, instant) {
+      if (instant) svg.classList.add("still");
+      each(svg.querySelectorAll("[data-show]"), function (el) {
+        el.classList.toggle("state-off", el.getAttribute("data-show").split(" ").indexOf(view) < 0);
+      });
+      each(svg.querySelectorAll("[data-dim]"), function (el) {
+        el.classList.toggle("state-dim", el.getAttribute("data-dim").split(" ").indexOf(view) > -1);
+      });
+      each(svg.querySelectorAll(".mover"), function (el) {
+        var at = el.getAttribute("data-at-" + view), m = at ? at.split(" ").map(Number) : null;
+        el.style.transform = m ? "translate(" + m[0] + "px," + m[1] + "px) scale(" + (m[2] || 1) + ")" : "";
+      });
+      // A delay holds only on the way into a state, so leaving one is quick.
+      each(svg.querySelectorAll("[data-delay]"), function (el) {
+        var show = el.getAttribute("data-show"), into = (show && show.split(" ").indexOf(view) > -1) || el.hasAttribute("data-at-" + view);
+        el.style.transitionDelay = (instant || !into ? 0 : Number(el.getAttribute("data-delay")) || 0) + "ms";
+      });
+      if (instant) { void svg.getBoundingClientRect(); svg.classList.remove("still"); }
+    }
+
     function drawing(scene) {
       var make_ = art[scene.art];
       if (typeof make_ !== "function") return null;
@@ -154,8 +202,9 @@
       return doc.importNode(parsed, true);
     }
 
-    function render(scene) {
+    function render(scene, view) {
       state.scene = scene;
+      state.view = statesOf(scene) ? (stateIndex(scene, view) > -1 ? view : firstState(scene)) : null;
       clear(frame);
       clear(labels);
       closeCard();
@@ -168,7 +217,6 @@
         var g = svg && svg.querySelector('[data-object="' + o.id + '"]');
         if (!g) return;
         var open = function () { openObject(o, g); };
-        g.setAttribute("tabindex", "0");
         g.setAttribute("role", "button");
         g.setAttribute("aria-label", o.label);
         g.addEventListener("click", open);
@@ -189,37 +237,86 @@
         labels.appendChild(b);
       });
 
+      if (backBtn) backBtn.hidden = !scene.parent;
+      showView(true);
+      return svg;
+    }
+
+    /* What a scene shows in its current state: the drawing, the objects
+       that belong to it, the words, what is made up, and the trail. */
+    function showView(instant) {
+      var scene = state.scene, v = viewOf(scene, state.view);
+      var svg = frame.querySelector("svg");
+      if (state.view) frame.dataset.state = state.view;
+      else delete frame.dataset.state;
+      if (svg && state.view) paint(svg, state.view, instant);
+
+      (scene.objects || []).forEach(function (o) {
+        var on = !o.state || o.state === state.view;
+        var g = svg && svg.querySelector('[data-object="' + o.id + '"]');
+        if (g) {
+          g.setAttribute("tabindex", on ? "0" : "-1");
+          if (on) g.removeAttribute("aria-hidden");
+          else g.setAttribute("aria-hidden", "true");
+        }
+        var b = labels.querySelector('.label[data-object="' + o.id + '"]');
+        if (b) b.hidden = !on;
+      });
+
       // The words: title, summary, sources, chapters.
-      title.textContent = scene.title;
-      summary.textContent = scene.summary;
+      title.textContent = v.title;
+      summary.textContent = v.summary;
       clear(claimList);
-      (scene.claims || []).forEach(function (c) { claimList.appendChild(claimItem(c)); });
+      (v.claims || []).forEach(function (c) { claimList.appendChild(claimItem(c)); });
       clear(chapters);
       (scene.chapters || []).forEach(function (ch) { chapters.appendChild(chapterLink(ch)); });
 
       // What is made up says so, words on or off (D-148, D-171).
-      madeUp.textContent = scene.madeUp ? MADE_UP[scene.madeUp] || "" : "";
-      madeUp.hidden = !scene.madeUp;
+      madeUp.textContent = v.madeUp ? MADE_UP[v.madeUp] || "" : "";
+      madeUp.hidden = !v.madeUp;
 
-      // Where you are.
+      // The switch between states, shown only on a scene that has them.
+      if (switcher) {
+        clear(switcher);
+        var st = statesOf(scene);
+        switcher.hidden = !st;
+        (st || []).forEach(function (x) {
+          var btn = make(doc, "button", "state-btn", x.label);
+          btn.type = "button";
+          btn.dataset.state = x.id;
+          btn.setAttribute("aria-pressed", String(x.id === state.view));
+          btn.addEventListener("click", function () { setView(x.id); });
+          switcher.appendChild(btn);
+        });
+      }
+
+      // Where you are. A scene opened from one state shows that state's title.
       clear(trail);
       var chain = ancestors(scene);
       chain.forEach(function (s, n) {
         if (n) trail.appendChild(make(doc, "span", "sep", "›"));
         if (s === scene) {
-          var here = make(doc, "span", "here", s.title);
+          var here = make(doc, "span", "here", v.title);
           here.setAttribute("aria-current", "page");
           trail.appendChild(here);
         } else {
-          var a = make(doc, "a", null, s.title);
-          a.href = "?scene=" + s.id;
+          var o = objectOpening(s, chain[n + 1].id), sv = o && o.state ? o.state : null;
+          var a = make(doc, "a", null, viewOf(s, sv || firstState(s)).title);
+          a.href = "?scene=" + s.id + (sv && sv !== firstState(s) ? "&state=" + sv : "");
           a.addEventListener("click", function (e) { e.preventDefault(); go(s.id, true); });
           trail.appendChild(a);
         }
       });
-      if (backBtn) backBtn.hidden = !scene.parent;
-      doc.title = scene.title + " · Project CAMPUS";
-      return svg;
+      doc.title = v.title + " · Project CAMPUS";
+    }
+
+    function setView(id) {
+      var scene = state.scene;
+      if (!statesOf(scene) || stateIndex(scene, id) < 0 || id === state.view || state.busy) return;
+      state.view = id;
+      closeCard();
+      showView(false);
+      writeAddress(false);
     }
 
     /* ---------- moving between scenes, with a zoom ---------- */
@@ -248,7 +345,8 @@
       // Into a child: zoom on the object that opens it.
       var inObj = cur && objectOpening(cur, next.id);
       var inEl = inObj && frame.querySelector('[data-object="' + inObj.id + '"]');
-      // Out to an ancestor: start zoomed on the way back in, then pull out.
+      // Out to an ancestor: start zoomed on the way back in, then pull out,
+      // in the state the way back in belongs to.
       var chain = cur ? ancestors(cur) : [];
       var up = chain.indexOf(next) > -1 && next !== cur ? chain[chain.indexOf(next) + 1] : null;
 
@@ -261,16 +359,18 @@
         svgNow.classList.add("zoom-in");
         void svgNow.getBoundingClientRect();
         svgNow.style.transform = cam.transform;
-        win.setTimeout(function () { finish(next, push, null); }, ZOOM_MS);
+        win.setTimeout(function () { finish(next, push, null, false, opts.view); }, ZOOM_MS);
       } else {
-        finish(next, push, still ? null : up);
+        finish(next, push, up, !still, opts.view);
       }
     }
-    function finish(next, push, from) {
-      var svg = render(next);
-      writeAddress(push);
+    function finish(next, push, from, zoom, view) {
       var obj = from && objectOpening(next, from.id);
-      var el = obj && svg && svg.querySelector('[data-object="' + obj.id + '"]');
+      if (view === "last") { var st = statesOf(next); view = st ? st[st.length - 1].id : null; }
+      if (!view && obj && obj.state) view = obj.state;
+      var svg = render(next, view);
+      writeAddress(push);
+      var el = zoom && obj && svg && svg.querySelector('[data-object="' + obj.id + '"]');
       var cam = el ? camera(svg, el) : null;
       if (cam) {
         svg.classList.add("zoom-set");
@@ -291,18 +391,28 @@
     }
 
     function openObject(o, el) {
-      if (state.busy) return;
+      if (state.busy || (o.state && o.state !== state.view)) return;
       if (o.opens && o.opens.scene) go(o.opens.scene, true);
       else if (o.opens && o.opens.card) openCard(o.opens.card, el);
     }
     function upOne() {
       if (state.scene && state.scene.parent) go(state.scene.parent, true);
     }
+    /* A presenter's next steps through a scene's states before moving on. */
     function step(d) {
+      var st = statesOf(state.scene);
+      if (st) {
+        var k = stateIndex(state.scene, state.view) + d;
+        if (k >= 0 && k < st.length) { setView(st[k].id); return; }
+      }
       if (!state.path) return;
       var list = state.path.scenes, i = list.indexOf(state.scene.id);
       var j = i < 0 ? 0 : i + d;
-      if (j >= 0 && j < list.length) go(list[j], true);
+      if (j >= 0 && j < list.length) go(list[j], true, d < 0 ? { view: "last" } : null);
+    }
+    function nextState() {
+      var st = statesOf(state.scene);
+      if (st) setView(st[(stateIndex(state.scene, state.view) + 1) % st.length].id);
     }
 
     /* ---------- keys: words, back, a presenter's clicker ---------- */
@@ -311,6 +421,7 @@
       if (blank && !blank.hidden) { blank.hidden = true; e.preventDefault(); return; }
       var k = e.key;
       if (k === "w" || k === "W") { setWords(!state.words); e.preventDefault(); }
+      else if (k === "s" || k === "S") { nextState(); e.preventDefault(); }
       else if (k === "Escape") { if (state.card) closeCard(); else upOne(); }
       else if (k === "Backspace") { if (state.card) closeCard(); else upOne(); e.preventDefault(); }
       else if (k === "ArrowRight" || k === "PageDown" || k === " ") { step(1); e.preventDefault(); }
@@ -326,16 +437,18 @@
     win.addEventListener("popstate", function () {
       var q = new win.URLSearchParams(win.location.search);
       var id = q.get("scene") || data.start;
-      if (scenes[id]) go(id, false);
+      if (!scenes[id]) return;
+      if (state.scene && state.scene.id === id) setView(q.get("state") || firstState(state.scene));
+      else go(id, false, { view: q.get("state") });
     });
 
     setWords(state.words);
     var first = scenes[params.get("scene")] || scenes[data.start];
-    render(first);
+    render(first, params.get("state"));
     arrive();
     writeAddress(false);
 
-    return { state: state, go: go, up: upOne, step: step, setWords: setWords, openCard: openCard, closeCard: closeCard };
+    return { state: state, go: go, up: upOne, step: step, setView: setView, setWords: setWords, openCard: openCard, closeCard: closeCard };
   }
 
   function boot() {

@@ -47,6 +47,14 @@
     return '<g class="obj" data-object="' + id + '" data-lx="' + Math.round(lx) + '" data-ly="' + Math.round(ly) + '">' + body + "</g>";
   }
   function f(n) { return (+n).toFixed(1); }
+  /* An object or a piece with extra attributes, for a scene's states:
+     data-show="state", data-dim="state", data-at-state="x y scale", data-delay. */
+  function objX(id, lx, ly, attrs, body) {
+    return '<g class="obj' + (/data-at-/.test(attrs) ? " mover" : "") + '" data-object="' + id + '" data-lx="' + Math.round(lx) + '" data-ly="' + Math.round(ly) + '" ' + attrs + ">" + body + "</g>";
+  }
+  function grp(attrs, body) {
+    return '<g' + (/data-at-/.test(attrs) ? ' class="mover"' : "") + " " + attrs + ">" + body + "</g>";
+  }
 
   /* ---------- 2.5D: an isometric projection and its pieces ---------- */
   var C30 = Math.cos(Math.PI / 6);
@@ -150,6 +158,72 @@
       '<text class="ui ui-chip" x="' + (x + 14) + '" y="' + (y + 20) + '" fill="#8A2B1E">Sample: not an official VSU notice</text>';
   }
 
+  /* ---------- kinds of place, and the icons posts carry ---------- */
+  var KIND = {
+    office: { c: K.sea2, bg: "#E3EEEF" },
+    service: { c: K.gold, bg: K.cream },
+    building: { c: K.green3, bg: K.meadow },
+    residence: { c: "#B9974F", bg: "#F6EEDA" },
+    org: { c: K.red, bg: "#F3DED8" },
+    interest: { c: "#6A5A8C", bg: "#ECE7F3" }
+  };
+  /* An icon drawn in a box about 60 across, centred on (x, y). No words. */
+  function icon(kind, x, y, k) {
+    k = k || 1;
+    var g = '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k) + ')">';
+    if (kind === "medal") g += '<path d="M-14 -26L-2 2H-14L-22 -26ZM14 -26L2 2H14L22 -26Z" fill="' + K.sea2 + '"/><circle cy="10" r="16" fill="' + K.gold + '"/><circle cy="10" r="10" fill="' + K.gold3 + '"/>';
+    else if (kind === "id") g += '<rect x="-26" y="-18" width="52" height="36" rx="6" fill="' + K.white + '" stroke="' + K.green2 + '" stroke-width="3"/><rect x="-20" y="-11" width="16" height="20" rx="3" fill="' + K.green4 + '"/><rect x="0" y="-9" width="20" height="5" rx="2.5" fill="#C9CFC2"/><rect x="0" y="0" width="14" height="5" rx="2.5" fill="#C9CFC2"/>';
+    else if (kind === "map") g += '<path d="M-26 -16L-9 -22L9 -16L26 -22V18L9 24L-9 18L-26 24Z" fill="#DCD3EA"/><path d="M-9 -22V18M9 -16V24" stroke="#B9AED0" stroke-width="2"/><path d="M4 -6a10 10 0 1 1 0.1 0L4 14Z" transform="translate(-4 -6)" fill="' + KIND.interest.c + '"/><circle cx="0" cy="-12" r="4" fill="#fff"/>';
+    else if (kind === "tap") g += '<rect x="-24" y="-20" width="30" height="12" rx="5" fill="#8C9286"/><rect x="0" y="-16" width="12" height="22" rx="4" fill="#8C9286"/><rect x="-14" y="-28" width="10" height="10" rx="2" fill="#6E7466"/><path d="M6 14q6 8 0 14q-6-6 0-14Z" fill="none" stroke="' + K.sea2 + '" stroke-width="2.5" stroke-dasharray="3 3"/><circle cx="20" cy="-14" r="9" fill="' + K.red + '"/><rect x="18.5" y="-20" width="3" height="8" rx="1.5" fill="#fff"/><circle cx="20" cy="-9" r="1.6" fill="#fff"/>';
+    else if (kind === "megaphone") g += '<path d="M-20 -8H-6L18 -22V22L-6 8H-20Z" fill="' + K.red + '"/><rect x="-14" y="8" width="8" height="14" rx="3" fill="#A64A3B"/><path d="M24 -10q8 10 0 20" fill="none" stroke="' + K.red + '" stroke-width="3" stroke-linecap="round"/>';
+    else if (kind === "storm") g += '<path d="M-22 6a12 12 0 0 1 4-22 16 16 0 0 1 30-2 11 11 0 0 1 8 24Z" fill="#8FA9B4"/><path d="M-2 8L-10 22H0L-6 34L10 16H0L6 8Z" fill="' + K.gold + '"/><path d="M-18 14l-4 10M16 14l-4 10" stroke="' + K.sea2 + '" stroke-width="3" stroke-linecap="round"/>';
+    else if (kind === "pin") g += '<rect x="-20" y="-16" width="40" height="32" rx="4" fill="' + K.white + '" stroke="#C9CFC2" stroke-width="2"/><circle cy="-16" r="6" fill="' + K.red + '"/><rect x="-12" y="-4" width="24" height="4" rx="2" fill="#C9CFC2"/><rect x="-12" y="4" width="16" height="4" rx="2" fill="#C9CFC2"/>';
+    else if (kind === "ask") g += '<rect x="-22" y="-20" width="44" height="34" rx="10" fill="' + K.sea2 + '"/><path d="M-6 14l6 10l6-10Z" fill="' + K.sea2 + '"/><path d="M-6 -8a6 6 0 1 1 9 5c-3 2-3 3-3 6" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/><circle cx="0" cy="9" r="2.3" fill="#fff"/>';
+    else if (kind === "book") g += '<path d="M0 -14C-8 -20-18 -20-26 -16V20C-18 16-8 16 0 22C8 16 18 16 26 20V-16C18 -20 8 -20 0 -14Z" fill="' + K.green3 + '"/><path d="M0 -14V22" stroke="#fff" stroke-width="2.5"/>';
+    else if (kind === "calendar") g += '<rect x="-22" y="-18" width="44" height="40" rx="6" fill="' + K.white + '" stroke="#C9CFC2" stroke-width="2"/><rect x="-22" y="-18" width="44" height="12" rx="6" fill="' + K.gold + '"/><rect x="-14" y="-24" width="5" height="10" rx="2" fill="' + K.ink2 + '"/><rect x="9" y="-24" width="5" height="10" rx="2" fill="' + K.ink2 + '"/><circle cx="-8" cy="4" r="3" fill="#C9CFC2"/><circle cx="2" cy="4" r="3" fill="#C9CFC2"/><circle cx="12" cy="4" r="3" fill="' + K.red + '"/><circle cx="-8" cy="13" r="3" fill="#C9CFC2"/>';
+    return g + "</g>";
+  }
+  /* A post in a feed, 388 by 112, at (x, y): a poster, lines that stand for words, and an icon. */
+  function post(x, y, n, ic, kind) {
+    var av = [K.sea2, K.gold2, K.green3, K.red, "#6A5A8C", "#B9974F"][n % 6];
+    return '<rect x="' + x + '" y="' + y + '" width="388" height="112" rx="14" fill="#FFFFFF" stroke="#D6D2C2" stroke-width="2"/>' +
+      '<circle cx="' + (x + 30) + '" cy="' + (y + 30) + '" r="16" fill="' + av + '"/>' +
+      '<rect x="' + (x + 56) + '" y="' + (y + 20) + '" width="' + (96 + (n * 17) % 40) + '" height="10" rx="5" fill="#B9BFB3"/>' +
+      '<rect x="' + (x + 56) + '" y="' + (y + 37) + '" width="54" height="7" rx="3.5" fill="#E4E6DE"/>' +
+      '<rect x="' + (x + 20) + '" y="' + (y + 62) + '" width="' + (230 - (n * 23) % 50) + '" height="9" rx="4.5" fill="#D9DCD2"/>' +
+      '<rect x="' + (x + 20) + '" y="' + (y + 79) + '" width="' + (170 + (n * 31) % 60) + '" height="9" rx="4.5" fill="#E4E6DE"/>' +
+      '<circle cx="' + (x + 26) + '" cy="' + (y + 100) + '" r="4" fill="#E4E6DE"/><circle cx="' + (x + 40) + '" cy="' + (y + 100) + '" r="4" fill="#E4E6DE"/><circle cx="' + (x + 54) + '" cy="' + (y + 100) + '" r="4" fill="#E4E6DE"/>' +
+      '<rect x="' + (x + 296) + '" y="' + (y + 16) + '" width="76" height="80" rx="12" fill="' + KIND[kind].bg + '"/>' + icon(ic, x + 334, y + 56, 0.95);
+  }
+  /* A person standing, front on, feet at (x, base), scale k. */
+  function standPerson(x, base, n, k, shirt) {
+    var sk = SKIN[n % 4], hr = HAIR[n % 4], legs = "#2F3B5E";
+    return piece(
+      '<rect x="' + f(x - 30 * k) + '" y="' + f(base - 112 * k) + '" width="' + f(24 * k) + '" height="' + f(108 * k) + '" rx="' + f(10 * k) + '" fill="' + legs + '"/>' +
+      '<rect x="' + f(x + 6 * k) + '" y="' + f(base - 112 * k) + '" width="' + f(24 * k) + '" height="' + f(108 * k) + '" rx="' + f(10 * k) + '" fill="' + legs + '"/>' +
+      '<rect x="' + f(x - 36 * k) + '" y="' + f(base - 12 * k) + '" width="' + f(34 * k) + '" height="' + f(13 * k) + '" rx="' + f(6 * k) + '" fill="' + K.ink + '"/>' +
+      '<rect x="' + f(x + 2 * k) + '" y="' + f(base - 12 * k) + '" width="' + f(34 * k) + '" height="' + f(13 * k) + '" rx="' + f(6 * k) + '" fill="' + K.ink + '"/>' +
+      '<rect x="' + f(x - 62 * k) + '" y="' + f(base - 246 * k) + '" width="' + f(22 * k) + '" height="' + f(124 * k) + '" rx="' + f(11 * k) + '" fill="' + shirt + '"/>' +
+      '<rect x="' + f(x + 40 * k) + '" y="' + f(base - 246 * k) + '" width="' + f(22 * k) + '" height="' + f(124 * k) + '" rx="' + f(11 * k) + '" fill="' + shirt + '"/>' +
+      '<rect x="' + f(x - 46 * k) + '" y="' + f(base - 262 * k) + '" width="' + f(92 * k) + '" height="' + f(164 * k) + '" rx="' + f(38 * k) + '" fill="' + shirt + '"/>' +
+      '<circle cx="' + f(x - 51 * k) + '" cy="' + f(base - 120 * k) + '" r="' + f(12 * k) + '" fill="' + sk + '"/>' +
+      '<circle cx="' + f(x + 51 * k) + '" cy="' + f(base - 120 * k) + '" r="' + f(12 * k) + '" fill="' + sk + '"/>' +
+      '<rect x="' + f(x - 11 * k) + '" y="' + f(base - 284 * k) + '" width="' + f(22 * k) + '" height="' + f(28 * k) + '" fill="' + sk + '"/>' +
+      '<circle cx="' + f(x) + '" cy="' + f(base - 314 * k) + '" r="' + f(42 * k) + '" fill="' + sk + '"/>' +
+      '<path d="M' + f(x - 42 * k) + " " + f(base - 318 * k) + "a" + f(42 * k) + " " + f(42 * k) + " 0 0 1 " + f(84 * k) + " " + f(-6 * k) + "c" + f(-18 * k) + " " + f(-24 * k) + " " + f(-62 * k) + " " + f(-28 * k) + " " + f(-84 * k) + " " + f(6 * k) + 'Z" fill="' + hr + '"/>') +
+      face(x + 2 * k, base - 306 * k, 40 * k);
+  }
+  /* A place role, worn as a pin: key (steward), shield (moderator), star (peer guide), dot (member). */
+  function badge(kind, x, y, k) {
+    k = k || 1;
+    var g = '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k) + ')"><circle r="16" fill="' + K.white + '" filter="url(#soft)"/>';
+    if (kind === "key") g += '<circle cx="-5" cy="0" r="5" fill="none" stroke="' + K.gold + '" stroke-width="3"/><path d="M0 0H10M7 0V5M10 0V4" stroke="' + K.gold + '" stroke-width="3" stroke-linecap="round"/>';
+    else if (kind === "shield") g += '<path d="M0 -10L9 -6V1C9 6 5 9 0 11C-5 9-9 6-9 1V-6Z" fill="' + K.green2 + '"/>';
+    else if (kind === "star") g += '<path d="M0 -10L3 -3L10 -3L4 2L6 9L0 5L-6 9L-4 2L-10 -3L-3 -3Z" fill="' + K.gold + '"/>';
+    else g += '<circle r="6" fill="#B9BFB3"/>';
+    return g + "</g>";
+  }
+
   /* ============================================================
      Scene: the campus, one world with two layers (D-170)
      ============================================================ */
@@ -214,9 +288,21 @@
       '<text class="ui" x="30" y="33" text-anchor="middle" font-size="30" font-weight="700" fill="#fff">?</text></g>' +
       '<circle cx="' + f(d[0]) + '" cy="' + f(d[1]) + '" r="24" fill="none" stroke="' + K.gold + '" stroke-width="4" filter="url(#glow)"/>' +
       '<g transform="translate(' + f(d[0] + 34) + " " + f(d[1] - 22) + ')" filter="url(#soft)"><rect width="40" height="40" rx="9" fill="' + K.green + '"/><path d="M10 13h20M10 20h20M10 27h13" stroke="#fff" stroke-width="3" stroke-linecap="round"/></g>';
-    out += lay(4, lines + drops + obj("route", d[0] + 150, d[1] - 34, routeObj) + nodes);
+    // Off the campus, outside its rings: a feed on a platform VSU doesn't run.
+    var fx = 104, fy = 92, mini = "";
+    [0, 1, 2].forEach(function (n) {
+      var y = fy + 30 + n * 40;
+      mini += '<rect x="' + (fx + 18) + '" y="' + y + '" width="164" height="32" rx="7" fill="#FFFFFF"/>' +
+        '<circle cx="' + (fx + 34) + '" cy="' + (y + 16) + '" r="8" fill="' + [K.gold2, K.red, K.sea2][n] + '"/>' +
+        '<rect x="' + (fx + 48) + '" y="' + (y + 9) + '" width="' + [80, 64, 92][n] + '" height="6" rx="3" fill="#C9CFC2"/><rect x="' + (fx + 48) + '" y="' + (y + 19) + '" width="' + [56, 74, 48][n] + '" height="5" rx="2.5" fill="#E4E6DE"/>' +
+        '<rect x="' + (fx + 150) + '" y="' + (y + 5) + '" width="22" height="22" rx="5" fill="' + [K.cream, "#F3DED8", "#E3EEEF"][n] + '"/>';
+    });
+    var away = '<ellipse cx="' + (fx + 100) + '" cy="' + (fy + 168) + '" rx="120" ry="22" fill="#B7C3C8" opacity=".55" filter="url(#blur)"/>' +
+      piece('<rect x="' + fx + '" y="' + fy + '" width="200" height="160" rx="16" fill="#E6EAEC"/><rect x="' + fx + '" y="' + fy + '" width="200" height="22" rx="11" fill="#6B7A86"/><rect x="' + fx + '" y="' + (fy + 11) + '" width="200" height="11" fill="#6B7A86"/>') + mini;
+    var tie = '<path d="M' + (fx + 120) + "," + (fy + 168) + " Q" + f((fx + 120 + N.dorm[0]) / 2 - 40) + "," + f((fy + 168 + N.dorm[1]) / 2) + " " + f(N.dorm[0]) + "," + f(N.dorm[1]) + '" fill="none" stroke="#9AA6AC" stroke-width="2" stroke-dasharray="4 7"/>';
+    out += lay(4, lines + drops + obj("route", d[0] + 150, d[1] - 34, routeObj) + nodes + tie + obj("elsewhere", fx + 100, fy - 8, away));
 
-    return svg("A drawn campus: dormitories, academic buildings, offices, and organizations, with the intranet's rings on the ground and the network's routes above them", out);
+    return svg("A drawn campus: dormitories, academic buildings, offices, and organizations, with the intranet's rings on the ground and the network's routes above them; off to one side, outside the rings, a feed on a platform the campus doesn't run", out);
   }
 
   /* ============================================================
@@ -479,5 +565,155 @@
     return svg("A mock-up of the network on a phone, made-up content: the same notice and kept answer, with the latest notices saved on the phone", out);
   }
 
-  root.CampusArt = { campus: campus, building: building, lab: lab, screen: screen, outside: outside, phone: phone };
+  /* ============================================================
+     Scene: one feed for everything, and a place for every post
+     Today: a phone shows a feed, every kind of post in one
+     column, with the campus small and dim beside it. With
+     CAMPUS: the posts fly to the places they belong to on the
+     campus (D-144). A drawn composite: no real post (D-148).
+     ============================================================ */
+  // Each post: its icon, its kind of place, and the place it lands on (x, y of the tile).
+  var FEED = [
+    { ic: "medal", kind: "service", to: [1199, 530] },
+    { ic: "tap", kind: "residence", to: [465, 461] },
+    { ic: "id", kind: "building", to: [808, 284] },
+    { ic: "storm", kind: "office", to: [999, 530] },
+    { ic: "megaphone", kind: "org", to: [644, 649] },
+    { ic: "map", kind: "interest", to: [1262, 300] }
+  ];
+  var POST_X = 596, POST_Y = 196, POST_STEP = 124, POST_S = 0.42;
+  function tile(t, kind, ground) {
+    var x = t[0], y = t[1], k = KIND[kind];
+    var stem = ground ? '<line x1="' + x + '" y1="' + (y + 34) + '" x2="' + f(ground[0]) + '" y2="' + f(ground[1]) + '" stroke="' + k.c + '" stroke-width="2.5" stroke-dasharray="4 5"/>' +
+      '<ellipse cx="' + f(ground[0]) + '" cy="' + f(ground[1]) + '" rx="22" ry="9" fill="' + k.c + '" opacity=".35"/>'
+      : '<ellipse cx="' + x + '" cy="' + (y + 52) + '" rx="70" ry="12" fill="' + k.c + '" opacity=".14" filter="url(#blur)"/>';
+    return stem + '<rect x="' + (x - 92) + '" y="' + (y - 34) + '" width="184" height="68" rx="14" fill="' + k.bg + '" stroke="' + k.c + '" stroke-width="2.5" filter="url(#soft)"/>' +
+      '<rect x="' + (x - 82) + '" y="' + (y - 28) + '" width="14" height="5" rx="2.5" fill="' + k.c + '"/>';
+  }
+  function elsewhere() {
+    var out = "";
+    out += lay(1, '<rect width="1600" height="1000" fill="#EEF1EA"/><circle cx="1320" cy="560" r="300" fill="#E3EBD6" filter="url(#blur)"/><circle cx="260" cy="820" r="260" fill="#E6ECE6" filter="url(#blur)"/>');
+
+    // The campus: small and dim beside the phone today, the whole stage with CAMPUS.
+    var P = Iso(800, 610, 30), c = P(0, 0);
+    var dorm = [K.cream, "#D9C48A", "#C7AE6E", "#5B7F8F"], acad = [K.paper2, "#C9D3C4", "#AEBBAA", "#5B7F8F"],
+      office = [K.paper, "#CFD7CC", "#B3BFAF", "#5B7F8F"], org = [K.gold3, K.gold, "#C9961A"], core = [K.green2, K.green, "#174F34"];
+    var w = '<ellipse cx="' + c[0] + '" cy="' + (c[1] + 30) + '" rx="620" ry="240" fill="#1F2A22" opacity=".06" filter="url(#blur)"/>' +
+      '<ellipse cx="' + c[0] + '" cy="' + (c[1] + 16) + '" rx="600" ry="228" fill="#B9CFA9"/><ellipse cx="' + c[0] + '" cy="' + c[1] + '" rx="600" ry="228" fill="url(#grass)"/>' +
+      ring(P, 15.5, "#9BB3A6", "2 9", 2.5, 0.7) + ring(P, 11.5, K.green2, "10 7", 2.2, 0.45) + ring(P, 7.5, K.green, "", 2.6, 0.4);
+    [[-7, 0, 7, 0], [0, -7, 0, 7]].forEach(function (r) {
+      var a = P(r[0], r[1]), b = P(r[2], r[3]);
+      w += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + K.sand + '" stroke-width="10" stroke-linecap="round"/>';
+    });
+    w += box(P, -7.8, -7.6, 3.6, 2.6, 2.3, acad);
+    w += box(P, -8.6, 4.2, 3.2, 1.4, 2.0, dorm) + box(P, -8.6, 6.2, 3.2, 1.4, 2.0, dorm);
+    w += box(P, -0.6, -0.6, 1.2, 1.2, 0.9, core);
+    w += box(P, 6, -5.2, 3, 2.4, 1.8, office);
+    w += box(P, 0.8, 7, 2.4, 2, 1.1, org);
+    [[-3, -8], [3.5, -8], [-10, 1], [9, 2], [5, 6], [-3, 9.5], [-11, 8.5], [10.5, -7]].forEach(function (t) { w += isoTree(P, t[0], t[1]); });
+    w += isoPerson(P, -5, 3.8, 0) + isoPerson(P, 3.6, 6.5, 2) + isoPerson(P, 4.2, -2.6, 1, 0, true);
+    out += lay(2, grp('data-at-today="1068 353 0.34" data-dim="today"', w));
+
+    // Where each post lands: a tile above its place, tied to the ground where it has one.
+    // An interest place names no location, so its tile floats (D-144).
+    var ground = { building: P(-6, -6.3, 2.3), residence: P(-7, 5.9, 2.0), org: P(2, 8, 1.1), office: P(7.5, -4, 1.8), service: P(7.5, -4, 1.8), interest: null };
+    var tiles = "", objs = "";
+    FEED.forEach(function (p, n) {
+      var t = tile(p.to, p.kind, ground[p.kind]);
+      var at = 'data-show="campus" data-delay="' + (520 + n * 90) + '"';
+      if (n === 3) objs += objX("office-notice", p.to[0], p.to[1] + 76, at, t);
+      else if (n === 0) objs += objX("scholarships", p.to[0], p.to[1] - 40, at, t);
+      else if (n === 4) objs += objX("org-place", p.to[0], p.to[1] - 40, at, t);
+      else tiles += grp(at, t);
+    });
+    out += lay(3, tiles + objs);
+
+    // The phone, with the group's header; its posts are drawn on top of it so they can fly.
+    var ph = piece('<rect x="560" y="40" width="460" height="940" rx="56" fill="' + K.ink + '"/>') +
+      '<rect x="582" y="62" width="416" height="896" rx="40" fill="#F4F5F1"/><rect x="730" y="76" width="120" height="22" rx="11" fill="' + K.ink + '"/>' +
+      '<rect x="582" y="112" width="416" height="68" fill="#6B7A86"/>' +
+      '<circle cx="616" cy="146" r="7" fill="#DDE3E6"/><circle cx="632" cy="140" r="9" fill="#FFFFFF"/><circle cx="648" cy="146" r="7" fill="#DDE3E6"/>' +
+      '<rect x="670" y="134" width="150" height="11" rx="5.5" fill="#DDE3E6"/><rect x="670" y="152" width="90" height="8" rx="4" fill="#AEB9C0"/>' +
+      '<rect x="940" y="136" width="36" height="20" rx="10" fill="#8796A1"/>';
+    out += lay(3, objX("feed", 1000, 150, 'data-show="today" data-at-campus="-160 20 1"', ph));
+
+    // The posts, and the questions over them today.
+    var posts = "";
+    FEED.forEach(function (p, n) {
+      var y = POST_Y + n * POST_STEP, cx = POST_X + 194, cy = y + 56;
+      var a = p.to[0] - POST_S * cx, b = p.to[1] - POST_S * cy;
+      posts += '<g class="mover post" pointer-events="none" data-at-campus="' + f(a) + " " + f(b) + " " + POST_S + '" data-delay="' + (n * 90) + '">' + post(POST_X, y, n, p.ic, p.kind) + "</g>";
+    });
+    var asks = "";
+    [0, 2, 3].forEach(function (n, k) {
+      asks += '<g class="ask a' + k + '">' + icon("ask", 1062, POST_Y + n * POST_STEP + 40, 1.15) + "</g>";
+    });
+    out += lay(4, posts + grp('data-show="today"', asks));
+
+    return svg("Today: a phone shows a feed: a scholarship deadline, a dormitory without water, a lost ID, a storm notice, an organization recruiting, and a question about GIS, all in one column, with questions rising over them. With CAMPUS: each post flies to its own place on a drawn campus", out);
+  }
+
+  /* ============================================================
+     Scene: one place, and the people who look after it (D-144, D-145)
+     An organization's place on a board; its steward, a moderator, a
+     peer guide, and members, among them a faculty member who joined.
+     The steward's term ends: a cap, and the key passes on. Roles
+     still open (Q-69) stand as dashed outlines.
+     ============================================================ */
+  function aPlace() {
+    var out = lay(1, '<rect width="1600" height="1000" fill="url(#sky)"/><circle cx="1360" cy="260" r="260" fill="#E8EEE4" filter="url(#blur)"/>' +
+      '<rect y="860" width="1600" height="140" fill="' + K.sand + '"/><rect y="852" width="1600" height="12" fill="#E2D9BE"/>');
+
+    // The place, on a board: its header, its boards, and what is pinned there.
+    var bd = piece('<rect x="634" y="560" width="16" height="300" fill="#B0A385"/><rect x="950" y="560" width="16" height="300" fill="#B0A385"/>' +
+      '<rect x="500" y="100" width="600" height="470" rx="20" fill="#FFFFFF"/>') +
+      '<rect x="500" y="100" width="600" height="92" rx="20" fill="' + K.red + '"/><rect x="500" y="160" width="600" height="32" fill="' + K.red + '"/>' +
+      '<circle cx="556" cy="146" r="28" fill="#FFFFFF" opacity=".95"/>' + icon("megaphone", 556, 146, 0.8) +
+      '<rect x="604" y="128" width="210" height="14" rx="7" fill="#FFFFFF" opacity=".9"/><rect x="604" y="154" width="130" height="10" rx="5" fill="#FFFFFF" opacity=".6"/>';
+    ["pin", "ask", "book", "calendar"].forEach(function (ic, n) {
+      var x = 530 + n * 140;
+      bd += '<rect x="' + x + '" y="214" width="122" height="64" rx="14" fill="' + (n === 0 ? "#F3DED8" : "#F4F5F1") + '"/>' + icon(ic, x + 61, 246, 0.8);
+    });
+    [[300, 1, K.green], [404, 0, K.gold2], [500, 2, K.sea2]].forEach(function (r) {
+      bd += '<rect x="530" y="' + r[0] + '" width="540" height="86" rx="12" fill="#FFFFFF" stroke="#E4E6DE" stroke-width="2"/>' +
+        '<rect x="550" y="' + (r[0] + 18) + '" width="64" height="16" rx="8" fill="' + r[2] + '" opacity=".75"/>' +
+        '<rect x="550" y="' + (r[0] + 46) + '" width="' + [380, 300, 340][r[1]] + '" height="10" rx="5" fill="#D9DCD2"/><rect x="550" y="' + (r[0] + 64) + '" width="' + [240, 280, 200][r[1]] + '" height="8" rx="4" fill="#E4E6DE"/>';
+    });
+    bd = bd.replace('<rect x="530" y="500" width="540" height="86"', '<rect x="530" y="500" width="540" height="56"');
+    out += lay(2, obj("boards", 800, 90, bd));
+
+    // Roles still open (Q-69): dashed outlines, with a question over each.
+    var ghosts = "";
+    [[200, 470], [370, 470]].forEach(function (g, n) {
+      var x = g[0], b = g[1], k = 0.62;
+      ghosts += '<g fill="none" stroke="' + K.ink3 + '" stroke-width="3" stroke-dasharray="7 6" opacity=".75">' +
+        '<circle cx="' + x + '" cy="' + f(b - 314 * k) + '" r="' + f(42 * k) + '"/>' +
+        '<rect x="' + f(x - 46 * k) + '" y="' + f(b - 262 * k) + '" width="' + f(92 * k) + '" height="' + f(164 * k) + '" rx="' + f(38 * k) + '"/>' +
+        '<path d="M' + f(x - 18 * k) + " " + f(b - 98 * k) + "V" + f(b) + "M" + f(x + 18 * k) + " " + f(b - 98 * k) + "V" + f(b) + '"/></g>' +
+        '<g class="ask a' + n + '">' + icon("ask", x, b - 314 * k - 72, 0.9) + "</g>";
+    });
+    out += lay(2, obj("more-roles", 285, 150, ghosts));
+
+    // The people. A member's role at VSU (the faculty ID on a lanyard) is
+    // not their role in the place (the pin on their chest).
+    var base = 930, people = "";
+    var fac = standPerson(560, base, 3, 0.98, "#6A5A8C") +
+      '<path d="M' + (560 - 10) + " " + (base - 270) + "L" + (560 - 22) + " " + (base - 186) + "M" + (560 + 10) + " " + (base - 270) + "L" + (560 - 10) + " " + (base - 186) + '" stroke="' + K.sea2 + '" stroke-width="4"/>' +
+      '<rect x="' + (560 - 34) + '" y="' + (base - 190) + '" width="34" height="44" rx="5" fill="#FFFFFF" stroke="' + K.sea2 + '" stroke-width="2"/><rect x="' + (560 - 28) + '" y="' + (base - 183) + '" width="12" height="14" rx="2" fill="' + K.green4 + '"/>' +
+      badge("dot", 560 + 22, base - 212, 0.98);
+    people += obj("faculty", 560, 600, fac);
+    people += obj("moderator", 760, 600, standPerson(760, base, 0, 0.95, K.sea2) + badge("shield", 760 + 20, base - 212 * 0.95, 0.95));
+    people += obj("peer-guide", 960, 600, standPerson(960, base, 1, 0.97, K.green2) + badge("star", 960 + 20, base - 212 * 0.97, 0.97));
+    var hand = [1180 + 51, base - 120];
+    var key = '<g class="key"><g transform="translate(' + hand[0] + " " + (hand[1] - 2) + ')"><circle cx="-2" cy="-16" r="11" fill="none" stroke="' + K.gold + '" stroke-width="5"/><rect x="-4.5" y="-6" width="5" height="34" rx="2.5" fill="' + K.gold + '"/><rect x="0" y="16" width="10" height="5" rx="2" fill="' + K.gold + '"/><rect x="0" y="24" width="7" height="4" rx="2" fill="' + K.gold + '"/></g></g>';
+    var cap = '<g class="cap"><path d="M1180 ' + (base - 368) + 'l58 18l-58 18l-58-18Z" fill="' + K.ink + '"/><rect x="1150" y="' + (base - 352) + '" width="60" height="16" rx="4" fill="' + K.ink + '"/><path d="M1226 ' + (base - 346) + 'v30" stroke="' + K.gold + '" stroke-width="4"/><circle cx="1226" cy="' + (base - 314) + '" r="5" fill="' + K.gold + '"/></g>';
+    people += obj("steward", 1180, 560, standPerson(1180, base, 1, 1.0, K.red) + badge("key", 1180 + 20, base - 212, 1.0) + cap + key);
+    people += standPerson(1350, base, 2, 0.9, K.gold) + badge("dot", 1350 + 18, base - 212 * 0.9, 0.9);
+    people += standPerson(1505, base, 0, 0.84, K.sea) + badge("dot", 1505 + 18, base - 212 * 0.84, 0.84);
+    out += lay(3, people);
+
+    return svg("An organization's place, drawn as a board with notices, questions, guides, and events; in front, its steward with a key, a moderator, a peer guide, and members, one of them a faculty member wearing a faculty ID; the steward's term ends and the key passes to the next officer; two dashed outlines stand for roles still to be decided", out);
+  }
+
+  root.CampusArt = { campus: campus, building: building, lab: lab, screen: screen, outside: outside, phone: phone, elsewhere: elsewhere, aPlace: aPlace };
 })(typeof window !== "undefined" ? window : this);

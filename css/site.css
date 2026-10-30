@@ -101,6 +101,28 @@ body.moving .labels { opacity: 0; }
 .obj { cursor: pointer; transition: filter .2s; }
 .obj:hover, .obj:focus-visible { filter: drop-shadow(0 0 10px rgba(226, 174, 28, .9)); outline: none; }
 
+/* A scene's states, switched in place: pieces that show, dim, or move.
+   This comes after .obj so an object that also changes state keeps its glow. */
+.mover { transform-box: view-box; transform-origin: 0 0; }
+.mover, [data-show], [data-dim] { transition: transform .95s cubic-bezier(.6, .05, .3, 1), opacity .55s ease, filter .2s; }
+.state-off { opacity: 0; pointer-events: none; }
+.state-dim { opacity: .5; }
+.still .mover, .still [data-show], .still [data-dim] { transition: none !important; }
+
+/* The switch between today and with CAMPUS, a control that stays with words off. */
+.states {
+  position: absolute; left: 14px; top: 14px; display: inline-flex; padding: 4px; gap: 4px;
+  background: rgba(255, 253, 246, .94); border: 1px solid var(--rule); border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(31, 42, 34, .1);
+}
+.states[hidden] { display: none; }
+.state-btn {
+  font: 600 14px/1 var(--font-body); color: var(--ink-2); background: transparent;
+  border: 0; border-radius: 999px; padding: 9px 14px; cursor: pointer;
+}
+.state-btn:hover { color: var(--ink); }
+.state-btn[aria-pressed="true"] { background: var(--green); color: #fff; }
+
 /* Small life: the flow along a route, signal, blinking eyes, drifting clouds, a walk. */
 @keyframes flow { to { stroke-dashoffset: -64; } }
 .flow { animation: flow 2.4s linear infinite; }
@@ -116,6 +138,15 @@ body.moving .labels { opacity: 0; }
 .walker { animation: bob 1s ease-in-out infinite; }
 @keyframes led { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
 .led { animation: led 1.3s steps(2) infinite; }
+/* A question that rises over a post in the feed. */
+@keyframes ask { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.ask { animation: ask 2.6s ease-in-out infinite; transform-box: fill-box; }
+.ask.a1 { animation-delay: .5s; } .ask.a2 { animation-delay: 1s; }
+/* A steward's term ends: a cap, and the key passes to the next officer. */
+@keyframes hand-on { 0%, 38% { transform: none; } 58%, 92% { transform: translate(74px, 12px); } 100% { transform: none; } }
+@keyframes cap-on { 0%, 26% { opacity: 0; transform: translateY(-14px); } 34%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+.key { animation: hand-on 9s ease-in-out infinite; transform-box: view-box; }
+.cap { animation: cap-on 9s ease-in-out infinite; transform-box: fill-box; }
 
 /* Text inside a mock-up is part of the picture (D-171). */
 .ui { font-family: var(--font-body); }
@@ -142,6 +173,7 @@ body.moving .labels { opacity: 0; }
   white-space: nowrap;
 }
 .label:hover { border-color: var(--gold); }
+.label[hidden] { display: none; }
 .label .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(226, 174, 28, .25); }
 .label.goes-deeper .dot { background: var(--green); box-shadow: 0 0 0 4px rgba(23, 100, 58, .2); }
 @keyframes beacon { 0%, 100% { box-shadow: 0 0 0 3px rgba(226, 174, 28, .35); } 50% { box-shadow: 0 0 0 9px rgba(226, 174, 28, 0); } }
@@ -197,6 +229,7 @@ body.no-words .caption { background: transparent; border-color: transparent; box
   .caption { position: absolute; left: 34px; bottom: 34px; width: 430px; margin: 0; box-shadow: 0 10px 30px rgba(31, 42, 34, .12); }
   .card { position: absolute; right: 34px; top: 36px; width: 400px; max-height: calc(100% - 70px); overflow: auto; margin: 0; }
   .made-up { top: 16px; bottom: auto; left: 50%; right: auto; transform: translateX(-50%); }
+  .states { left: 24px; top: 20px; }
   .scene-title { font-size: 30px; }
 }
 
@@ -215,6 +248,8 @@ kbd { font: 12px/1 var(--font-mono); background: var(--card); border: 1px solid 
   .label { font-size: 12px; padding: 5px 9px 5px 7px; }
   .scene-title { font-size: 23px; }
   .made-up { right: 8px; bottom: 8px; font-size: 11px; }
+  .states { left: 8px; top: auto; bottom: 8px; }
+  .state-btn { font-size: 12px; padding: 7px 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
