@@ -227,60 +227,96 @@
   /* ============================================================
      Scene: the campus, one world with two layers (D-170)
      ============================================================ */
+  /* A person at (x, y), drawn at scale k: the iso cast, reused across scenes. */
+  function personAt(x, y, n, k, phone) {
+    var shirt = [K.sea, K.red, K.gold, K.green2, "#6A5A8C", K.sea2][n % 6];
+    return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k) + ')">' +
+      '<ellipse cy="2" rx="7" ry="3" fill="#1F2A22" opacity=".12"/>' +
+      '<rect x="-5" y="-20" width="10" height="18" rx="4" fill="' + shirt + '"/>' +
+      '<circle cy="-26" r="6" fill="' + SKIN[n % 4] + '"/><path d="M-6 -27a6 6 0 0 1 12 0Z" fill="' + HAIR[(n + 1) % 4] + '"/>' +
+      (phone ? '<rect x="4" y="-17" width="5" height="8" rx="1.2" fill="' + K.ink + '"/><rect class="glow-phone" x="5" y="-16" width="3" height="5.5" fill="' + K.gold3 + '"/>' : "") +
+      "</g>";
+  }
+  /* Someone walking a path, back and forth, for dur seconds each way and back. */
+  function walker(path, n, k, dur, begin, phone) {
+    return '<g class="walk">' + personAt(0, 0, n, k, phone) +
+      '<animateMotion dur="' + dur + 's" begin="' + (begin || 0) + 's" repeatCount="indefinite" path="' + path + '" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear"/></g>';
+  }
+
   function campus() {
-    var P = Iso(800, 560, 26);
+    var P = Iso(800, 590, 32), S = P.s / 26;
     var c = P(0, 0), out = "";
 
     // Far layer: hills.
     out += lay(1,
-      '<path d="M-1200,360 L0,360 C220,280 380,330 560,280 C760,225 900,300 1080,260 C1260,220 1420,280 1600,245 L2800,245 L2800,1000 L-1200,1000Z" fill="#DCE5D2" opacity=".8"/>' +
-      '<path d="M-1200,410 L0,410 C260,350 420,380 640,350 C860,320 1020,370 1240,330 C1400,305 1500,330 1600,320 L2800,320 L2800,1000 L-1200,1000Z" fill="#CFDDC3" opacity=".8"/>');
+      '<path d="M-1200,330 L0,330 C220,250 380,300 560,250 C760,195 900,270 1080,230 C1260,190 1420,250 1600,215 L2800,215 L2800,1000 L-1200,1000Z" fill="#DCE5D2" opacity=".8"/>' +
+      '<path d="M-1200,380 L0,380 C260,320 420,350 640,320 C860,290 1020,340 1240,300 C1400,275 1500,300 1600,290 L2800,290 L2800,1000 L-1200,1000Z" fill="#CFDDC3" opacity=".8"/>');
 
-    // Ground: the campus, with the intranet's rings drawn on it.
-    var ground = '<ellipse cx="' + c[0] + '" cy="' + (c[1] + 40) + '" rx="640" ry="250" fill="#1F2A22" opacity=".06" filter="url(#blur)"/>' +
-      '<ellipse cx="' + c[0] + '" cy="' + (c[1] + 18) + '" rx="610" ry="232" fill="#B9CFA9"/>' +
-      '<ellipse cx="' + c[0] + '" cy="' + c[1] + '" rx="610" ry="232" fill="url(#grass)"/>' +
-      ring(P, 19, "#9BB3A6", "2 9", 2.5, 0.9) + ring(P, 14.5, K.green2, "10 7", 2.5, 0.75) + ring(P, 10, K.green, "", 3.5, 0.85) +
-      '<ellipse cx="' + c[0] + '" cy="' + c[1] + '" rx="' + f(10 * 26 * C30 * Math.SQRT2) + '" ry="' + f(10 * 26 * C30 * Math.SQRT2 * 0.577) + '" fill="' + K.gold2 + '" opacity=".07"/>';
+    // Ground: the campus, with the intranet's rings drawn on it; the rings are one object.
+    var ground = '<ellipse cx="' + c[0] + '" cy="' + f(c[1] + 40 * S) + '" rx="' + f(640 * S) + '" ry="' + f(250 * S) + '" fill="#1F2A22" opacity=".06" filter="url(#blur)"/>' +
+      '<ellipse cx="' + c[0] + '" cy="' + f(c[1] + 18 * S) + '" rx="' + f(610 * S) + '" ry="' + f(232 * S) + '" fill="#B9CFA9"/>' +
+      '<ellipse cx="' + c[0] + '" cy="' + c[1] + '" rx="' + f(610 * S) + '" ry="' + f(232 * S) + '" fill="url(#grass)"/>';
+    var rings = ring(P, 19, "#9BB3A6", "2 9", 2.5, 0.9) + ring(P, 14.5, K.green2, "10 7", 2.5, 0.75) + ring(P, 10, K.green, "", 3.5, 0.85) +
+      ring(P, 2.4, K.gold, "", 3, 0.95) + ring(P, 14.5, "#000", "", 18, 0).replace('opacity="0"', 'stroke-opacity="0"') + ring(P, 10, "#000", "", 18, 0).replace('opacity="0"', 'stroke-opacity="0"');
+    var roads = "";
     [[-8, 0, 8, 0], [0, -8, 0, 8]].forEach(function (w) {
       var a = P(w[0], w[1]), b = P(w[2], w[3]);
-      ground += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + K.sand + '" stroke-width="10" stroke-linecap="round"/>';
+      roads += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + K.sand + '" stroke-width="12" stroke-linecap="round"/>';
     });
-    out += lay(2, ground);
+    out += lay(2, ground + roads + obj("rings", P(13.5, -13.5)[0], P(13.5, -13.5)[1] - 4, rings));
 
     // Places, by kind (D-153), back to front.
     var dorm = [K.cream, "#D9C48A", "#C7AE6E", "#5B7F8F"], acad = [K.paper2, "#C9D3C4", "#AEBBAA", "#5B7F8F"],
-      office = [K.paper, "#CFD7CC", "#B3BFAF", "#5B7F8F"], org = [K.gold3, K.gold, "#C9961A"], core = [K.green2, K.green, "#174F34"];
+      office = [K.paper, "#CFD7CC", "#B3BFAF", "#5B7F8F"], org = [K.gold3, K.gold, "#C9961A"];
     var places = "";
     places += obj("building", P(4.4, -7.8, 3.6)[0], P(4.4, -7.8, 3.6)[1], box(P, 2.5, -9, 3.5, 2.2, 2.0, acad) + box(P, 6.5, -8.5, 2.2, 2.2, 1.6, acad));
     places += obj("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, box(P, -9, -4, 4, 1.6, 2.4, dorm) + box(P, -9, -1.6, 4, 1.6, 2.4, dorm));
     [[-3.5, -6], [-2, -7], [9, -3], [9.5, 1], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-3, 8], [8, 6.5], [-6, -8]].forEach(function (t) { places += isoTree(P, t[0], t[1]); });
-    var coreRing = ring(P, 2.4, K.gold, "", 3, 0.95);
-    places += obj("rings", c[0] + 350, c[1] + 96, coreRing + box(P, -0.7, -0.7, 1.4, 1.4, 1.0, core));
     places += obj("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, box(P, -6, 5, 2.6, 2, 1.1, org));
     places += obj("offices", P(6.6, 6.4)[0], P(6.6, 6.4)[1] + 10, box(P, 4.5, 3.2, 3.2, 2.2, 1.8, office));
-    places += isoPerson(P, -4.6, -0.8, 0) + isoPerson(P, -2.5, 4.5, 2);
-    places += obj("student", P(2.2, -5.2)[0] - 70, P(2.2, -5.2)[1] - 20, '<g class="walker">' + isoPerson(P, 2.2, -5.2, 1, 0, true) + "</g>");
+
+    // People: walking to class along the walks, one on a bench with a phone,
+    // four standing in a circle talking, and the student a visitor can follow.
+    var k = S * 1.15, life = "";
+    var road = function (i0, j0, i1, j1) { var a = P(i0, j0), b = P(i1, j1); return "M" + f(a[0]) + "," + f(a[1]) + " L" + f(b[0]) + "," + f(b[1]); };
+    life += walker(road(-7.5, 0.4, 7.5, 0.4), 0, k, 34, 0);
+    life += walker(road(7.2, -0.4, -7.2, -0.4), 3, k, 30, -9, true);
+    life += walker(road(0.4, 7.5, 0.4, -7.5), 4, k, 28, -4);
+    life += walker(road(-0.4, -7.2, -0.4, 7.2), 1, k, 36, -20);
+    var bp = P(3.2, -3.4);
+    life += box(P, 2.6, -3.7, 1.3, 0.4, 0.18, [K.brown, "#5C4529", "#4A3820"]) + personAt(bp[0], bp[1] - 6, 5, k, true);
+    var cc = P(-2.8, 3.4);
+    [[-0.6, -0.4], [0.5, -0.5], [0.6, 0.5], [-0.5, 0.6]].forEach(function (o, n) {
+      var q = P(-2.8 + o[0], 3.4 + o[1]);
+      life += personAt(q[0], q[1], n + 1, k, false);
+    });
+    [0, 1, 2].forEach(function (n) {
+      var q = P(-2.8 + [-0.6, 0.5, 0.6][n], 3.4 + [-0.4, -0.5, 0.5][n]);
+      life += '<g class="chat c' + n + '"><rect x="' + f(q[0] - 4) + '" y="' + f(q[1] - 66 * S) + '" width="' + f(26 * S) + '" height="' + f(17 * S) + '" rx="' + f(6 * S) + '" fill="#FFFFFF" filter="url(#soft)"/>' +
+        '<circle cx="' + f(q[0] + 4 * S) + '" cy="' + f(q[1] - 57.5 * S) + '" r="' + f(2 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 9 * S) + '" cy="' + f(q[1] - 57.5 * S) + '" r="' + f(2 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 14 * S) + '" cy="' + f(q[1] - 57.5 * S) + '" r="' + f(2 * S) + '" fill="' + K.ink3 + '"/></g>';
+    });
+    places += life;
+    var sp = P(2.2, -5.2);
+    places += obj("student", sp[0] - 70, sp[1] - 26, '<g class="walker">' + personAt(sp[0], sp[1], 1, k * 1.15, true) + "</g>");
     out += lay(3, places);
 
     // The network floats above the places it joins.
-    var N = { dorm: P(-7, -2.5, 3.9), acad: P(4.8, -7.8, 3.4), office: P(6.1, 4.3, 3.0), org: P(-4.7, 6, 2.4), core: P(0, 0, 2.6), hub: P(8.5, -2, 2.2) };
+    var N = { dorm: P(-7, -2.5, 3.9), acad: P(4.8, -7.8, 3.4), office: P(6.1, 4.3, 3.0), org: P(-4.7, 6, 2.4), hub: P(8.5, -2, 2.2) };
+    var lift = function (a, b) { var dx = b[0] - a[0], dy = b[1] - a[1]; return 40 + Math.sqrt(dx * dx + dy * dy) * 0.32; };
+    var arc = function (a, b) { return "M" + f(a[0]) + "," + f(a[1]) + " Q" + f((a[0] + b[0]) / 2) + "," + f((a[1] + b[1]) / 2 - lift(a, b)) + " " + f(b[0]) + "," + f(b[1]); };
     var lines = "", drops = "", nodes = "";
-    [["dorm", "core"], ["core", "office"], ["acad", "core"], ["org", "core"], ["acad", "hub"], ["hub", "office"], ["dorm", "acad"], ["org", "office"], ["dorm", "org"]].forEach(function (e) {
-      var a = N[e[0]], b = N[e[1]];
-      lines += '<path d="M' + f(a[0]) + "," + f(a[1]) + " Q" + f((a[0] + b[0]) / 2) + "," + f((a[1] + b[1]) / 2 - 40) + " " + f(b[0]) + "," + f(b[1]) + '" fill="none" stroke="#C2C9BD" stroke-width="2"/>';
+    [["dorm", "office"], ["acad", "office"], ["org", "office"], ["acad", "hub"], ["hub", "office"], ["dorm", "acad"], ["dorm", "org"], ["org", "acad"]].forEach(function (e) {
+      lines += '<path d="' + arc(N[e[0]], N[e[1]]) + '" fill="none" stroke="#C2C9BD" stroke-width="2"/>';
     });
-    [["dorm", P(-7, -2.5, 2.4)], ["acad", P(4.8, -7.8, 2.0)], ["office", P(6.1, 4.3, 1.8)], ["org", P(-4.7, 6, 1.1)], ["core", P(0, 0, 1.0)], ["hub", P(8.5, -2, 0)]].forEach(function (d) {
+    [["dorm", P(-7, -2.5, 2.4)], ["acad", P(4.8, -7.8, 2.0)], ["office", P(6.1, 4.3, 1.8)], ["org", P(-4.7, 6, 1.1)], ["hub", P(8.5, -2, 0)]].forEach(function (d) {
       var a = N[d[0]];
       drops += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(d[1][0]) + '" y2="' + f(d[1][1]) + '" stroke="' + K.green2 + '" stroke-width="1.2" stroke-dasharray="3 4" opacity=".5"/>';
     });
-    Object.keys(N).forEach(function (k) {
-      var on = k === "dorm" || k === "office" || k === "core";
-      nodes += '<circle cx="' + f(N[k][0]) + '" cy="' + f(N[k][1]) + '" r="9" fill="' + (on ? K.green : K.white) + '" stroke="' + K.green + '" stroke-width="2.5"/>';
+    Object.keys(N).forEach(function (key) {
+      var on = key === "dorm" || key === "office";
+      nodes += '<circle cx="' + f(N[key][0]) + '" cy="' + f(N[key][1]) + '" r="9" fill="' + (on ? K.green : K.white) + '" stroke="' + K.green + '" stroke-width="2.5"/>';
     });
-    var a = N.dorm, b = N.core, d = N.office;
-    var route = "M" + f(a[0]) + "," + f(a[1]) + " Q" + f((a[0] + b[0]) / 2) + "," + f((a[1] + b[1]) / 2 - 40) + " " + f(b[0]) + "," + f(b[1]) +
-      " Q" + f((b[0] + d[0]) / 2) + "," + f((b[1] + d[1]) / 2 - 40) + " " + f(d[0]) + "," + f(d[1]);
+    var a = N.dorm, d = N.office, route = arc(a, d);
     var routeObj = '<path d="' + route + '" fill="none" stroke="#000" stroke-opacity="0" stroke-width="22" class="hit"/>' +
       '<path d="' + route + '" fill="none" stroke="' + K.green + '" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>' +
       '<path class="flow" d="' + route + '" fill="none" stroke="' + K.white + '" stroke-width="2.4" stroke-dasharray="2 14" stroke-linecap="round"/>' +
@@ -288,8 +324,9 @@
       '<text class="ui" x="30" y="33" text-anchor="middle" font-size="30" font-weight="700" fill="#fff">?</text></g>' +
       '<circle cx="' + f(d[0]) + '" cy="' + f(d[1]) + '" r="24" fill="none" stroke="' + K.gold + '" stroke-width="4" filter="url(#glow)"/>' +
       '<g transform="translate(' + f(d[0] + 34) + " " + f(d[1] - 22) + ')" filter="url(#soft)"><rect width="40" height="40" rx="9" fill="' + K.green + '"/><path d="M10 13h20M10 20h20M10 27h13" stroke="#fff" stroke-width="3" stroke-linecap="round"/></g>';
-    // Off the campus, outside its rings: a feed on a platform VSU doesn't run.
-    var fx = 104, fy = 92, mini = "";
+
+    // In the middle of campus life, floating over it: a feed on a platform VSU doesn't run.
+    var fx = c[0] - 100, fy = c[1] - 215, mini = "";
     [0, 1, 2].forEach(function (n) {
       var y = fy + 30 + n * 40;
       mini += '<rect x="' + (fx + 18) + '" y="' + y + '" width="164" height="32" rx="7" fill="#FFFFFF"/>' +
@@ -297,12 +334,12 @@
         '<rect x="' + (fx + 48) + '" y="' + (y + 9) + '" width="' + [80, 64, 92][n] + '" height="6" rx="3" fill="#C9CFC2"/><rect x="' + (fx + 48) + '" y="' + (y + 19) + '" width="' + [56, 74, 48][n] + '" height="5" rx="2.5" fill="#E4E6DE"/>' +
         '<rect x="' + (fx + 150) + '" y="' + (y + 5) + '" width="22" height="22" rx="5" fill="' + [K.cream, "#F3DED8", "#E3EEEF"][n] + '"/>';
     });
-    var away = '<ellipse cx="' + (fx + 100) + '" cy="' + (fy + 168) + '" rx="120" ry="22" fill="#B7C3C8" opacity=".55" filter="url(#blur)"/>' +
-      piece('<rect x="' + fx + '" y="' + fy + '" width="200" height="160" rx="16" fill="#E6EAEC"/><rect x="' + fx + '" y="' + fy + '" width="200" height="22" rx="11" fill="#6B7A86"/><rect x="' + fx + '" y="' + (fy + 11) + '" width="200" height="11" fill="#6B7A86"/>') + mini;
-    var tie = '<path d="M' + (fx + 120) + "," + (fy + 168) + " Q" + f((fx + 120 + N.dorm[0]) / 2 - 40) + "," + f((fy + 168 + N.dorm[1]) / 2) + " " + f(N.dorm[0]) + "," + f(N.dorm[1]) + '" fill="none" stroke="#9AA6AC" stroke-width="2" stroke-dasharray="4 7"/>';
-    out += lay(4, lines + drops + obj("route", d[0] + 150, d[1] - 34, routeObj) + nodes + tie + obj("elsewhere", fx + 100, fy - 8, away));
+    var away = '<ellipse cx="' + c[0] + '" cy="' + c[1] + '" rx="90" ry="26" fill="#6B7A86" opacity=".18" filter="url(#blur)"/>' +
+      '<line x1="' + c[0] + '" y1="' + (fy + 160) + '" x2="' + c[0] + '" y2="' + (c[1] - 6) + '" stroke="#9AA6AC" stroke-width="2" stroke-dasharray="4 6"/>' +
+      '<g class="hover-float">' + piece('<rect x="' + fx + '" y="' + fy + '" width="200" height="160" rx="16" fill="#E6EAEC"/><rect x="' + fx + '" y="' + fy + '" width="200" height="22" rx="11" fill="#6B7A86"/><rect x="' + fx + '" y="' + (fy + 11) + '" width="200" height="11" fill="#6B7A86"/>') + mini + "</g>";
+    out += lay(4, lines + drops + obj("route", d[0] + 150, d[1] - 34, routeObj) + nodes + obj("elsewhere", c[0], fy - 8, away));
 
-    return svg("A drawn campus: dormitories, academic buildings, offices, and organizations, with the intranet's rings on the ground and the network's routes above them; off to one side, outside the rings, a feed on a platform the campus doesn't run", out);
+    return svg("A drawn campus: dormitories, academic buildings, offices, and organizations, with the intranet's rings on the ground and the network's routes above them; people walk to class, one sits on a bench with a phone, four talk in a circle; floating over the middle of campus, a feed on a platform the campus doesn't run", out);
   }
 
   /* ============================================================

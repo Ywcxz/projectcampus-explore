@@ -162,9 +162,12 @@
       card.appendChild(close);
       card.appendChild(make(doc, "h2", "card-title", c.title));
       card.appendChild(make(doc, "p", "card-text", c.text));
-      var ul = make(doc, "ul", "claims");
+      // Its claims, with their tags and sources, folded under Sources (D-148).
+      var det = make(doc, "details", "scene-sources"), ul = make(doc, "ul", "claims");
+      det.appendChild(make(doc, "summary", null, "Sources"));
       (c.claims || []).forEach(function (cl) { ul.appendChild(claimItem(cl)); });
-      card.appendChild(ul);
+      det.appendChild(ul);
+      card.appendChild(det);
       if (c.chapter) card.appendChild(chapterLink(c.chapter));
       card.hidden = false;
       card.dataset.card = id;
@@ -283,6 +286,8 @@
       // The drawing widens (or deepens) to the screen's shape: its middle,
       // 1600 by 1000, always shows whole, and its backgrounds run on past it.
       fitView();
+      // Walkers move by SVG animation, which stops for those who ask for less motion.
+      if (svg && reduced() && svg.pauseAnimations) svg.pauseAnimations();
       placeLabels();
       showView(true);
       return svg;

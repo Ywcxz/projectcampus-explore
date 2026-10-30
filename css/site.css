@@ -56,8 +56,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .navzone:hover .bar, .navzone:focus-within .bar, .navzone.open .bar { transform: none; }
 @media (hover: hover) { .navzone { pointer-events: auto; } }
 /* While it shows, what sits at the bottom of the scene moves up out of its way. */
-.made-up, .card { transition: translate .25s ease; }
-.screen:has(.navzone:hover, .navzone:focus-within, .navzone.open) :is(.made-up, .card) { translate: 0 56px; }
+.card { transition: translate .25s ease; }
+.screen:has(.navzone:hover, .navzone:focus-within, .navzone.open) .card { translate: 0 56px; }
 .menu-btn { display: none; }
 @media (hover: none) {
   .menu-btn {
@@ -103,7 +103,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 
 /* On arrival: the title and a line, for a few seconds. */
 .arrival {
-  position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); margin: 0; z-index: 2;
+  position: absolute; left: 50%; bottom: 58px; transform: translateX(-50%); margin: 0; z-index: 2;
   max-width: min(640px, calc(100% - 340px)); padding: 10px 18px; text-align: center; pointer-events: none;
   background: rgba(255, 253, 246, .94); border: 1px solid var(--rule); border-radius: 999px;
   box-shadow: 0 6px 20px rgba(31, 42, 34, .12); font-size: 15px; color: var(--ink-2);
@@ -183,6 +183,15 @@ body.moving .labels { opacity: 0; }
 .cloud.c2 { animation-duration: 19s; }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 .walker { animation: bob 1s ease-in-out infinite; }
+/* Campus life: the walkers' steps, a phone's glow, a conversation, a feed that hovers. */
+.walk > g { animation: bob .55s ease-in-out infinite; }
+@keyframes glow-phone { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
+.glow-phone { animation: glow-phone 2.2s ease-in-out infinite; }
+@keyframes chat { 0%, 4% { opacity: 0; transform: translateY(3px); } 8%, 30% { opacity: 1; transform: none; } 34%, 100% { opacity: 0; } }
+.chat { opacity: 0; animation: chat 7.5s ease-in-out infinite; transform-box: fill-box; }
+.chat.c1 { animation-delay: 2.5s; } .chat.c2 { animation-delay: 5s; }
+@keyframes hover-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.hover-float { animation: hover-float 4s ease-in-out infinite; }
 @keyframes led { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
 .led { animation: led 1.3s steps(2) infinite; }
 /* A question that rises over a post in the feed. */
@@ -210,13 +219,14 @@ body.moving .labels { opacity: 0; }
 
 /* ---------- labels: the words layer over the drawing ---------- */
 .labels { position: absolute; inset: 0; pointer-events: none; transition: opacity .2s; }
+/* A label names its object from just above it and lets taps through to it. */
 .label {
-  position: absolute; transform: translate(-50%, -100%);
+  position: absolute; transform: translate(-50%, calc(-100% - 6px)); pointer-events: none; opacity: .94;
   display: inline-flex; align-items: center; gap: 7px;
-  pointer-events: auto; cursor: pointer;
-  font: 500 14px/1 var(--font-body); color: var(--ink);
+
+  font: 500 13px/1 var(--font-body); color: var(--ink);
   background: var(--card); border: 1px solid var(--rule); border-radius: 999px;
-  padding: 7px 12px 7px 9px; box-shadow: 0 2px 8px rgba(31, 42, 34, .08);
+  padding: 6px 10px 6px 8px; box-shadow: 0 2px 8px rgba(31, 42, 34, .08);
   white-space: nowrap;
 }
 .label:hover { border-color: var(--gold); }
@@ -234,7 +244,7 @@ body.no-words .trail { visibility: hidden; }
 
 /* What is made up says so, always. */
 .made-up {
-  position: absolute; top: 14px; left: 50%; transform: translateX(-50%); margin: 0; white-space: nowrap; pointer-events: none;
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); margin: 0; white-space: nowrap; pointer-events: none;
   font: 600 12px/1 var(--font-body); color: var(--brass);
   background: var(--brass-bg); border-radius: 999px; padding: 7px 12px;
 }
