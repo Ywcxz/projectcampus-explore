@@ -11,22 +11,18 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#F3F4EE">
-<link rel="stylesheet" href="css/site.css?v=0.27.0">
-<script src="js/art.js?v=0.27.0" defer></script>
-<script src="js/main.js?v=0.27.0" defer></script>
+<link rel="stylesheet" href="css/site.css?v=0.28.0">
+<script src="js/art.js?v=0.28.0" defer></script>
+<script src="js/main.js?v=0.28.0" defer></script>
 </head>
 <body>
 
 <a class="skip" href="#about-btn">Skip to the words</a>
 
 <div class="screen">
-<!-- Where you are and what this scene is about: above the scene, never on it. -->
+<!-- Where you are, as on VSUrvey: one pill above the scene, never on it. -->
 <header class="where" id="where">
-  <div class="where-text">
-    <nav class="trail" id="trail" aria-label="Where you are"></nav>
-    <p class="here"><span class="here-title" id="here-title"></span><span class="here-line" id="here-line"></span></p>
-  </div>
-  <button type="button" class="back" id="back-btn" hidden>← Back</button>
+  <button type="button" class="chap" id="chap" aria-haspopup="dialog" aria-controls="levels" aria-expanded="false"><span class="dots" id="dots" aria-hidden="true"></span><span class="chname" id="here-title"></span></button>
 </header>
 
 <main class="scene" id="scene">
@@ -54,6 +50,7 @@
   </aside>
   <aside class="pop card" id="card" aria-live="polite" hidden></aside>
 </main>
+<div class="menu" id="levels" role="dialog" aria-modal="true" aria-labelledby="levels-t" hidden><div class="menu-card"><h2 id="levels-t">Where you are</h2><ol class="menu-list" id="trail"></ol><button type="button" class="btn" id="levels-close">Close</button></div></div>
 </div>
 
 

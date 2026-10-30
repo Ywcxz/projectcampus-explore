@@ -55,9 +55,9 @@
     var frame = $("frame"), labels = $("labels"), madeUp = $("made-up"), trail = $("trail");
     var title = $("scene-title"), summary = $("scene-summary"), claimList = $("scene-claims"), chapters = $("scene-chapters");
     var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), switcher = $("states");
-    var site = data.site || {}, hereTitle = $("here-title"), hereLine = $("here-line");
+    var site = data.site || {}, hereTitle = $("here-title"), dots = $("dots"), chap = $("chap"), levels = $("levels");
     // The scene's own zoom: the drawing's view box, never the page, so words keep their size.
-    var zoom = { k: 1, cx: null, cy: null }, baseVB = null, trailOpen = false;
+    var zoom = { k: 1, cx: null, cy: null }, baseVB = null;
     var about = $("caption"), aboutBtn = $("about-btn"), aboutClose = $("about-close");
     var masterLink = $("master-doc-link");
     if (masterLink) masterLink.href = base;
@@ -201,12 +201,11 @@
     }
     function viewOf(s, id) {
       var st = statesOf(s);
-      if (!st) return { id: null, title: s.title, line: s.line, summary: s.summary, claims: s.claims, madeUp: s.madeUp };
+      if (!st) return { id: null, title: s.title, summary: s.summary, claims: s.claims, madeUp: s.madeUp };
       var v = st[Math.max(0, stateIndex(s, id))];
       return {
         id: v.id,
         title: v.title || s.title,
-        line: v.line || (v.title ? "" : s.line),
         summary: v.summary || s.summary,
         claims: v.claims || s.claims,
         madeUp: v.madeUp !== undefined ? v.madeUp : s.madeUp
@@ -248,7 +247,6 @@
       clear(labels);
       closeCard();
       closeAbout();
-      trailOpen = false;
       var svg = drawing(scene);
       if (svg) frame.appendChild(svg);
       else frame.appendChild(make(doc, "p", "placeholder", "Picture to come."));
@@ -471,34 +469,22 @@
       }
 
       // Where you are. A scene opened from one state shows that state's title.
-      clear(trail);
-      var chain = ancestors(scene), above = chain.slice(0, -1);
-      // Above the title, the levels over this scene; at the start, the site's name.
-      // More than three levels in all: the first, then "…" for the rest.
-      if (!above.length) trail.appendChild(make(doc, "span", "site", site.heading || ""));
-      var fold = chain.length > 3 && !trailOpen;
-      above.forEach(function (s, n) {
-        if (n) trail.appendChild(make(doc, "span", "sep", "›"));
-        if (fold && n > 0) {
-          if (n === 1) {
-            var names = above.slice(1).map(function (x) { return viewOf(x, firstState(x)).title; });
-            var more = make(doc, "button", "more", "…");
-            more.type = "button";
-            more.title = names.join(" › ");
-            more.setAttribute("aria-label", "Show every level: " + names.join(", "));
-            more.addEventListener("click", function () { trailOpen = true; showView(true); });
-            trail.appendChild(more);
-          } else trail.removeChild(trail.lastChild);
-          return;
-        }
-        var o = objectOpening(s, chain[n + 1].id), sv = o && o.state ? o.state : null;
-        var a = make(doc, "a", null, viewOf(s, sv || firstState(s)).title);
-        a.href = "?scene=" + s.id + (sv && sv !== firstState(s) ? "&state=" + sv : "");
-        a.addEventListener("click", function (e) { e.preventDefault(); go(s.id, true); });
-        trail.appendChild(a);
-      });
+      // Where you are, as on VSUrvey: a dot for each level, this one long, and its title.
+      // The pill opens every level, to jump back to any.
+      var chain = ancestors(scene);
       if (hereTitle) hereTitle.textContent = v.title;
-      if (hereLine) hereLine.textContent = v.line || "";
+      if (dots) { clear(dots); chain.forEach(function (s) { dots.appendChild(make(doc, "i", s === scene ? "now" : "done")); }); }
+      clear(trail);
+      chain.forEach(function (s, n) {
+        var o = n < chain.length - 1 ? objectOpening(s, chain[n + 1].id) : null, sv = s === scene ? state.view : (o && o.state ? o.state : null);
+        var li = make(doc, "li"), b = make(doc, "button", null);
+        b.type = "button";
+        b.appendChild(make(doc, "span", "mname", viewOf(s, sv || firstState(s)).title));
+        if (s === scene) { b.setAttribute("aria-current", "step"); b.appendChild(make(doc, "small", null, "You are here")); }
+        b.addEventListener("click", function () { closeLevels(); if (s !== scene) go(s.id, true); });
+        li.appendChild(b);
+        trail.appendChild(li);
+      });
       doc.title = v.title + " · Project CAMPUS";
     }
 
@@ -603,8 +589,14 @@
       if (j >= 0 && j < list.length) go(list[j], true, d < 0 ? { view: "last" } : null);
     }
 
+    function openLevels() { if (!levels) return; closeCard(); closeAbout(); levels.hidden = false; chap.setAttribute("aria-expanded", "true"); var c = trail.querySelector("[aria-current]"); if (c) c.focus(); }
+    function closeLevels() { if (!levels || levels.hidden) return; levels.hidden = true; chap.setAttribute("aria-expanded", "false"); }
+    if (chap) chap.addEventListener("click", openLevels);
+    if ($("levels-close")) $("levels-close").addEventListener("click", function () { closeLevels(); chap.focus(); });
+    if (levels) levels.addEventListener("click", function (e) { if (e.target === levels) closeLevels(); });
     /* Esc leaves only the scene: it closes any pop-up. */
     function minimal() {
+      closeLevels();
       closeCard();
       closeAbout();
     }

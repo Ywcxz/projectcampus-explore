@@ -183,7 +183,6 @@
       "art": "campus",
       "parent": null,
       "title": "Main Campus",
-      "line": "Campus life today, and how it could be with Project CAMPUS.",
       "summary": "The intranet on the ground: what VSU makes would live on VSU's own network first. The network above it: a question would reach someone who can answer, and the answer would stay.",
       "madeUp": "layout",
       "claims": [
@@ -205,7 +204,6 @@
       "art": "building",
       "parent": "campus",
       "title": "Inside an academic building",
-      "line": "Rooms and a hall, and how the campus-first design would wire them.",
       "summary": "Rooms and a hall. In the campus-first design, each has Wi-Fi access points on the building's switch, joined by fiber to the campus core.",
       "madeUp": "illustration",
       "claims": [
@@ -224,7 +222,6 @@
       "art": "lab",
       "parent": "building",
       "title": "A computer lab",
-      "line": "Computers, and on one screen, a department's community on the network.",
       "summary": "A whiteboard, tables and chairs, computers, and on one screen, the network: a department's community, open between tasks.",
       "madeUp": "illustration",
       "claims": [
@@ -242,7 +239,6 @@
       "art": "screen",
       "parent": "lab",
       "title": "The network, on a computer",
-      "line": "An official notice and a confirmed answer, kept for the next batch.",
       "summary": "A department's community: an office notice labeled official and current, and a question with a confirmed answer, kept for the next batch.",
       "madeUp": "mockup",
       "claims": [
@@ -260,7 +256,6 @@
       "art": "outside",
       "parent": "campus",
       "title": "Between classes",
-      "line": "Between classes, a student checks the same community on a phone.",
       "summary": "Outside the building, between classes, a student checks the same community on a phone.",
       "madeUp": "illustration",
       "claims": [
@@ -277,7 +272,6 @@
       "art": "phone",
       "parent": "outside",
       "title": "The same network, on a phone",
-      "line": "The same notice and answer, saved for when the signal drops.",
       "summary": "The same notice and the same kept answer, with the latest notices saved on the phone for when the signal drops.",
       "madeUp": "mockup",
       "claims": [
@@ -296,7 +290,6 @@
       "art": "elsewhere",
       "parent": "campus",
       "title": "One feed for everything",
-      "line": "Every kind of post lands in one feed, whatever it concerns.",
       "summary": "A scholarship deadline, a lost ID, a dorm without water, a question about GIS: all in one feed. The feed doesn't know which office a post concerns, who it's for, or whether it's still true.",
       "madeUp": "composite",
       "claims": [
@@ -310,7 +303,6 @@
           "id": "campus",
           "label": "With CAMPUS",
           "title": "A place for every post",
-          "line": "On the network, each post would have a place at VSU.",
           "summary": "On the network, each post would have a place, because what it's about exists at VSU: scholarships, a building, an organization, a dormitory. A place would outlive every student who joins it.",
           "madeUp": "layout",
           "claims": [
@@ -334,7 +326,6 @@
       "art": "aPlace",
       "parent": "elsewhere",
       "title": "Stewards, not owners",
-      "line": "No one would own a place: stewards would look after it for a term.",
       "summary": "On the network, no one would own a place: stewards would look after it for a term, then hand it on. A faculty member who joins would be a member there, with no authority from their VSU role.",
       "madeUp": "illustration",
       "claims": [
