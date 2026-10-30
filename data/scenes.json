@@ -183,7 +183,8 @@
       "parent": null,
       "title": "One campus, two layers",
       "heading": {
-        "title": "Campus scenes"
+        "title": "Campus scenes",
+        "line": "Campus life today, and how it could be with Project CAMPUS."
       },
       "summary": "The intranet on the ground: what VSU makes would live on VSU's own network first. The network above it: a question would reach someone who can answer, and the answer would stay.",
       "madeUp": "layout",
