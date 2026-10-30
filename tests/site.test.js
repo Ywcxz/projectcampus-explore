@@ -238,7 +238,9 @@ for (const s of data.scenes) section(`page ?scene=${s.id}`, () => {
   const claims = [...doc.querySelectorAll("#scene-claims .claim")];
   check(claims.length === (s.claims || []).length && claims.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), `?scene=${s.id}: every claim shows its tag and links its source`);
   check(doc.querySelectorAll("#scene-chapters a.chapter-link").length === (s.chapters || []).length, `?scene=${s.id}: links its chapters`);
-  const trail = [...doc.querySelectorAll("#trail a, #trail .here, #trail .more")].map((e) => e.textContent);
+  const trail = [...doc.querySelectorAll("#trail a, #trail .more")].map((e) => e.textContent).concat(doc.getElementById("here-title").textContent);
+  const ln = doc.getElementById("here-line").textContent;
+  check(!!ln && ln.split(/\s+/).length <= 14, `?scene=${s.id}: the header says in 14 words or fewer what the scene is about`);
   // A scene opened from one state of its parent shows that state's title in the trail.
   let chain = [], at = s;
   while (at) {
@@ -258,7 +260,7 @@ section("zoom, cards, words, keys", () => {
   const doc = win.document;
   const app = win.CampusScenes.start(data, { doc, win });
   check(app.state.scene.id === data.start, "start: opens the start scene");
-  check(doc.getElementById("brand").textContent === data.site.heading && doc.getElementById("tagline").textContent === data.site.line, "start: the title and its line sit in the navigation");
+  check(doc.getElementById("trail").textContent === data.site.heading && doc.getElementById("here-title").textContent === scenes.get(data.start).title && doc.getElementById("here-line").textContent === scenes.get(data.start).line, "start: the header names the site, the scene, and what it is about");
   check(doc.getElementById("master-doc-link").href === MASTER, "the footer links to the master doc");
 
   // Into a building, a room, a screen; out with Escape.
@@ -351,8 +353,6 @@ section("about this scene, as a pop-up", () => {
   const app = win.CampusScenes.start(data, { doc, win });
   const about = doc.getElementById("caption"), btn = doc.getElementById("about-btn");
   check(about.hidden && btn.getAttribute("aria-expanded") === "false", "about: the scene shows alone at first");
-  const arr = doc.getElementById("arrival");
-  check(!arr.hidden && doc.getElementById("arrival-title").textContent === scenes.get("building").title, "arrival: the title shows briefly on arrival");
   btn.click();
   check(!about.hidden && doc.getElementById("scene-title").textContent === scenes.get("building").title, "about: the button opens the title, summary, and sources");
   doc.querySelector('#labels .label[data-object="ap"]').click();
@@ -372,19 +372,18 @@ section("navigation, at the top", () => {
   const win = page("https://explore.projectcampus.org/?scene=lab");
   const doc = win.document;
   const app = win.CampusScenes.start(data, { doc, win });
-  const zone = doc.getElementById("navzone"), btn = doc.getElementById("menu-btn");
-  check(!!zone && zone.contains(doc.getElementById("trail")) && zone.contains(doc.getElementById("brand")) && !zone.classList.contains("tucked"), "nav: the bar shows at the top, with the title");
+  const where = doc.getElementById("where"), sceneEl = doc.getElementById("scene");
+  check(!!where && where.contains(doc.getElementById("trail")) && !where.contains(sceneEl) && !sceneEl.contains(where) && where.compareDocumentPosition(sceneEl) & win.Node.DOCUMENT_POSITION_FOLLOWING, "nav: the header sits above the scene, not on it, so it covers nothing");
+  check(doc.getElementById("here-title").textContent === scenes.get("lab").title && doc.getElementById("here-line").textContent === scenes.get("lab").line, "nav: it names the scene and says what it is about");
   key(win, "Escape");
-  check(zone.classList.contains("tucked"), "nav: Esc tucks it away with any pop-up");
-  btn.click();
-  check(!zone.classList.contains("tucked") && btn.getAttribute("aria-expanded") === "true", "nav: the small button brings it back on a touch screen");
+  check(!where.hidden, "nav: Esc leaves it in place");
   // A trail of more than three levels folds to the first, "…", and this one.
   const deep = [...scenes.values()].find((sc) => { let n = 1, x = sc; while (x.parent) { x = scenes.get(x.parent); n++; } return n > 3; });
   if (deep) {
     app.go(deep.id, false, { instant: true });
     const tr = doc.getElementById("trail");
     const more = tr.querySelector(".more");
-    check(!!more && tr.querySelectorAll("a").length === 1 && !!tr.querySelector(".here"), "nav: a deep trail shows the first level, …, and this one");
+    check(!!more && tr.querySelectorAll("a").length === 1 && doc.getElementById("here-title").textContent === deep.title, "nav: a deep trail shows the first level, …, and this one");
     more.click();
     check(!tr.querySelector(".more") && tr.querySelectorAll("a").length > 1, "nav: … opens every level");
   }
@@ -428,7 +427,7 @@ section("?words=off", () => {
   const doc = win.document;
   win.CampusScenes.start(data, { doc, win });
   check(doc.body.classList.contains("no-words"), "?words=off: starts with the words hidden");
-  check(doc.getElementById("arrival").hidden, "?words=off: no title on arrival, for presenting");
+  check(doc.body.classList.contains("no-words"), "?words=off: the header goes with the words, for presenting");
   check(!doc.getElementById("made-up").hidden, "?words=off: the made-up label still shows (D-171)");
   check(doc.body.textContent.includes(NOTICE), "?words=off: the notice still shows");
 });

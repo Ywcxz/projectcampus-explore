@@ -55,13 +55,9 @@
     var frame = $("frame"), labels = $("labels"), madeUp = $("made-up"), trail = $("trail");
     var title = $("scene-title"), summary = $("scene-summary"), claimList = $("scene-claims"), chapters = $("scene-chapters");
     var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), switcher = $("states");
-    var menuBtn = $("menu-btn"), navzone = $("navzone");
-    var site = data.site || {};
-    if ($("brand") && site.heading) $("brand").textContent = site.heading;
-    if ($("tagline")) { $("tagline").textContent = site.line || ""; $("tagline").hidden = !site.line; }
+    var site = data.site || {}, hereTitle = $("here-title"), hereLine = $("here-line");
     // The scene's own zoom: the drawing's view box, never the page, so words keep their size.
     var zoom = { k: 1, cx: null, cy: null }, baseVB = null, trailOpen = false;
-    var arrival = $("arrival"), arrivalTitle = $("arrival-title"), arrivalLine = $("arrival-line"), arrivalTimer = null;
     var about = $("caption"), aboutBtn = $("about-btn"), aboutClose = $("about-close");
     var masterLink = $("master-doc-link");
     if (masterLink) masterLink.href = base;
@@ -95,9 +91,7 @@
     function setWords(on, byUser) {
       state.words = !!on;
       // Pressing W (or the button) also shows or hides the navigation with the words.
-      if (byUser) tuck(!state.words);
       doc.body.classList.toggle("no-words", !state.words);
-      if (!state.words) hush();
       if (wordsBtn) {
         wordsBtn.setAttribute("aria-pressed", String(state.words));
         wordsBtn.textContent = state.words ? "Labels on" : "Labels off";
@@ -137,7 +131,6 @@
     function openAbout() {
       if (!about) return;
       closeCard();
-      hush();
       about.hidden = false;
       if (aboutBtn) aboutBtn.setAttribute("aria-expanded", "true");
       if (aboutClose) aboutClose.focus();
@@ -154,7 +147,6 @@
       var c = cards[id];
       if (!c) return;
       closeAbout();
-      hush();
       state.card = { id: id, from: from };
       clear(card);
       var close = make(doc, "button", "card-close", "Close");
@@ -209,11 +201,12 @@
     }
     function viewOf(s, id) {
       var st = statesOf(s);
-      if (!st) return { id: null, title: s.title, summary: s.summary, claims: s.claims, madeUp: s.madeUp };
+      if (!st) return { id: null, title: s.title, line: s.line, summary: s.summary, claims: s.claims, madeUp: s.madeUp };
       var v = st[Math.max(0, stateIndex(s, id))];
       return {
         id: v.id,
         title: v.title || s.title,
+        line: v.line || (v.title ? "" : s.line),
         summary: v.summary || s.summary,
         claims: v.claims || s.claims,
         madeUp: v.madeUp !== undefined ? v.madeUp : s.madeUp
@@ -437,7 +430,6 @@
       if (state.view) frame.dataset.state = state.view;
       else delete frame.dataset.state;
       if (svg && state.view) paint(svg, state.view, instant);
-      announce(v);
 
       (scene.objects || []).forEach(function (o) {
         var on = !o.state || o.state === state.view;
@@ -480,54 +472,35 @@
 
       // Where you are. A scene opened from one state shows that state's title.
       clear(trail);
-      var chain = ancestors(scene);
-      // More than three levels: the first and this one, with the rest behind "…".
+      var chain = ancestors(scene), above = chain.slice(0, -1);
+      // Above the title, the levels over this scene; at the start, the site's name.
+      // More than three levels in all: the first, then "…" for the rest.
+      if (!above.length) trail.appendChild(make(doc, "span", "site", site.heading || ""));
       var fold = chain.length > 3 && !trailOpen;
-      chain.forEach(function (s, n) {
-        if (fold && n > 0 && n < chain.length - 1) {
+      above.forEach(function (s, n) {
+        if (n) trail.appendChild(make(doc, "span", "sep", "›"));
+        if (fold && n > 0) {
           if (n === 1) {
-            trail.appendChild(make(doc, "span", "sep", "›"));
+            var names = above.slice(1).map(function (x) { return viewOf(x, firstState(x)).title; });
             var more = make(doc, "button", "more", "…");
             more.type = "button";
-            more.setAttribute("aria-label", "Show every level: " + chain.slice(1, -1).map(function (x) { return viewOf(x, firstState(x)).title; }).join(", "));
-            more.title = chain.slice(1, -1).map(function (x) { return viewOf(x, firstState(x)).title; }).join(" › ");
+            more.title = names.join(" › ");
+            more.setAttribute("aria-label", "Show every level: " + names.join(", "));
             more.addEventListener("click", function () { trailOpen = true; showView(true); });
             trail.appendChild(more);
-          }
+          } else trail.removeChild(trail.lastChild);
           return;
         }
-        if (n) trail.appendChild(make(doc, "span", "sep", "›"));
-        if (s === scene) {
-          var here = make(doc, "span", "here", v.title);
-          here.setAttribute("aria-current", "page");
-          trail.appendChild(here);
-        } else {
-          var o = objectOpening(s, chain[n + 1].id), sv = o && o.state ? o.state : null;
-          var a = make(doc, "a", null, viewOf(s, sv || firstState(s)).title);
-          a.href = "?scene=" + s.id + (sv && sv !== firstState(s) ? "&state=" + sv : "");
-          a.addEventListener("click", function (e) { e.preventDefault(); go(s.id, true); });
-          trail.appendChild(a);
-        }
+        var o = objectOpening(s, chain[n + 1].id), sv = o && o.state ? o.state : null;
+        var a = make(doc, "a", null, viewOf(s, sv || firstState(s)).title);
+        a.href = "?scene=" + s.id + (sv && sv !== firstState(s) ? "&state=" + sv : "");
+        a.addEventListener("click", function (e) { e.preventDefault(); go(s.id, true); });
+        trail.appendChild(a);
       });
+      if (hereTitle) hereTitle.textContent = v.title;
+      if (hereLine) hereLine.textContent = v.line || "";
       doc.title = v.title + " · Project CAMPUS";
     }
-
-    /* On arrival, the scene's title and its first sentence show briefly, then
-       leave the scene clear. Not with words off, or while a pop-up is open. */
-    function announce(v) {
-      if (!arrival) return;
-      if (arrivalTimer) win.clearTimeout(arrivalTimer);
-      arrival.hidden = true;
-      if (!state.words || (about && !about.hidden) || state.card) return;
-      arrivalTitle.textContent = v.title;
-      arrivalLine.textContent = String(v.summary || "").split(/(?:[.:])\s/)[0].replace(/[.:]$/, "") + ".";
-      arrival.hidden = false;
-      arrival.classList.remove("show");
-      void arrival.offsetWidth;
-      arrival.classList.add("show");
-      arrivalTimer = win.setTimeout(function () { arrival.hidden = true; }, 5200);
-    }
-    function hush() { if (arrival) { arrival.hidden = true; if (arrivalTimer) win.clearTimeout(arrivalTimer); } }
 
     function setView(id) {
       var scene = state.scene;
@@ -630,23 +603,10 @@
       if (j >= 0 && j < list.length) go(list[j], true, d < 0 ? { view: "last" } : null);
     }
 
-    /* The navigation, with the title, shows at the top. Esc tucks it above the
-       edge, where the cursor near the top or the small button brings it back. */
-    function tuck(on) {
-      if (!navzone) return;
-      navzone.classList.toggle("tucked", !!on);
-      if (menuBtn) {
-        menuBtn.setAttribute("aria-expanded", String(!on));
-        menuBtn.setAttribute("aria-label", on ? "Show navigation" : "Hide navigation");
-      }
-    }
-    /* Esc leaves only the scene: it closes any pop-up and the title line, and tucks the navigation. */
+    /* Esc leaves only the scene: it closes any pop-up. */
     function minimal() {
       closeCard();
       closeAbout();
-      hush();
-      tuck(true);
-      if (doc.activeElement && doc.activeElement.blur && navzone && navzone.contains(doc.activeElement)) doc.activeElement.blur();
     }
 
     /* ---------- keys: Esc, the arrows, Home ---------- */
@@ -668,8 +628,6 @@
     doc.addEventListener("keydown", onKey);
     if (wordsBtn) wordsBtn.addEventListener("click", function () { setWords(!state.words); });
     if (backBtn) backBtn.addEventListener("click", upOne);
-    // On a touch screen, a small button brings the tucked navigation back.
-    if (menuBtn && navzone) menuBtn.addEventListener("click", function () { tuck(!navzone.classList.contains("tucked")); });
     if (aboutBtn) aboutBtn.addEventListener("click", function () { if (about.hidden) openAbout(); else closeAbout(); });
     if (aboutClose) aboutClose.addEventListener("click", function () { closeAbout(); if (aboutBtn) aboutBtn.focus(); });
     win.addEventListener("popstate", function () {
@@ -681,7 +639,6 @@
     });
 
     setWords(state.words);
-    tuck(!state.words);
     var first = scenes[params.get("scene")] || scenes[data.start];
     render(first, params.get("state"));
     arrive();

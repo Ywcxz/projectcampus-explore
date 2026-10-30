@@ -11,26 +11,23 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#F3F4EE">
-<link rel="stylesheet" href="css/site.css?v=0.26.0">
-<script src="js/art.js?v=0.26.0" defer></script>
-<script src="js/main.js?v=0.26.0" defer></script>
+<link rel="stylesheet" href="css/site.css?v=0.27.0">
+<script src="js/art.js?v=0.27.0" defer></script>
+<script src="js/main.js?v=0.27.0" defer></script>
 </head>
 <body>
 
 <a class="skip" href="#about-btn">Skip to the words</a>
 
 <div class="screen">
-<div class="navzone" id="navzone">
-  <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="bar" aria-label="Show navigation"><span></span><span></span><span></span></button>
-<header class="bar" id="bar">
-  <a class="brand" href="./" id="brand">Campus scenes</a>
-  <p class="tagline" id="tagline"></p>
-  <nav class="trail" id="trail" aria-label="Where you are"></nav>
-  <div class="actions">
-    <button type="button" class="btn" id="back-btn" hidden>← Back</button>
+<!-- Where you are and what this scene is about: above the scene, never on it. -->
+<header class="where" id="where">
+  <div class="where-text">
+    <nav class="trail" id="trail" aria-label="Where you are"></nav>
+    <p class="here"><span class="here-title" id="here-title"></span><span class="here-line" id="here-line"></span></p>
   </div>
+  <button type="button" class="back" id="back-btn" hidden>← Back</button>
 </header>
-</div>
 
 <main class="scene" id="scene">
   <div class="stage">
@@ -44,7 +41,6 @@
     </div>
   </div>
 
-  <p class="arrival" id="arrival" aria-hidden="true" hidden><strong id="arrival-title"></strong> <span id="arrival-line"></span></p>
   <button type="button" class="btn about-btn" id="about-btn" aria-expanded="false" aria-controls="caption">About this scene</button>
   <aside class="pop about" id="caption" tabindex="-1" aria-label="About this scene" hidden>
     <button type="button" class="card-close" id="about-close" aria-label="Close">Close</button>
