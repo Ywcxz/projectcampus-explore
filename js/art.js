@@ -338,7 +338,6 @@
     else if (phoneEvery) head = '<g>' + anim(phoneEvery, 0, "0;0.3;0.36;0.8;0.86;1", "0 0 -21;0 0 -21;12 0 -21;12 0 -21;0 0 -21;0 0 -21") + head + "</g>";
     out += head;
     out += held;
-    if (c.item === "book" && !opts.show) out += '<rect x="4.2" y="-13.5" width="4.5" height="6" rx="0.8" fill="' + K.red + '"/>';
     // Standing still, now and then: the phone comes up in front of the face and lights it.
     // A phone check: the phone sits in the raised hand, and the head tips to it.
     if (phoneEvery && !opts.talk && !opts.show && !opts.point && !opts.photo && !opts.selfie) out += '<g opacity="0"><animate attributeName="opacity" dur="' + phoneEvery + 's" repeatCount="indefinite" keyTimes="0;0.32;0.36;0.8;0.84;1" values="0;0;1;1;0;0"/>' +
@@ -350,10 +349,16 @@
     return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k) + ')">' + out + "</g>";
   }
   /* One of the cast sitting, hips at (x, y): legs bent forward. */
-  function sitChar(x, y, n, k, hands) {
-    var c = CAST[n % CAST.length], sk = SKIN[c.skin], h = c.hair, out = "";
+  function sitChar(x, y, n, k, hands, pedal) {
+    var c = CAST[n % CAST.length], sk = SKIN[c.skin], h = c.hair, out = "", lc = c.skirt ? sk : c.low;
     if (c.style === "long") out += '<rect x="-6" y="-24" width="12" height="13" rx="4" fill="' + h + '"/>';
-    out += '<rect x="-4" y="-7" width="10" height="3.4" rx="1.5" fill="' + (c.skirt ? sk : c.low) + '"/><rect x="4" y="-7" width="3" height="8" rx="1.4" fill="' + (c.skirt ? sk : c.low) + '"/>';
+    // Pedalling: the far leg and the near leg push down in turn, half a turn apart.
+    var shin = function (dark, from) {
+      var leg = '<rect x="4" y="-7" width="3" height="8" rx="1.4" fill="' + lc + '"' + (dark ? ' opacity=".7"' : "") + '/>';
+      return pedal ? '<g>' + leg + '<animateTransform attributeName="transform" type="translate" dur="0.8s" repeatCount="indefinite" values="' + from + '"/></g>' : leg;
+    };
+    if (pedal) out += shin(true, "-1 -1.2;1 2.2;-1 -1.2");
+    out += '<rect x="-4" y="-7" width="10" height="3.4" rx="1.5" fill="' + lc + '"/>' + shin(false, "1 2.2;-1 -1.2;1 2.2");
     if (c.skirt) out += '<path d="M-5 -9H5L6 -4H-6Z" fill="' + c.low + '"/>';
     out += '<rect x="-5" y="-17" width="10" height="11" rx="4" fill="' + c.top + '"/><rect x="-7" y="-16" width="2.6" height="8" rx="1.3" fill="' + c.top + '"/><rect x="4.4" y="-16" width="2.6" height="8" rx="1.3" fill="' + c.top + '"/>';
     out += '<g transform="rotate(' + (hands === "bars" ? 0 : 10) + ' 0 -17)"><circle cy="-22" r="5.6" fill="' + sk + '"/><path d="M-5.7 -22.5a5.7 5.7 0 0 1 11.4 0c-3-2-8.4-2-11.4 0Z" fill="' + h + '"/><circle cx="-2" cy="-21" r=".75" fill="' + K.ink + '"/><circle cx="2" cy="-21" r=".75" fill="' + K.ink + '"/></g>';
@@ -496,7 +501,7 @@
     return '<ellipse cx="' + f(sh[0]) + '" cy="' + f(sh[1] + 2) + '" rx="' + f(0.4 * L.s) + '" ry="' + f(0.1 * L.s) + '" fill="#1F2A22" opacity=".12"/>' +
       wh(-0.28) + wh(0.28) + line(L(-0.28, 0, 0.13), L(-0.08, 0, 0.4)) + line(L(-0.08, 0, 0.4), L(0.2, 0, 0.4)) + line(L(0.2, 0, 0.4), L(0.28, 0, 0.13)) +
       line(L(-0.28, 0, 0.13), L(0.04, 0, 0.13)) + line(L(0.04, 0, 0.13), L(-0.08, 0, 0.4)) + line(L(0.2, 0, 0.4), L(0.22, 0, 0.5)) +
-      (mirror ? '<g transform="translate(' + f(2 * seat[0]) + ' 0) scale(-1 1)">' + sitChar(seat[0], seat[1] + 4 * k, n, k, "bars") + "</g>" : sitChar(seat[0], seat[1] + 4 * k, n, k, "bars"));
+      (mirror ? '<g transform="translate(' + f(2 * seat[0]) + ' 0) scale(-1 1)">' + sitChar(seat[0], seat[1] + 4 * k, n, k, "bars", true) + "</g>" : sitChar(seat[0], seat[1] + 4 * k, n, k, "bars", true));
   }
   /* A motorcycle's trip: ridden in along the lane into a space, left there a while,
      then ridden out by someone else. riderIn and riderOut are cast numbers. */
