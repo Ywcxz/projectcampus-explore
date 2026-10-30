@@ -52,7 +52,7 @@ projectcampus-explore/
 
 ## Words and keys
 
-The scene fills the screen. Navigation (the trail, Back, Words) waits above the top edge and slides down when the cursor comes near; W shows or hides it with the words; on a phone, a small button in the corner shows it. The scene keeps with everything else as pop-ups on it: a card for each object, and "About this scene" for its title, summary, and sources (under the drawing on a phone). The footer, with the notice, is a scroll away. Words (titles, summaries, sources, labels) show or hide together with the **Words** button or **W**. With words off, a gold dot still marks everything that opens, and made-up labels and the notice stay.
+The scene fills the screen. Navigation (the trail, Back, Words) waits above the top edge and slides down when the cursor comes near; W shows or hides it with the words; on a phone, a small button in the corner shows it. Everything else is a pop-up on the scene: a card for each object, and "About this scene" for its title, summary, and sources (under the drawing on a phone). The footer, with the notice, is a scroll away. Words (titles, summaries, sources, labels) show or hide together with the **Words** button or **W**. With words off, a gold dot still marks everything that opens, and made-up labels and the notice stay.
 
 | Key | Does |
 | --- | --- |
