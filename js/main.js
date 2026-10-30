@@ -54,7 +54,7 @@
     var $ = function (id) { return doc.getElementById(id); };
     var frame = $("frame"), labels = $("labels"), madeUp = $("made-up"), trail = $("trail");
     var title = $("scene-title"), summary = $("scene-summary"), claimList = $("scene-claims"), chapters = $("scene-chapters");
-    var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), blank = $("blank"), switcher = $("states");
+    var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), switcher = $("states");
     var menuBtn = $("menu-btn"), navzone = $("navzone");
     var arrival = $("arrival"), arrivalTitle = $("arrival-title"), arrivalLine = $("arrival-line"), arrivalTimer = null;
     var about = $("caption"), aboutBtn = $("about-btn"), aboutClose = $("about-close");
@@ -98,7 +98,7 @@
       if (!state.words) hush();
       if (wordsBtn) {
         wordsBtn.setAttribute("aria-pressed", String(state.words));
-        wordsBtn.textContent = state.words ? "Words on" : "Words off";
+        wordsBtn.textContent = state.words ? "Labels on" : "Labels off";
       }
       writeAddress(false);
     }
@@ -495,24 +495,31 @@
       if (st) setView(st[(stateIndex(state.scene, state.view) + 1) % st.length].id);
     }
 
-    /* ---------- keys: words, back, a presenter's clicker ---------- */
+    /* Esc leaves only the scene: it closes any pop-up, the title line, and the navigation. */
+    function minimal() {
+      closeCard();
+      closeAbout();
+      hush();
+      if (navzone) navzone.classList.remove("open");
+      if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+      if (doc.activeElement && doc.activeElement.blur && navzone && navzone.contains(doc.activeElement)) doc.activeElement.blur();
+    }
+
+    /* ---------- keys: labels, about, states, the arrows ---------- */
     function onKey(e) {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
-      if (blank && !blank.hidden) { blank.hidden = true; e.preventDefault(); return; }
       var k = e.key;
-      if (k === "w" || k === "W") { setWords(!state.words, true); e.preventDefault(); }
+      if (k === "l" || k === "L") { setWords(!state.words); e.preventDefault(); }
       else if (k === "s" || k === "S") { nextState(); e.preventDefault(); }
-      else if (k === "Escape") { if (state.card) closeCard(); else if (!closeAbout()) upOne(); }
+      else if (k === "Escape") { minimal(); }
       else if (k === "Backspace") { if (state.card) closeCard(); else if (!closeAbout()) upOne(); e.preventDefault(); }
       else if (k === "i" || k === "I") { if (about && about.hidden) openAbout(); else closeAbout(); }
       else if (k === "ArrowRight" || k === "PageDown" || k === " ") { step(1); e.preventDefault(); }
       else if (k === "ArrowLeft" || k === "PageUp") { step(-1); e.preventDefault(); }
       else if (k === "Home") { go(data.start, true); e.preventDefault(); }
-      else if (k === "p" || k === "P") { doc.body.classList.toggle("presenting"); }
-      else if ((k === "b" || k === "B" || k === ".") && blank) { blank.hidden = false; }
     }
     doc.addEventListener("keydown", onKey);
-    if (wordsBtn) wordsBtn.addEventListener("click", function () { setWords(!state.words, true); });
+    if (wordsBtn) wordsBtn.addEventListener("click", function () { setWords(!state.words); });
     if (backBtn) backBtn.addEventListener("click", upOne);
     // Navigation waits at the bottom: near the cursor on a computer, behind a button on a phone.
     if (menuBtn && navzone) menuBtn.addEventListener("click", function () {
@@ -523,7 +530,6 @@
     });
     if (aboutBtn) aboutBtn.addEventListener("click", function () { if (about.hidden) openAbout(); else closeAbout(); });
     if (aboutClose) aboutClose.addEventListener("click", function () { closeAbout(); if (aboutBtn) aboutBtn.focus(); });
-    if (blank) blank.addEventListener("click", function () { blank.hidden = true; });
     win.addEventListener("popstate", function () {
       var q = new win.URLSearchParams(win.location.search);
       var id = q.get("scene") || data.start;

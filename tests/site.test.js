@@ -265,7 +265,9 @@ section("zoom, cards, words, keys", () => {
   lab.dispatchEvent(new win.KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
   check(app.state.scene.id === "lab", "zoom: Enter on a focused object opens it");
   key(win, "Escape");
-  check(app.state.scene.id === "building", "back: Escape goes up one scene");
+  check(app.state.scene.id === "lab", "Esc: stays in the scene");
+  key(win, "Backspace");
+  check(app.state.scene.id === "building", "back: Backspace goes up one scene");
   doc.querySelector("#trail a").dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
   check(app.state.scene.id === data.start, "trail: a step in the trail goes back there");
 
@@ -277,7 +279,7 @@ section("zoom, cards, words, keys", () => {
   check(cl.length === cards.get("rings").claims.length && cl.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), "card: shows each claim's tag and source");
   check(card.querySelector("a.chapter-link").href === `${MASTER}intranet.html`, "card: links its chapter");
   key(win, "Escape");
-  check(card.hidden && app.state.scene.id === data.start, "card: Escape closes the card before leaving the scene");
+  check(card.hidden && app.state.scene.id === data.start, "card: Esc closes the card and stays in the scene");
 
   // Sources point at the master doc's rows.
   check(win.CampusScenes.sourceLink({ ref: "D-170" }, MASTER).href === `${MASTER}decisions.html#d-170`, "source: a decision links its register row");
@@ -286,8 +288,8 @@ section("zoom, cards, words, keys", () => {
   // Words: one key, one button, the same everywhere (D-171).
   const btn = doc.getElementById("words-btn");
   check(!doc.body.classList.contains("no-words") && btn.getAttribute("aria-pressed") === "true", "words: on by default");
-  key(win, "w");
-  check(doc.body.classList.contains("no-words") && btn.getAttribute("aria-pressed") === "false" && /words=off/.test(win.location.search), "words: W turns them off and the address says so");
+  key(win, "l");
+  check(doc.body.classList.contains("no-words") && btn.getAttribute("aria-pressed") === "false" && /words=off/.test(win.location.search), "labels: L turns them off and the address says so");
   btn.click();
   check(!doc.body.classList.contains("no-words"), "words: the button turns them back on");
 
@@ -298,10 +300,7 @@ section("zoom, cards, words, keys", () => {
   key(win, "PageUp");
   check(app.state.scene.id === path[0], "path: a clicker's back goes to the previous scene");
 
-  key(win, "b");
-  check(!doc.getElementById("blank").hidden, "presenter: B blanks the screen");
-  key(win, "ArrowRight");
-  check(doc.getElementById("blank").hidden && app.state.scene.id === path[0], "presenter: any key brings the screen back without moving");
+  check(!doc.getElementById("blank"), "keys: no blank screen; P and B are gone");
 });
 
 section("states: today and with CAMPUS", () => {
@@ -333,7 +332,7 @@ section("states: today and with CAMPUS", () => {
   check(app.state.scene.id === "a-place", "states: an object of a state opens its scene");
   const trail = [...doc.querySelectorAll("#trail a")].map((a) => a.textContent);
   check(trail[1] === later.title && /state=campus/.test(doc.querySelectorAll("#trail a")[1].getAttribute("href")), "trail: a scene opened from a state shows that state");
-  key(win, "Escape");
+  key(win, "Backspace");
   check(app.state.scene.id === "elsewhere" && app.state.view === "campus", "back: going up returns to the state it was opened from");
   key(win, "ArrowLeft");
   check(app.state.view === "today", "path: back steps through the states too");
@@ -359,7 +358,7 @@ section("about this scene, as a pop-up", () => {
   key(win, "i");
   check(!about.hidden, "about: I opens it");
   key(win, "Escape");
-  check(about.hidden && app.state.scene.id === "building", "about: Escape closes it before leaving the scene");
+  check(about.hidden && app.state.scene.id === "building", "about: Esc closes it and stays in the scene");
 });
 
 section("navigation, out of the way", () => {
@@ -372,10 +371,11 @@ section("navigation, out of the way", () => {
   check(zone.classList.contains("open") && btn.getAttribute("aria-expanded") === "true", "nav: the small button shows it on a phone");
   btn.click();
   check(!zone.classList.contains("open"), "nav: and hides it again");
-  key(win, "w");
-  check(!zone.classList.contains("open") && doc.body.classList.contains("no-words"), "nav: W hides the words and the navigation");
-  key(win, "w");
-  check(zone.classList.contains("open") && !doc.body.classList.contains("no-words"), "nav: W again shows both");
+  btn.click();
+  key(win, "Escape");
+  check(!zone.classList.contains("open"), "nav: Esc hides it with any pop-up");
+  key(win, "l");
+  check(!zone.classList.contains("open") && doc.body.classList.contains("no-words"), "nav: L hides the labels, not the navigation");
 });
 
 section("?state=", () => {

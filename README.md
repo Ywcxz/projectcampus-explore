@@ -52,20 +52,19 @@ projectcampus-explore/
 
 ## Words and keys
 
-The scene fills the screen. Navigation (the trail, Back, Words) waits above the top edge and slides down when the cursor comes near; W shows or hides it with the words; on a phone, a small button in the corner shows it. Everything else is a pop-up on the scene: a card for each object, and "About this scene" for its title, summary, and sources (under the drawing on a phone). The footer, with the notice, is a scroll away. Words (titles, summaries, sources, labels) show or hide together with the **Words** button or **W**. With words off, a gold dot still marks everything that opens, and made-up labels and the notice stay.
+The scene fills the screen. Navigation (the trail, Back, Labels) waits above the top edge and slides down when the cursor comes near; on a phone, a small button in the corner shows it. Everything else is a pop-up on the scene: a card for each object, and "About this scene" for its title, summary, and sources (under the drawing on a phone). The footer, with the notice, is a scroll away. Labels (on objects, the trail, and the title line) show or hide together with the **Labels** button or **L**. With labels off, a gold dot still marks everything that opens, and made-up labels and the notice stay.
 
 | Key | Does |
 | --- | --- |
 | Tab, then Enter | open the focused object |
-| Esc or Backspace | close a card, or go back up one scene |
+| Esc | close any pop-up and the navigation, leaving only the scene |
+| Backspace | back up one scene |
 | → Space PageDown | next state, then next scene on the path |
 | ← PageUp | previous state, then previous scene on the path |
 | Home | back to the campus |
-| W | words on or off |
-| I | about this scene: its title, summary, and sources |
+| L | labels on or off |
+| I | about this scene |
 | S | switch a scene between today and with CAMPUS |
-| P | presenting: hide the bar |
-| B or . | blank the screen; any key brings it back |
 
 Addresses: `?scene=lab`, `?scene=elsewhere&state=campus`, `?path=places`, `?words=off`. A parameter only chooses how a visit starts; nothing is collected.
 
