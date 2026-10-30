@@ -55,6 +55,7 @@
     var frame = $("frame"), labels = $("labels"), madeUp = $("made-up"), trail = $("trail");
     var title = $("scene-title"), summary = $("scene-summary"), claimList = $("scene-claims"), chapters = $("scene-chapters");
     var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), blank = $("blank"), switcher = $("states");
+    var backdrop = $("backdrop"), arrival = $("arrival"), arrivalTitle = $("arrival-title"), arrivalLine = $("arrival-line"), arrivalTimer = null;
     var about = $("caption"), aboutBtn = $("about-btn"), aboutClose = $("about-close");
     var masterLink = $("master-doc-link");
     if (masterLink) masterLink.href = base;
@@ -88,6 +89,7 @@
     function setWords(on) {
       state.words = !!on;
       doc.body.classList.toggle("no-words", !state.words);
+      if (!state.words) hush();
       if (wordsBtn) {
         wordsBtn.setAttribute("aria-pressed", String(state.words));
         wordsBtn.textContent = state.words ? "Words on" : "Words off";
@@ -115,6 +117,7 @@
     function openAbout() {
       if (!about) return;
       closeCard();
+      hush();
       about.hidden = false;
       if (aboutBtn) aboutBtn.setAttribute("aria-expanded", "true");
       if (aboutClose) aboutClose.focus();
@@ -130,6 +133,7 @@
       var c = cards[id];
       if (!c) return;
       closeAbout();
+      hush();
       state.card = { id: id, from: from };
       clear(card);
       var close = make(doc, "button", "card-close", "Close");
@@ -256,8 +260,18 @@
       });
 
       if (backBtn) backBtn.hidden = !scene.parent;
-      // The drawing fills the space it has, trimming its edges if it must (slice).
-      if (svg) svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
+      // The drawing shows whole; a soft, blurred copy fills the screen around it.
+      if (backdrop) {
+        clear(backdrop);
+        if (svg) {
+          var back = svg.cloneNode(true);
+          back.setAttribute("preserveAspectRatio", "xMidYMid slice");
+          back.removeAttribute("aria-label");
+          back.setAttribute("aria-hidden", "true");
+          each(back.querySelectorAll("[data-object]"), function (g) { g.removeAttribute("data-object"); g.removeAttribute("class"); });
+          backdrop.appendChild(back);
+        }
+      }
       placeLabels();
       showView(true);
       return svg;
@@ -292,6 +306,9 @@
       if (state.view) frame.dataset.state = state.view;
       else delete frame.dataset.state;
       if (svg && state.view) paint(svg, state.view, instant);
+      var back = backdrop && backdrop.querySelector("svg");
+      if (back && state.view) paint(back, state.view, instant);
+      announce(v);
 
       (scene.objects || []).forEach(function (o) {
         var on = !o.state || o.state === state.view;
@@ -351,6 +368,23 @@
       });
       doc.title = v.title + " · Project CAMPUS";
     }
+
+    /* On arrival, the scene's title and its first sentence show briefly, then
+       leave the scene clear. Not with words off, or while a pop-up is open. */
+    function announce(v) {
+      if (!arrival) return;
+      if (arrivalTimer) win.clearTimeout(arrivalTimer);
+      arrival.hidden = true;
+      if (!state.words || (about && !about.hidden) || state.card) return;
+      arrivalTitle.textContent = v.title;
+      arrivalLine.textContent = String(v.summary || "").split(/(?:[.:])\s/)[0].replace(/[.:]$/, "") + ".";
+      arrival.hidden = false;
+      arrival.classList.remove("show");
+      void arrival.offsetWidth;
+      arrival.classList.add("show");
+      arrivalTimer = win.setTimeout(function () { arrival.hidden = true; }, 5200);
+    }
+    function hush() { if (arrival) { arrival.hidden = true; if (arrivalTimer) win.clearTimeout(arrivalTimer); } }
 
     function setView(id) {
       var scene = state.scene;

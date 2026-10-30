@@ -11,9 +11,9 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#F3F4EE">
-<link rel="stylesheet" href="css/site.css?v=0.6.0">
-<script src="js/art.js?v=0.6.0" defer></script>
-<script src="js/main.js?v=0.6.0" defer></script>
+<link rel="stylesheet" href="css/site.css?v=0.7.0">
+<script src="js/art.js?v=0.7.0" defer></script>
+<script src="js/main.js?v=0.7.0" defer></script>
 </head>
 <body>
 
@@ -31,6 +31,7 @@
 
 <main class="scene" id="scene">
   <div class="stage">
+    <div class="backdrop" id="backdrop" aria-hidden="true"></div>
     <div class="canvas">
       <div class="frame" id="frame">
         <noscript><p class="placeholder">These scenes need JavaScript. Everything they draw on is in the <a href="https://docs.projectcampus.org/">master doc</a>.</p></noscript>
@@ -41,6 +42,7 @@
     </div>
   </div>
 
+  <p class="arrival" id="arrival" aria-hidden="true" hidden><strong id="arrival-title"></strong> <span id="arrival-line"></span></p>
   <button type="button" class="btn about-btn" id="about-btn" aria-expanded="false" aria-controls="caption">About this scene</button>
   <aside class="pop about" id="caption" tabindex="-1" aria-label="About this scene" hidden>
     <button type="button" class="card-close" id="about-close" aria-label="Close">Close</button>

@@ -349,6 +349,9 @@ section("about this scene, as a pop-up", () => {
   const app = win.CampusScenes.start(data, { doc, win });
   const about = doc.getElementById("caption"), btn = doc.getElementById("about-btn");
   check(about.hidden && btn.getAttribute("aria-expanded") === "false", "about: the scene shows alone at first");
+  const arr = doc.getElementById("arrival");
+  check(!arr.hidden && doc.getElementById("arrival-title").textContent === scenes.get("building").title, "arrival: the title shows briefly on arrival");
+  check(doc.querySelector("#backdrop svg") && !doc.querySelector("#backdrop [data-object]"), "backdrop: a soft copy of the drawing fills the screen, with nothing to tap");
   btn.click();
   check(!about.hidden && doc.getElementById("scene-title").textContent === scenes.get("building").title, "about: the button opens the title, summary, and sources");
   doc.querySelector('#labels .label[data-object="ap"]').click();
@@ -375,6 +378,7 @@ section("?words=off", () => {
   const doc = win.document;
   win.CampusScenes.start(data, { doc, win });
   check(doc.body.classList.contains("no-words"), "?words=off: starts with the words hidden");
+  check(doc.getElementById("arrival").hidden, "?words=off: no title on arrival, for presenting");
   check(!doc.getElementById("made-up").hidden, "?words=off: the made-up label still shows (D-171)");
   check(doc.body.textContent.includes(NOTICE), "?words=off: the notice still shows");
 });
