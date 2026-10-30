@@ -195,7 +195,7 @@
         { "id": "route", "label": "A question finds its answer", "opens": { "card": "route" } },
         { "id": "dorms", "label": "Dormitories", "opens": { "card": "to-come" } },
         { "id": "offices", "label": "Faculty offices", "opens": { "card": "to-come" } },
-        { "id": "orgs", "label": "University offices", "opens": { "card": "to-come" } }
+        { "id": "orgs", "label": "Services offices", "opens": { "card": "to-come" } }
       ]
     },
     {
