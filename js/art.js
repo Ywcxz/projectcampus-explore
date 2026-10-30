@@ -243,37 +243,32 @@
       '<animateMotion dur="' + dur + 's" begin="' + (begin || 0) + 's" repeatCount="indefinite" path="' + path + '" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear"/></g>';
   }
 
-  function campus() {
-    var P = Iso(800, 590, 32), S = P.s / 26;
-    var c = P(0, 0), out = "";
-
-    // Far layer: hills.
-    out += lay(1,
-      '<path d="M-1200,330 L0,330 C220,250 380,300 560,250 C760,195 900,270 1080,230 C1260,190 1420,250 1600,215 L2800,215 L2800,1000 L-1200,1000Z" fill="#DCE5D2" opacity=".8"/>' +
-      '<path d="M-1200,380 L0,380 C260,320 420,350 640,320 C860,290 1020,340 1240,300 C1400,275 1500,300 1600,290 L2800,290 L2800,1000 L-1200,1000Z" fill="#CFDDC3" opacity=".8"/>');
-
-    // Ground: the campus, with the intranet's rings drawn on it; the rings are one object.
+  /* ============================================================
+     The campus world, shared by every scene that shows the whole
+     campus: ground, walks, buildings by kind, trees, and its people.
+     With live = true its places are objects a visitor can open.
+     ============================================================ */
+  var WORLD = Iso(800, 590, 32);
+  // Where each kind of place stands, and the top of its roof (i, j, z).
+  var SPOT = { building: [4.25, -7.9, 2.0], dorms: [-7, -2, 2.4], orgs: [-4.7, 6, 1.1], offices: [6.1, 4.3, 1.8] };
+  function world(live) {
+    var P = WORLD, S = P.s / 26, c = P(0, 0);
     var ground = '<ellipse cx="' + c[0] + '" cy="' + f(c[1] + 40 * S) + '" rx="' + f(640 * S) + '" ry="' + f(250 * S) + '" fill="#1F2A22" opacity=".06" filter="url(#blur)"/>' +
       '<ellipse cx="' + c[0] + '" cy="' + f(c[1] + 18 * S) + '" rx="' + f(610 * S) + '" ry="' + f(232 * S) + '" fill="#B9CFA9"/>' +
       '<ellipse cx="' + c[0] + '" cy="' + c[1] + '" rx="' + f(610 * S) + '" ry="' + f(232 * S) + '" fill="url(#grass)"/>';
-    var rings = ring(P, 19, "#9BB3A6", "2 9", 2.5, 0.9) + ring(P, 14.5, K.green2, "10 7", 2.5, 0.75) + ring(P, 10, K.green, "", 3.5, 0.85) +
-      ring(P, 2.4, K.gold, "", 3, 0.95) + ring(P, 14.5, "#000", "", 18, 0).replace('opacity="0"', 'stroke-opacity="0"') + ring(P, 10, "#000", "", 18, 0).replace('opacity="0"', 'stroke-opacity="0"');
-    var roads = "";
     [[-8, 0, 8, 0], [0, -8, 0, 8]].forEach(function (w) {
       var a = P(w[0], w[1]), b = P(w[2], w[3]);
-      roads += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + K.sand + '" stroke-width="12" stroke-linecap="round"/>';
+      ground += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + K.sand + '" stroke-width="12" stroke-linecap="round"/>';
     });
-    out += lay(2, ground + roads + obj("rings", P(13.5, -13.5)[0], P(13.5, -13.5)[1] - 4, rings));
-
-    // Places, by kind (D-153), back to front.
     var dorm = [K.cream, "#D9C48A", "#C7AE6E", "#5B7F8F"], acad = [K.paper2, "#C9D3C4", "#AEBBAA", "#5B7F8F"],
       office = [K.paper, "#CFD7CC", "#B3BFAF", "#5B7F8F"], org = [K.gold3, K.gold, "#C9961A"];
+    var place = function (id, lx, ly, body) { return live ? obj(id, lx, ly, body) : body; };
     var places = "";
-    places += obj("building", P(4.4, -7.8, 3.6)[0], P(4.4, -7.8, 3.6)[1], box(P, 2.5, -9, 3.5, 2.2, 2.0, acad) + box(P, 6.5, -8.5, 2.2, 2.2, 1.6, acad));
-    places += obj("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, box(P, -9, -4, 4, 1.6, 2.4, dorm) + box(P, -9, -1.6, 4, 1.6, 2.4, dorm));
-    [[-3.5, -6], [-2, -7], [9, -3], [9.5, 1], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-3, 8], [8, 6.5], [-6, -8]].forEach(function (t) { places += isoTree(P, t[0], t[1]); });
-    places += obj("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, box(P, -6, 5, 2.6, 2, 1.1, org));
-    places += obj("offices", P(6.6, 6.4)[0], P(6.6, 6.4)[1] + 10, box(P, 4.5, 3.2, 3.2, 2.2, 1.8, office));
+    places += place("building", P(4.4, -7.8, 3.6)[0], P(4.4, -7.8, 3.6)[1], box(P, 2.5, -9, 3.5, 2.2, 2.0, acad) + box(P, 6.5, -8.5, 2.2, 2.2, 1.6, acad));
+    places += place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, box(P, -9, -4, 4, 1.6, 2.4, dorm) + box(P, -9, -1.6, 4, 1.6, 2.4, dorm));
+    [[-3.5, -6], [-2, -7.5], [9, -3], [9.5, 1], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-3, 8], [8, 6.5], [-6, -8], [-11.5, -1], [10, 4.5]].forEach(function (t) { places += isoTree(P, t[0], t[1], 1.6); });
+    places += place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, box(P, -6, 5, 2.6, 2, 1.1, org));
+    places += place("offices", P(6.6, 6.4)[0], P(6.6, 6.4)[1] + 10, box(P, 4.5, 3.2, 3.2, 2.2, 1.8, office));
 
     // People: walking to class along the walks, one on a bench with a phone,
     // four standing in a circle talking, and the student a visitor can follow.
@@ -285,7 +280,6 @@
     life += walker(road(-0.4, -7.2, -0.4, 7.2), 1, k, 36, -20);
     var bp = P(3.2, -3.4);
     life += box(P, 2.6, -3.7, 1.3, 0.4, 0.18, [K.brown, "#5C4529", "#4A3820"]) + personAt(bp[0], bp[1] - 6, 5, k, true);
-    var cc = P(-2.8, 3.4);
     [[-0.6, -0.4], [0.5, -0.5], [0.6, 0.5], [-0.5, 0.6]].forEach(function (o, n) {
       var q = P(-2.8 + o[0], 3.4 + o[1]);
       life += personAt(q[0], q[1], n + 1, k, false);
@@ -296,9 +290,20 @@
         '<circle cx="' + f(q[0] + 4 * S) + '" cy="' + f(q[1] - 57.5 * S) + '" r="' + f(2 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 9 * S) + '" cy="' + f(q[1] - 57.5 * S) + '" r="' + f(2 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 14 * S) + '" cy="' + f(q[1] - 57.5 * S) + '" r="' + f(2 * S) + '" fill="' + K.ink3 + '"/></g>';
     });
     places += life;
-    var sp = P(2.2, -5.2);
-    places += obj("student", sp[0] - 70, sp[1] - 26, '<g class="walker">' + personAt(sp[0], sp[1], 1, k * 1.15, true) + "</g>");
-    out += lay(3, places);
+    var sp = P(2.2, -5.2), st = '<g class="walker">' + personAt(sp[0], sp[1], 1, k * 1.15, true) + "</g>";
+    places += live ? obj("student", sp[0], sp[1] - 40, st) : st;
+    return { ground: ground, places: places };
+  }
+  function hills() {
+    return '<path d="M-1200,330 L0,330 C220,250 380,300 560,250 C760,195 900,270 1080,230 C1260,190 1420,250 1600,215 L2800,215 L2800,1000 L-1200,1000Z" fill="#DCE5D2" opacity=".8"/>' +
+      '<path d="M-1200,380 L0,380 C260,320 420,350 640,320 C860,290 1020,340 1240,300 C1400,275 1500,300 1600,290 L2800,290 L2800,1000 L-1200,1000Z" fill="#CFDDC3" opacity=".8"/>';
+  }
+
+  function campus() {
+    var P = WORLD, out = "", w = world(true);
+    out += lay(1, hills());
+    out += lay(2, w.ground);
+    out += lay(3, w.places);
 
     // The network floats above the places it joins.
     var N = { dorm: P(-7, -2.5, 3.9), acad: P(4.8, -7.8, 3.4), office: P(6.1, 4.3, 3.0), org: P(-4.7, 6, 2.4), hub: P(8.5, -2, 2.2) };
@@ -325,21 +330,9 @@
       '<circle cx="' + f(d[0]) + '" cy="' + f(d[1]) + '" r="24" fill="none" stroke="' + K.gold + '" stroke-width="4" filter="url(#glow)"/>' +
       '<g transform="translate(' + f(d[0] + 34) + " " + f(d[1] - 22) + ')" filter="url(#soft)"><rect width="40" height="40" rx="9" fill="' + K.green + '"/><path d="M10 13h20M10 20h20M10 27h13" stroke="#fff" stroke-width="3" stroke-linecap="round"/></g>';
 
-    // In the middle of campus life, floating over it: a feed on a platform VSU doesn't run.
-    var fx = c[0] - 100, fy = c[1] - 215, mini = "";
-    [0, 1, 2].forEach(function (n) {
-      var y = fy + 30 + n * 40;
-      mini += '<rect x="' + (fx + 18) + '" y="' + y + '" width="164" height="32" rx="7" fill="#FFFFFF"/>' +
-        '<circle cx="' + (fx + 34) + '" cy="' + (y + 16) + '" r="8" fill="' + [K.gold2, K.red, K.sea2][n] + '"/>' +
-        '<rect x="' + (fx + 48) + '" y="' + (y + 9) + '" width="' + [80, 64, 92][n] + '" height="6" rx="3" fill="#C9CFC2"/><rect x="' + (fx + 48) + '" y="' + (y + 19) + '" width="' + [56, 74, 48][n] + '" height="5" rx="2.5" fill="#E4E6DE"/>' +
-        '<rect x="' + (fx + 150) + '" y="' + (y + 5) + '" width="22" height="22" rx="5" fill="' + [K.cream, "#F3DED8", "#E3EEEF"][n] + '"/>';
-    });
-    var away = '<ellipse cx="' + c[0] + '" cy="' + c[1] + '" rx="90" ry="26" fill="#6B7A86" opacity=".18" filter="url(#blur)"/>' +
-      '<line x1="' + c[0] + '" y1="' + (fy + 160) + '" x2="' + c[0] + '" y2="' + (c[1] - 6) + '" stroke="#9AA6AC" stroke-width="2" stroke-dasharray="4 6"/>' +
-      '<g class="hover-float">' + piece('<rect x="' + fx + '" y="' + fy + '" width="200" height="160" rx="16" fill="#E6EAEC"/><rect x="' + fx + '" y="' + fy + '" width="200" height="22" rx="11" fill="#6B7A86"/><rect x="' + fx + '" y="' + (fy + 11) + '" width="200" height="11" fill="#6B7A86"/>') + mini + "</g>";
-    out += lay(4, lines + drops + obj("route", d[0] + 150, d[1] - 34, routeObj) + nodes + obj("elsewhere", c[0], fy - 8, away));
+    out += lay(4, lines + drops + obj("route", d[0] + 150, d[1] - 34, routeObj) + nodes);
 
-    return svg("A drawn campus: dormitories, academic buildings, offices, and organizations, with the intranet's rings on the ground and the network's routes above them; people walk to class, one sits on a bench with a phone, four talk in a circle; floating over the middle of campus, a feed on a platform the campus doesn't run", out);
+    return svg("A drawn campus: dormitories, academic buildings, offices, and organizations, with the network's routes above them; people walk to class, one sits on a bench with a phone, four talk in a circle", out);
   }
 
   /* ============================================================
@@ -611,13 +604,20 @@
      ============================================================ */
   // Each post: its icon, its kind of place, and the place it lands on (x, y of the tile).
   var FEED = [
-    { ic: "medal", kind: "service", to: [1199, 530] },
-    { ic: "tap", kind: "residence", to: [465, 461] },
-    { ic: "id", kind: "building", to: [808, 284] },
-    { ic: "storm", kind: "office", to: [999, 530] },
-    { ic: "megaphone", kind: "org", to: [644, 649] },
-    { ic: "map", kind: "interest", to: [1262, 300] }
+    { ic: "medal", kind: "service", at: "offices", dx: 100 },
+    { ic: "tap", kind: "residence", at: "dorms", dx: 0 },
+    { ic: "id", kind: "building", at: "building", dx: 0 },
+    { ic: "storm", kind: "office", at: "offices", dx: -100 },
+    { ic: "megaphone", kind: "org", at: "orgs", dx: 0 },
+    { ic: "map", kind: "interest", at: null, to: [1290, 230] }
   ];
+  // A post's tile floats over its place on the shared campus, tied to its roof.
+  FEED.forEach(function (p) {
+    if (!p.at) return;
+    var r = SPOT[p.at], roof = WORLD(r[0], r[1], r[2]);
+    p.roof = roof;
+    p.to = [Math.round(roof[0] + p.dx), Math.round(roof[1] - 110)];
+  });
   var POST_X = 596, POST_Y = 196, POST_STEP = 124, POST_S = 0.42;
   function tile(t, kind, ground) {
     var x = t[0], y = t[1], k = KIND[kind];
@@ -631,32 +631,15 @@
     var out = "";
     out += lay(1, '<rect x="-1200" width="4000" height="1000" fill="#EEF1EA"/><circle cx="1320" cy="560" r="300" fill="#E3EBD6" filter="url(#blur)"/><circle cx="260" cy="820" r="260" fill="#E6ECE6" filter="url(#blur)"/>');
 
-    // The campus: small and dim beside the phone today, the whole stage with CAMPUS.
-    var P = Iso(800, 610, 30), c = P(0, 0);
-    var dorm = [K.cream, "#D9C48A", "#C7AE6E", "#5B7F8F"], acad = [K.paper2, "#C9D3C4", "#AEBBAA", "#5B7F8F"],
-      office = [K.paper, "#CFD7CC", "#B3BFAF", "#5B7F8F"], org = [K.gold3, K.gold, "#C9961A"], core = [K.green2, K.green, "#174F34"];
-    var w = '<ellipse cx="' + c[0] + '" cy="' + (c[1] + 30) + '" rx="620" ry="240" fill="#1F2A22" opacity=".06" filter="url(#blur)"/>' +
-      '<ellipse cx="' + c[0] + '" cy="' + (c[1] + 16) + '" rx="600" ry="228" fill="#B9CFA9"/><ellipse cx="' + c[0] + '" cy="' + c[1] + '" rx="600" ry="228" fill="url(#grass)"/>' +
-      ring(P, 15.5, "#9BB3A6", "2 9", 2.5, 0.7) + ring(P, 11.5, K.green2, "10 7", 2.2, 0.45) + ring(P, 7.5, K.green, "", 2.6, 0.4);
-    [[-7, 0, 7, 0], [0, -7, 0, 7]].forEach(function (r) {
-      var a = P(r[0], r[1]), b = P(r[2], r[3]);
-      w += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + K.sand + '" stroke-width="10" stroke-linecap="round"/>';
-    });
-    w += box(P, -7.8, -7.6, 3.6, 2.6, 2.3, acad);
-    w += box(P, -8.6, 4.2, 3.2, 1.4, 2.0, dorm) + box(P, -8.6, 6.2, 3.2, 1.4, 2.0, dorm);
-    w += box(P, -0.6, -0.6, 1.2, 1.2, 0.9, core);
-    w += box(P, 6, -5.2, 3, 2.4, 1.8, office);
-    w += box(P, 0.8, 7, 2.4, 2, 1.1, org);
-    [[-3, -8], [3.5, -8], [-10, 1], [9, 2], [5, 6], [-3, 9.5], [-11, 8.5], [10.5, -7]].forEach(function (t) { w += isoTree(P, t[0], t[1]); });
-    w += isoPerson(P, -5, 3.8, 0) + isoPerson(P, 3.6, 6.5, 2) + isoPerson(P, 4.2, -2.6, 1, 0, true);
-    out += lay(2, grp('data-at-today="1068 353 0.34" data-dim="today"', w));
+    // The campus, the same as the start: small and dim beside the phone today, the whole stage with CAMPUS.
+    var w = world(false);
+    out += lay(1, grp('data-show="campus"', hills()));
+    out += lay(2, grp('data-at-today="1068 359 0.34" data-dim="today"', w.ground + w.places));
 
-    // Where each post lands: a tile above its place, tied to the ground where it has one.
-    // An interest place names no location, so its tile floats (D-144).
-    var ground = { building: P(-6, -6.3, 2.3), residence: P(-7, 5.9, 2.0), org: P(2, 8, 1.1), office: P(7.5, -4, 1.8), service: P(7.5, -4, 1.8), interest: null };
+    // Where each post lands: a tile above its place, tied to its roof; an interest place names no location, so it floats (D-144).
     var tiles = "", objs = "";
     FEED.forEach(function (p, n) {
-      var t = tile(p.to, p.kind, ground[p.kind]);
+      var t = tile(p.to, p.kind, p.roof || null);
       var at = 'data-show="campus" data-delay="' + (520 + n * 90) + '"';
       if (n === 3) objs += objX("office-notice", p.to[0], p.to[1] + 76, at, t);
       else if (n === 0) objs += objX("scholarships", p.to[0], p.to[1] - 40, at, t);

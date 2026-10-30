@@ -52,7 +52,7 @@ projectcampus-explore/
 
 ## Words and keys
 
-The scene fills the screen. Navigation (the trail, Back, Labels) waits above the top edge and slides down when the cursor comes near; on a phone, a small button in the corner shows it. Everything else is a pop-up on the scene: a card for each object, and "About this scene" for its title, summary, and sources (under the drawing on a phone). The footer, with the notice, is a scroll away. Labels (on objects, the trail, and the title line) show or hide together with the **Labels** button or **L**. With labels off, a gold dot still marks everything that opens, and made-up labels and the notice stay.
+The scene fills the screen. Navigation (the trail and Back) waits above the top edge and slides down when the cursor comes near; on a phone, a small button in the corner shows it. Everything else is a pop-up on the scene: a card for each object, and "About this scene" for its title, summary, and sources (under the drawing on a phone). The footer, with the notice, is a scroll away. A dot marks everything that opens, and its name shows while the cursor is over it, or it has focus. Made-up labels sit at the bottom of the scene and always show.
 
 | Key | Does |
 | --- | --- |
@@ -61,7 +61,6 @@ The scene fills the screen. Navigation (the trail, Back, Labels) waits above the
 | → Space PageDown | next state, then next scene on the path |
 | ← PageUp | previous state, then previous scene on the path |
 | Home | back to the campus |
-| L | labels on or off |
 | I | about this scene |
 | S | switch a scene between today and with CAMPUS |
 

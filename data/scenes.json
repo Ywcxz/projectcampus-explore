@@ -7,8 +7,8 @@
   "paths": [
     {
       "id": "first",
-      "label": "The network and the intranet",
-      "scenes": ["campus", "building", "lab", "screen", "outside", "phone"]
+      "label": "The first walk",
+      "scenes": ["campus", "elsewhere", "a-place", "building", "lab", "screen", "outside", "phone"]
     },
     {
       "id": "places",
@@ -193,11 +193,9 @@
         { "id": "building", "label": "An academic building", "opens": { "scene": "building" } },
         { "id": "student", "label": "A student between classes", "opens": { "scene": "outside" } },
         { "id": "route", "label": "A question finds its answer", "opens": { "card": "route" } },
-        { "id": "rings", "label": "The intranet's rings", "opens": { "card": "rings" } },
         { "id": "dorms", "label": "Dormitories", "opens": { "card": "to-come" } },
         { "id": "offices", "label": "Offices", "opens": { "card": "to-come" } },
-        { "id": "orgs", "label": "Organizations", "opens": { "card": "to-come" } },
-        { "id": "elsewhere", "label": "A network that isn't VSU's", "opens": { "scene": "elsewhere" } }
+        { "id": "orgs", "label": "Organizations", "opens": { "card": "to-come" } }
       ]
     },
     {

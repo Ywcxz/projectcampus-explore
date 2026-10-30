@@ -262,6 +262,13 @@
         var g = svg && svg.querySelector('[data-object="' + o.id + '"]');
         if (!g) return;
         var open = function () { openObject(o, g); };
+        // Its label names it while the cursor is over it, or it has focus.
+        var show = function () { var lb = labels.querySelector('.label[data-object="' + o.id + '"]'); if (lb) lb.classList.add("show"); };
+        var hide = function () { var lb = labels.querySelector('.label[data-object="' + o.id + '"]'); if (lb) lb.classList.remove("show"); };
+        g.addEventListener("mouseenter", show);
+        g.addEventListener("mouseleave", hide);
+        g.addEventListener("focus", show);
+        g.addEventListener("blur", hide);
         g.setAttribute("role", "button");
         g.setAttribute("aria-label", o.label);
         g.addEventListener("click", open);
@@ -528,8 +535,7 @@
     function onKey(e) {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       var k = e.key;
-      if (k === "l" || k === "L") { setWords(!state.words); e.preventDefault(); }
-      else if (k === "s" || k === "S") { nextState(); e.preventDefault(); }
+      if (k === "s" || k === "S") { nextState(); e.preventDefault(); }
       else if (k === "Escape") { minimal(); }
       else if (k === "i" || k === "I") { if (about && about.hidden) openAbout(); else closeAbout(); }
       else if (k === "ArrowRight" || k === "PageDown" || k === " ") { step(1); e.preventDefault(); }

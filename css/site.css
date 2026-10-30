@@ -236,9 +236,10 @@ body.moving .labels { opacity: 0; }
 @keyframes beacon { 0%, 100% { box-shadow: 0 0 0 3px rgba(226, 174, 28, .35); } 50% { box-shadow: 0 0 0 9px rgba(226, 174, 28, 0); } }
 
 /* Words off: only the dots stay, so a visitor still sees what opens. */
-body.no-words .label { padding: 6px; background: transparent; border-color: transparent; box-shadow: none; }
-body.no-words .label .text { display: none; }
-body.no-words .label .dot { animation: beacon 2.2s ease-in-out infinite; }
+/* Labels: a dot marks everything that opens; its name shows while the cursor is over it. */
+.label:not(.show) { padding: 6px; background: transparent; border-color: transparent; box-shadow: none; }
+.label:not(.show) .text { display: none; }
+.label:not(.show) .dot { animation: beacon 2.6s ease-in-out infinite; }
 body.no-words .trail { visibility: hidden; }
 
 

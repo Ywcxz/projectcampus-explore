@@ -184,7 +184,8 @@ for (const s of data.scenes) {
     if (to.card) check(cards.has(to.card), `${oat}: opens a card that exists`);
   }
 }
-for (const s of data.scenes) check(reached.has(s.id), `scene ${s.id}: can be reached from the start`);
+for (const p of data.paths || []) p.scenes.forEach((id) => reached.add(id));
+for (const s of data.scenes) check(reached.has(s.id), `scene ${s.id}: can be reached from the start or along a path`);
 for (const c of data.cards || []) {
   const at = `card ${c.id}`;
   check(!!c.title && !!c.text, `${at}: has a title and text`);
@@ -272,12 +273,12 @@ section("zoom, cards, words, keys", () => {
   check(app.state.scene.id === data.start, "trail: a step in the trail goes back there");
 
   // A card unfolds in place, with its claims and sources.
-  doc.querySelector('#labels .label[data-object="rings"]').click();
+  doc.querySelector('#frame [data-object="route"]').dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
   const card = doc.getElementById("card");
-  check(!card.hidden && card.dataset.card === "rings", "card: a label opens its object's card");
+  check(!card.hidden && card.dataset.card === "route", "card: an object opens its card");
   const cl = [...card.querySelectorAll(".claim")];
-  check(cl.length === cards.get("rings").claims.length && cl.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), "card: shows each claim's tag and source");
-  check(card.querySelector("a.chapter-link").href === `${MASTER}intranet.html`, "card: links its chapter");
+  check(cl.length === cards.get("route").claims.length && cl.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), "card: shows each claim's tag and source");
+  check(card.querySelector("a.chapter-link").href === `${MASTER}social-network.html`, "card: links its chapter");
   key(win, "Escape");
   check(card.hidden && app.state.scene.id === data.start, "card: Esc closes the card and stays in the scene");
 
@@ -286,12 +287,12 @@ section("zoom, cards, words, keys", () => {
   check(win.CampusScenes.sourceLink({ ref: "E-009" }, MASTER).href === `${MASTER}evidence.html#e-009`, "source: evidence links the evidence register");
 
   // Words: one key, one button, the same everywhere (D-171).
-  const btn = doc.getElementById("words-btn");
-  check(!doc.body.classList.contains("no-words") && btn.getAttribute("aria-pressed") === "true", "words: on by default");
-  key(win, "l");
-  check(doc.body.classList.contains("no-words") && btn.getAttribute("aria-pressed") === "false" && /words=off/.test(win.location.search), "labels: L turns them off and the address says so");
-  btn.click();
-  check(!doc.body.classList.contains("no-words"), "words: the button turns them back on");
+  const g = doc.querySelector('#frame [data-object="building"]'), lb = doc.querySelector('#labels .label[data-object="building"]');
+  check(!lb.classList.contains("show"), "labels: hidden until pointed at");
+  g.dispatchEvent(new win.MouseEvent("mouseenter"));
+  check(lb.classList.contains("show"), "labels: the cursor over an object names it");
+  g.dispatchEvent(new win.MouseEvent("mouseleave"));
+  check(!lb.classList.contains("show"), "labels: and the name goes when it leaves");
 
   // A path, stepped with a clicker.
   const path = data.paths[0].scenes;
@@ -374,8 +375,6 @@ section("navigation, out of the way", () => {
   btn.click();
   key(win, "Escape");
   check(!zone.classList.contains("open"), "nav: Esc hides it with any pop-up");
-  key(win, "l");
-  check(!zone.classList.contains("open") && doc.body.classList.contains("no-words"), "nav: L hides the labels, not the navigation");
 });
 
 section("?state=", () => {
