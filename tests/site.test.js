@@ -76,7 +76,7 @@ for (const [name, src] of [["js/main.js", js], ["js/art.js", artJs]]) {
 }
 check(!/https?:\/\//.test(js), "js/main.js: names no web address");
 check(!/https?:\/\/(?!www\.w3\.org\/2000\/svg)/.test(artJs), "js/art.js: names no web address but the SVG namespace");
-check(/fetch\("data\/scenes\.json"\)/.test(js) && (js.match(/fetch\(/g) || []).length === 1, "js/main.js: fetches only its own scene file");
+check(/fetch\("data\/scenes\.json"( \+ [^)]*)?\)/.test(js) && (js.match(/fetch\(/g) || []).length === 1, "js/main.js: fetches only its own scene file");
 
 /* ---------- the scene file ---------- */
 
@@ -127,6 +127,20 @@ for (const s of data.scenes) {
   check(s.parent === null || scenes.has(s.parent), `${at}: its parent exists`);
   (s.claims || []).forEach((c) => checkClaim(c, at));
   check((s.chapters || []).length > 0, `${at}: ends with a link to its chapter (D-152)`);
+
+  // Its states, if it has them: today and with CAMPUS, switched in place (D-172).
+  const stateIds = (s.states || []).map((x) => x.id);
+  if (s.states) {
+    check(s.states.length >= 2 && new Set(stateIds).size === stateIds.length && stateIds.every((id) => /^[a-z0-9-]+$/.test(id)), `${at}: has two or more states with unique lowercase ids`);
+    s.states.forEach((x, n) => {
+      const sat = `${at} state ${x.id}`;
+      check(!!x.label && words(x.label) <= 3, `${sat}: has a short label`);
+      if (n === 0) check(!x.title && !x.summary && !x.claims && x.madeUp === undefined, `${sat}: the first state uses the scene's own words`);
+      if (x.summary !== undefined) check(words(x.summary) <= 40, `${sat}: summary is 40 words or fewer (D-146)`);
+      if (x.madeUp !== undefined) check(x.madeUp === null || MADE_UP.includes(x.madeUp), `${sat}: madeUp is null or a known label`);
+      (x.claims || []).forEach((c) => checkClaim(c, sat));
+    });
+  }
   (s.chapters || []).forEach((ch) => checkChapter(ch, at));
 
   // Its drawing: well formed, kinds of place, and no words of its own outside a mock-up (D-171).
@@ -139,6 +153,11 @@ for (const s of data.scenes) {
   const lettered = [...svg.querySelectorAll("text")].filter((t) => /[A-Za-z]/.test(t.textContent));
   if (s.madeUp !== "mockup") check(lettered.length === 0, `${at}: its drawing carries no words outside a mock-up (D-171)`);
   else check(lettered.some((t) => /Mock-up/.test(t.textContent)), `${at}: its mock-up says so inside the picture (D-108)`);
+  // Pieces that change with the state name only states the scene has.
+  const named = [...svg.querySelectorAll("[data-show], [data-dim]")].flatMap((e) => `${e.getAttribute("data-show") || ""} ${e.getAttribute("data-dim") || ""}`.trim().split(/\s+/));
+  const moved = [...svg.querySelectorAll(".mover")].flatMap((e) => [...e.attributes].filter((a) => a.name.startsWith("data-at-")).map((a) => a.name.slice(8)));
+  check(named.concat(moved).every((id) => stateIds.includes(id)), `${at}: its drawing's states are the scene's states`);
+  check([...svg.querySelectorAll(".mover")].every((e) => [...e.attributes].some((a) => a.name.startsWith("data-at-") && /^-?[\d.]+ -?[\d.]+ [\d.]+$/.test(a.value))), `${at}: every moving piece says where it moves`);
   if (lettered.some((t) => /notice/i.test(t.textContent) && /Official/.test(t.textContent)) || svg.textContent.includes("Official")) {
     check(svg.textContent.includes("Sample: not an official VSU notice"), `${at}: a notice in a mock-up is marked as a sample (D-108)`);
   }
@@ -149,6 +168,7 @@ for (const s of data.scenes) {
     check(/^[a-z0-9-]+$/.test(o.id || "") && !ids.has(o.id), `${oat}: has a unique lowercase id`);
     ids.add(o.id);
     check(!!o.label && words(o.label) <= 6, `${oat}: has a short label`);
+    if (o.state !== undefined) check(stateIds.includes(o.state), `${oat}: belongs to one of the scene's states`);
     const g = svg.querySelector(`[data-object="${o.id}"]`);
     check(!!g, `${oat}: is drawn`);
     if (g) {
@@ -164,7 +184,8 @@ for (const s of data.scenes) {
     if (to.card) check(cards.has(to.card), `${oat}: opens a card that exists`);
   }
 }
-for (const s of data.scenes) check(reached.has(s.id), `scene ${s.id}: can be reached from the start`);
+for (const p of data.paths || []) p.scenes.forEach((id) => reached.add(id));
+for (const s of data.scenes) check(reached.has(s.id), `scene ${s.id}: can be reached from the start or along a path`);
 for (const c of data.cards || []) {
   const at = `card ${c.id}`;
   check(!!c.title && !!c.text, `${at}: has a title and text`);
@@ -205,18 +226,19 @@ for (const s of data.scenes) section(`page ?scene=${s.id}`, () => {
   check(doc.body.textContent.includes(NOTICE), `?scene=${s.id}: the rendered page carries the notice`);
   const made = doc.getElementById("made-up");
   check(s.madeUp ? !made.hidden && made.textContent === win.CampusScenes.MADE_UP[s.madeUp] : made.hidden, `?scene=${s.id}: says what is made up, and only then`);
+  const first = s.states ? s.states[0].id : null;
   for (const o of s.objects || []) {
+    const on = !o.state || o.state === first;
     const g = doc.querySelector(`#frame [data-object="${o.id}"]`);
-    check(!!g && g.getAttribute("role") === "button" && g.getAttribute("tabindex") === "0" && g.getAttribute("aria-label") === o.label, `?scene=${s.id} ${o.id}: is a button for keyboard and screen readers`);
-    check(!!doc.querySelector(`#labels .label[data-object="${o.id}"]`), `?scene=${s.id} ${o.id}: has its label`);
+    check(!!g && g.getAttribute("role") === "button" && g.getAttribute("tabindex") === (on ? "0" : "-1") && g.getAttribute("aria-label") === o.label, `?scene=${s.id} ${o.id}: is a button for keyboard and screen readers, focusable only in its state`);
+    const lb = doc.querySelector(`#labels .label[data-object="${o.id}"]`);
+    check(!!lb && lb.hidden === !on, `?scene=${s.id} ${o.id}: has its label, shown only in its state`);
   }
+  check(doc.getElementById("states").hidden === !s.states, `?scene=${s.id}: shows the switch only on a scene with states`);
   const claims = [...doc.querySelectorAll("#scene-claims .claim")];
   check(claims.length === (s.claims || []).length && claims.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), `?scene=${s.id}: every claim shows its tag and links its source`);
   check(doc.querySelectorAll("#scene-chapters a.chapter-link").length === (s.chapters || []).length, `?scene=${s.id}: links its chapters`);
-  const trail = [...doc.querySelectorAll("#trail a, #trail .here")].map((e) => e.textContent);
-  let chain = [], at = s;
-  while (at) { chain.unshift(at.title); at = at.parent ? scenes.get(at.parent) : null; }
-  check(JSON.stringify(trail) === JSON.stringify(chain), `?scene=${s.id}: the trail shows where you are`);
+  check(doc.getElementById("back-btn").hidden === !s.parent, `?scene=${s.id}: a back button only below the top level`);
 });
 
 section("zoom, cards, words, keys", () => {
@@ -224,6 +246,7 @@ section("zoom, cards, words, keys", () => {
   const doc = win.document;
   const app = win.CampusScenes.start(data, { doc, win });
   check(app.state.scene.id === data.start, "start: opens the start scene");
+  check(doc.getElementById("back-btn").hidden, "start: no back button at the top level");
   check(doc.getElementById("master-doc-link").href === MASTER, "the footer links to the master doc");
 
   // Into a building, a room, a screen; out with Escape.
@@ -233,31 +256,33 @@ section("zoom, cards, words, keys", () => {
   lab.dispatchEvent(new win.KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
   check(app.state.scene.id === "lab", "zoom: Enter on a focused object opens it");
   key(win, "Escape");
-  check(app.state.scene.id === "building", "back: Escape goes up one scene");
-  doc.querySelector("#trail a").dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
+  check(app.state.scene.id === "lab", "Esc: stays in the scene");
+  doc.getElementById("back-btn").click();
+  check(app.state.scene.id === "building", "back: the level above goes up one scene");
+  key(win, "Home");
   check(app.state.scene.id === data.start, "trail: a step in the trail goes back there");
 
   // A card unfolds in place, with its claims and sources.
-  doc.querySelector('#labels .label[data-object="rings"]').click();
+  doc.querySelector('#frame [data-object="route"]').dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
   const card = doc.getElementById("card");
-  check(!card.hidden && card.dataset.card === "rings", "card: a label opens its object's card");
+  check(!card.hidden && card.dataset.card === "route", "card: an object opens its card");
   const cl = [...card.querySelectorAll(".claim")];
-  check(cl.length === cards.get("rings").claims.length && cl.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), "card: shows each claim's tag and source");
-  check(card.querySelector("a.chapter-link").href === `${MASTER}intranet.html`, "card: links its chapter");
+  check(cl.length === cards.get("route").claims.length && cl.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), "card: shows each claim's tag and source");
+  check(card.querySelector("a.chapter-link").href === `${MASTER}social-network.html`, "card: links its chapter");
   key(win, "Escape");
-  check(card.hidden && app.state.scene.id === data.start, "card: Escape closes the card before leaving the scene");
+  check(card.hidden && app.state.scene.id === data.start, "card: Esc closes the card and stays in the scene");
 
   // Sources point at the master doc's rows.
   check(win.CampusScenes.sourceLink({ ref: "D-170" }, MASTER).href === `${MASTER}decisions.html#d-170`, "source: a decision links its register row");
   check(win.CampusScenes.sourceLink({ ref: "E-009" }, MASTER).href === `${MASTER}evidence.html#e-009`, "source: evidence links the evidence register");
 
   // Words: one key, one button, the same everywhere (D-171).
-  const btn = doc.getElementById("words-btn");
-  check(!doc.body.classList.contains("no-words") && btn.getAttribute("aria-pressed") === "true", "words: on by default");
-  key(win, "w");
-  check(doc.body.classList.contains("no-words") && btn.getAttribute("aria-pressed") === "false" && /words=off/.test(win.location.search), "words: W turns them off and the address says so");
-  btn.click();
-  check(!doc.body.classList.contains("no-words"), "words: the button turns them back on");
+  const g = doc.querySelector('#frame [data-object="building"]'), lb = doc.querySelector('#labels .label[data-object="building"]');
+  check(!lb.classList.contains("show"), "labels: hidden until pointed at");
+  g.dispatchEvent(new win.MouseEvent("mouseenter"));
+  check(lb.classList.contains("show"), "labels: the cursor over an object names it");
+  g.dispatchEvent(new win.MouseEvent("mouseleave"));
+  check(!lb.classList.contains("show"), "labels: and the name goes when it leaves");
 
   // A path, stepped with a clicker.
   const path = data.paths[0].scenes;
@@ -266,10 +291,95 @@ section("zoom, cards, words, keys", () => {
   key(win, "PageUp");
   check(app.state.scene.id === path[0], "path: a clicker's back goes to the previous scene");
 
-  key(win, "b");
-  check(!doc.getElementById("blank").hidden, "presenter: B blanks the screen");
+  check(!doc.getElementById("blank"), "keys: no blank screen; P and B are gone");
+});
+
+section("states: today and with CAMPUS", () => {
+  const win = page("https://explore.projectcampus.org/?scene=elsewhere&path=places");
+  const doc = win.document;
+  const app = win.CampusScenes.start(data, { doc, win });
+  const sc = scenes.get("elsewhere"), later = sc.states[1];
+  const title = () => doc.getElementById("scene-title").textContent;
+  const label = (id) => doc.querySelector(`#labels .label[data-object="${id}"]`);
+  check(app.state.view === "today" && title() === sc.title && doc.getElementById("frame").dataset.state === "today", "states: a scene opens in its first state");
+  check(doc.getElementById("made-up").textContent === win.CampusScenes.MADE_UP.composite, "states: today says it is a composite (D-148)");
+  const btns = [...doc.querySelectorAll("#states .state-btn")];
+  check(btns.length === 2 && btns[0].getAttribute("aria-pressed") === "true", "states: the switch shows both states, the first pressed");
+  btns[1].click();
+  check(app.state.view === "campus" && title() === later.title && /state=campus/.test(win.location.search), "states: the switch changes to with CAMPUS and the address says so");
+  check(doc.getElementById("made-up").textContent === win.CampusScenes.MADE_UP.layout, "states: each state says what is made up in it");
+  check(doc.querySelectorAll("#scene-claims .claim").length === later.claims.length, "states: each state shows its own claims");
+  check(label("feed").hidden && !label("org-place").hidden, "states: objects show only in their own state");
+  const post = doc.querySelector("#frame .post");
+  check(!!post && /translate\(/.test(post.style.transform), "states: a post moves to its place");
+  check(doc.querySelector('#frame [data-show="today"]').classList.contains("state-off"), "states: what belongs to today is hidden with CAMPUS");
+  btns[0].click();
+  check(app.state.view === "today" && !/state=/.test(win.location.search) && post.style.transform === "", "states: the switch goes back to today");
+
+  // A presenter's next steps through the states before the next scene.
   key(win, "ArrowRight");
-  check(doc.getElementById("blank").hidden && app.state.scene.id === path[0], "presenter: any key brings the screen back without moving");
+  check(app.state.scene.id === "elsewhere" && app.state.view === "campus", "path: next first switches a scene's state");
+  label("org-place").click();
+  check(app.state.scene.id === "a-place", "states: an object of a state opens its scene");
+  doc.getElementById("back-btn").click();
+  check(app.state.scene.id === "elsewhere" && app.state.view === "campus", "back: going up returns to the state it was opened from");
+  key(win, "ArrowLeft");
+  check(app.state.view === "today", "path: back steps through the states too");
+  key(win, "ArrowLeft");
+  check(app.state.scene.id === "campus", "path: back from a scene's first state goes to the previous scene");
+  key(win, "ArrowRight");
+  check(app.state.scene.id === "elsewhere" && app.state.view === "today", "path: next arrives in a scene's first state");
+});
+
+section("about this scene, as a pop-up", () => {
+  const win = page("https://explore.projectcampus.org/?scene=building");
+  const doc = win.document;
+  const app = win.CampusScenes.start(data, { doc, win });
+  const about = doc.getElementById("caption"), btn = doc.getElementById("about-btn");
+  check(about.hidden && btn.getAttribute("aria-expanded") === "false", "about: the scene shows alone at first");
+  btn.click();
+  check(!about.hidden && doc.getElementById("scene-title").textContent === scenes.get("building").title, "about: the button opens the title, summary, and sources");
+  doc.querySelector('#labels .label[data-object="ap"]').click();
+  check(about.hidden && !doc.getElementById("card").hidden, "about: a card replaces it, so one pop-up shows at a time");
+  key(win, "Escape");
+  const view0 = app.state.view;
+  key(win, "i");
+  key(win, "s");
+  check(about.hidden && app.state.view === view0, "keys: I and S do nothing");
+  btn.click();
+  check(!about.hidden, "about: the button opens it again");
+  key(win, "Escape");
+  check(about.hidden && app.state.scene.id === "building", "about: Esc closes it and stays in the scene");
+});
+
+section("zoom, on the scene only", () => {
+  const win = page("https://explore.projectcampus.org/");
+  const doc = win.document;
+  // A screen of 1600 by 900, which the test's page does not lay out by itself.
+  win.HTMLElement.prototype.getBoundingClientRect = () => ({ left: 0, top: 0, width: 1600, height: 900, right: 1600, bottom: 900 });
+  const app = win.CampusScenes.start(data, { doc, win });
+  const svg = doc.querySelector("#frame svg");
+  const vb0 = svg.getAttribute("viewBox");
+  const ctrl = (k) => win.document.dispatchEvent(new win.KeyboardEvent("keydown", { key: k, ctrlKey: true, bubbles: true, cancelable: true }));
+  ctrl("=");
+  const vb1 = svg.getAttribute("viewBox");
+  check(app.zoom.k > 1 && vb1 !== vb0 && Number(vb1.split(" ")[2]) < Number(vb0.split(" ")[2]), "zoom: Ctrl + zooms into the drawing's view, not the page");
+  ctrl("-"); ctrl("-"); ctrl("-");
+  check(app.zoom.k === 1, "zoom: never out past the whole scene");
+  ctrl("="); ctrl("0");
+  check(app.zoom.k === 1 && svg.getAttribute("viewBox") === vb0, "zoom: Ctrl 0 puts it back");
+  ctrl("="); app.go(scenes.get(data.start).objects.find((o) => o.opens && o.opens.scene).opens.scene, false, { instant: true });
+  check(app.zoom.k === 1, "zoom: a new scene starts unzoomed");
+});
+
+section("?state=", () => {
+  const win = page("https://explore.projectcampus.org/?scene=elsewhere&state=campus");
+  const doc = win.document;
+  const app = win.CampusScenes.start(data, { doc, win });
+  check(app.state.view === "campus" && doc.getElementById("scene-title").textContent === scenes.get("elsewhere").states[1].title, "?state=: a visit can start in a state");
+  const win2 = page("https://explore.projectcampus.org/?scene=elsewhere&state=nowhere");
+  const app2 = win2.CampusScenes.start(data, { doc: win2.document, win: win2 });
+  check(app2.state.view === "today", "?state=: an unknown state falls back to the first");
 });
 
 section("?words=off", () => {
@@ -277,6 +387,7 @@ section("?words=off", () => {
   const doc = win.document;
   win.CampusScenes.start(data, { doc, win });
   check(doc.body.classList.contains("no-words"), "?words=off: starts with the words hidden");
+  check(doc.body.classList.contains("no-words"), "?words=off: the header goes with the words, for presenting");
   check(!doc.getElementById("made-up").hidden, "?words=off: the made-up label still shows (D-171)");
   check(doc.body.textContent.includes(NOTICE), "?words=off: the notice still shows");
 });

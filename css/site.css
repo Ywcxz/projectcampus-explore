@@ -43,19 +43,18 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .skip { position: absolute; left: -9999px; }
 .skip:focus { left: 12px; top: 12px; z-index: 50; background: var(--card); padding: 8px 12px; border-radius: 8px; }
 
-/* ---------- the bar ---------- */
-.bar {
-  display: flex; align-items: center; gap: 16px;
-  padding: 10px 20px; border-bottom: 1px solid var(--rule);
-  background: rgba(243, 244, 238, .92);
-}
-.brand { font: 600 20px/1 var(--font-display); color: var(--ink); text-decoration: none; white-space: nowrap; }
-.brand span { font-style: italic; color: var(--green); }
-.trail { flex: 1; min-width: 0; font-size: 14px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.trail a { color: var(--ink-2); }
-.trail .sep { margin: 0 8px; color: var(--rule); }
-.trail .here { color: var(--ink); font-weight: 600; }
-.actions { display: flex; gap: 8px; }
+/* ---------- the screen: navigation on top, the scene filling the rest; scroll for the footer ---------- */
+.screen { position: relative; display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+
+/* Back up one level, as on VSUrvey: a small round button in the scene's top left,
+   on every scene but the start. The scenes themselves are the navigation. */
+.up { position: absolute; left: 16px; top: 16px; z-index: 3; width: 46px; height: 46px; border: 0; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer; background: var(--card); color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--rule), 0 6px 18px -6px rgba(31, 42, 34, .3); }
+.up svg { width: 20px; height: 20px; }
+.up:hover { color: var(--green); }
+.up[hidden] { display: none; }
+
 .btn {
   font: 500 14px/1 var(--font-body); color: var(--ink);
   background: var(--paper-2); border: 1px solid var(--rule); border-radius: 999px;
@@ -63,43 +62,77 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 }
 .btn:hover { background: var(--paper-3); }
 .btn[aria-pressed="false"] { background: var(--card); color: var(--ink-3); }
-.notice { margin: 0; font-size: 13px; color: var(--ink-3); }
-.notice-top { padding: 6px 20px; border-bottom: 1px solid var(--rule); background: var(--paper-2); text-align: center; }
+.notice { color: var(--ink-2); font-weight: 600; }
 
-/* ---------- the stage ---------- */
-.scene { position: relative; max-width: 1440px; margin: 0 auto; padding: 16px 16px 0; }
-.stage { position: relative; }
-.frame {
-  position: relative; aspect-ratio: 16 / 10; overflow: hidden;
-  border-radius: 22px; background: var(--paper-2);
-  box-shadow: 0 10px 30px rgba(31, 42, 34, .10), 0 1px 0 rgba(31, 42, 34, .05);
-}
+/* The scene fills the screen under the bar. Everything else is a pop-up on it:
+   a card for an object, and "About this scene" for the title, summary, and sources. */
+.scene { position: relative; flex: 1; min-height: 0; background: #EEF0E7; }
+.stage { position: absolute; inset: 0; }
+.canvas { position: absolute; inset: 0; }
+.frame { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--paper-2); touch-action: pan-y; }
+/* Zoomed in: drag to move around; a pinch or Ctrl and the wheel zoom (main.js). */
+.frame.zoomed { touch-action: none; cursor: grab; }
+.frame.dragging { cursor: grabbing; }
+.frame.dragging [data-object] { pointer-events: none; }
 .frame > svg { display: block; width: 100%; height: 100%; }
 .frame .placeholder { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--ink-3); }
 
+.about-btn { position: absolute; left: 16px; bottom: 16px; box-shadow: 0 2px 10px rgba(31, 42, 34, .12); background: rgba(255, 253, 246, .95); }
+.about-btn[aria-expanded="true"] { background: var(--green); color: #fff; border-color: var(--green); }
+.pop {
+  position: absolute; right: 16px; top: 16px; width: 380px; max-height: calc(100% - 32px); overflow: auto;
+  margin: 0; padding: 18px 20px 20px; background: var(--card); border: 1px solid var(--rule);
+  border-radius: var(--radius); box-shadow: 0 10px 30px rgba(31, 42, 34, .14);
+}
+.pop[hidden] { display: none; }
+/* Pop-ups fade in and out in a fifth of a second. */
+@keyframes pop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop-out { from { opacity: 1; } to { opacity: 0; } }
+.pop:not([hidden]) { animation: pop-in .18s ease both; }
+.pop.leaving { animation: pop-out .18s ease both; pointer-events: none; }
+.pop:focus { outline: none; }
+/* "About this scene" rises from its button. */
+.about { border-left: 5px solid var(--green); top: auto; right: auto; left: 16px; bottom: 66px; max-height: calc(100% - 82px); transform-origin: 20px 100%; }
+@keyframes rise { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
+.about:not([hidden]):not(.leaving) { animation: rise .2s cubic-bezier(.2, .8, .2, 1) both; }
+.about .scene-title { position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; margin: 0 0 6px; padding-right: 70px; font: 600 22px/1.2 var(--font-display); }
+.scene-summary { margin: 0 0 10px; font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+
 /* The camera: a zoom into an object, or out of it. */
-.frame > svg.zoom-in { transition: transform .62s cubic-bezier(.55, 0, .45, 1), opacity .62s ease-in; opacity: .15; }
+.frame > svg.zoom-in { transition: transform .5s cubic-bezier(.4, 0, .2, 1), opacity .5s ease-in; opacity: 0; }
 .frame > svg.zoom-set { transition: none; }
-.frame > svg.zoom-out { transition: transform .62s cubic-bezier(.55, 0, .45, 1); }
+.frame > svg.zoom-out { transition: transform .5s cubic-bezier(.4, 0, .2, 1); }
 body.moving .labels { opacity: 0; }
 
-/* Paper layers slide in at different speeds as a scene arrives (D-167). */
-@keyframes lay-in {
-  from { transform: translate(var(--lx), var(--ly)); opacity: 0; }
-  to { transform: none; opacity: 1; }
-}
-.lay.l1 { --lx: -8px; --ly: 4px; }
-.lay.l2 { --lx: -16px; --ly: 8px; }
-.lay.l3 { --lx: -28px; --ly: 14px; }
-.lay.l4 { --lx: -44px; --ly: 22px; }
-.arrive .lay { animation: lay-in .9s cubic-bezier(.2, .8, .2, 1) both; }
-.arrive .lay.l2 { animation-delay: .05s; }
-.arrive .lay.l3 { animation-delay: .1s; }
-.arrive .lay.l4 { animation-delay: .15s; }
+/* A scene arrives with a short, plain fade. */
+@keyframes scene-in { from { opacity: 0; } to { opacity: 1; } }
+.arrive > svg { animation: scene-in .35s ease both; }
 
 /* Objects a visitor can open. */
 .obj { cursor: pointer; transition: filter .2s; }
 .obj:hover, .obj:focus-visible { filter: drop-shadow(0 0 10px rgba(226, 174, 28, .9)); outline: none; }
+
+/* A scene's states, switched in place: pieces that show, dim, or move.
+   This comes after .obj so an object that also changes state keeps its glow. */
+.mover { transform-box: view-box; transform-origin: 0 0; }
+.mover, [data-show], [data-dim] { transition: transform .95s cubic-bezier(.6, .05, .3, 1), opacity .55s ease, filter .2s; }
+.state-off { opacity: 0; pointer-events: none; }
+.state-dim { opacity: .5; }
+.still .mover, .still [data-show], .still [data-dim] { transition: none !important; }
+
+/* The switch between today and with CAMPUS, a control that stays with words off. */
+.states {
+  position: absolute; right: 16px; bottom: 16px; display: inline-flex; padding: 4px; gap: 4px;
+  background: rgba(255, 253, 246, .94); border: 1px solid var(--rule); border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(31, 42, 34, .1);
+}
+.states[hidden] { display: none; }
+.state-btn {
+  font: 600 14px/1 var(--font-body); color: var(--ink-2); background: transparent;
+  border: 0; border-radius: 999px; padding: 9px 14px; cursor: pointer;
+}
+.state-btn:hover { color: var(--ink); }
+.state-btn[aria-pressed="true"] { background: var(--green); color: #fff; }
 
 /* Small life: the flow along a route, signal, blinking eyes, drifting clouds, a walk. */
 @keyframes flow { to { stroke-dashoffset: -64; } }
@@ -114,8 +147,26 @@ body.moving .labels { opacity: 0; }
 .cloud.c2 { animation-duration: 19s; }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 .walker { animation: bob 1s ease-in-out infinite; }
+/* Campus life: the walkers' steps, a phone's glow, a conversation, a feed that hovers. */
+.walk > .step { animation: bob .55s ease-in-out infinite; }
+@keyframes glow-phone { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
+.glow-phone { animation: glow-phone 2.2s ease-in-out infinite; }
+@keyframes chat { 0%, 4% { opacity: 0; transform: translateY(3px); } 8%, 30% { opacity: 1; transform: none; } 34%, 100% { opacity: 0; } }
+.chat { opacity: 0; animation: chat 7.5s ease-in-out infinite; transform-box: fill-box; }
+.chat.c1 { animation-delay: 2.5s; } .chat.c2 { animation-delay: 5s; }
+@keyframes hover-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.hover-float { animation: hover-float 4s ease-in-out infinite; }
 @keyframes led { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
 .led { animation: led 1.3s steps(2) infinite; }
+/* A question that rises over a post in the feed. */
+@keyframes ask { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.ask { animation: ask 2.6s ease-in-out infinite; transform-box: fill-box; }
+.ask.a1 { animation-delay: .5s; } .ask.a2 { animation-delay: 1s; }
+/* A steward's term ends: a cap, and the key passes to the next officer. */
+@keyframes hand-on { 0%, 38% { transform: none; } 58%, 92% { transform: translate(74px, 12px); } 100% { transform: none; } }
+@keyframes cap-on { 0%, 26% { opacity: 0; transform: translateY(-14px); } 34%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+.key { animation: hand-on 9s ease-in-out infinite; transform-box: view-box; }
+.cap { animation: cap-on 9s ease-in-out infinite; transform-box: fill-box; }
 
 /* Text inside a mock-up is part of the picture (D-171). */
 .ui { font-family: var(--font-body); }
@@ -132,43 +183,36 @@ body.moving .labels { opacity: 0; }
 
 /* ---------- labels: the words layer over the drawing ---------- */
 .labels { position: absolute; inset: 0; pointer-events: none; transition: opacity .2s; }
+/* A label names its object from just above it and lets taps through to it. */
 .label {
-  position: absolute; transform: translate(-50%, -100%);
+  position: absolute; transform: translate(-50%, calc(-100% - 6px)); pointer-events: none; opacity: .94;
   display: inline-flex; align-items: center; gap: 7px;
-  pointer-events: auto; cursor: pointer;
-  font: 500 14px/1 var(--font-body); color: var(--ink);
+
+  font: 500 13px/1 var(--font-body); color: var(--ink);
   background: var(--card); border: 1px solid var(--rule); border-radius: 999px;
-  padding: 7px 12px 7px 9px; box-shadow: 0 2px 8px rgba(31, 42, 34, .08);
+  padding: 6px 10px 6px 8px; box-shadow: 0 2px 8px rgba(31, 42, 34, .08);
   white-space: nowrap;
 }
 .label:hover { border-color: var(--gold); }
+.label[hidden] { display: none; }
+.label .dot { display: none; }
 .label .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(226, 174, 28, .25); }
 .label.goes-deeper .dot { background: var(--green); box-shadow: 0 0 0 4px rgba(23, 100, 58, .2); }
 @keyframes beacon { 0%, 100% { box-shadow: 0 0 0 3px rgba(226, 174, 28, .35); } 50% { box-shadow: 0 0 0 9px rgba(226, 174, 28, 0); } }
 
 /* Words off: only the dots stay, so a visitor still sees what opens. */
-body.no-words .label { padding: 6px; background: transparent; border-color: transparent; box-shadow: none; }
-body.no-words .label .text { display: none; }
-body.no-words .label .dot { animation: beacon 2.2s ease-in-out infinite; }
-body.no-words .scene-title, body.no-words .scene-summary,
-body.no-words .scene-sources, body.no-words .chapters, body.no-words .trail { visibility: hidden; }
-body.no-words .caption { background: transparent; border-color: transparent; box-shadow: none; }
+/* Labels: a dot marks everything that opens; its name shows while the cursor is over it. */
+.label:not(.show) { display: none; }
+body.no-words .trail { visibility: hidden; }
+
 
 /* What is made up says so, always. */
 .made-up {
-  position: absolute; right: 14px; bottom: 14px; margin: 0;
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); margin: 0; white-space: nowrap; pointer-events: none;
   font: 600 12px/1 var(--font-body); color: var(--brass);
   background: var(--brass-bg); border-radius: 999px; padding: 7px 12px;
 }
 
-/* ---------- the caption: title, summary, sources ---------- */
-.caption {
-  margin: 14px 0 0; padding: 18px 20px;
-  background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius);
-}
-.caption:focus { outline: none; }
-.scene-title { margin: 0 0 6px; font: 600 28px/1.15 var(--font-display); }
-.scene-summary { margin: 0 0 10px; font-size: 17px; color: var(--ink-2); max-width: 46rem; }
 .scene-sources summary { cursor: pointer; font-size: 14px; color: var(--ink-3); }
 .claims { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; font-size: 14px; color: var(--ink-2); }
 .claim .source { font-family: var(--font-mono); font-size: 12px; margin-left: 2px; }
@@ -181,40 +225,34 @@ body.no-words .caption { background: transparent; border-color: transparent; box
 .chapter-link { font-weight: 600; text-decoration: none; }
 .chapter-link:hover { text-decoration: underline; }
 
-/* ---------- a card that unfolds in place ---------- */
-.card {
-  margin: 14px 0 0; padding: 18px 20px 20px; position: relative;
-  background: var(--card); border: 1px solid var(--rule); border-left: 5px solid var(--gold);
-  border-radius: var(--radius); box-shadow: 0 10px 30px rgba(31, 42, 34, .12);
-}
+/* ---------- a card for an object ---------- */
+.card { border-left: 5px solid var(--gold); }
 .card-title { margin: 0 0 6px; padding-right: 70px; font: 600 22px/1.2 var(--font-display); }
 .card-text { margin: 0; color: var(--ink-2); }
 .card-close { position: absolute; right: 14px; top: 14px; font: 500 13px/1 var(--font-body); background: var(--paper-2); border: 1px solid var(--rule); border-radius: 999px; padding: 7px 11px; cursor: pointer; }
 
-/* On a wide screen the caption and card sit over the drawing, like paper on a desk. */
-@media (min-width: 1000px) {
-  .scene { padding-top: 20px; }
-  .caption { position: absolute; left: 34px; bottom: 34px; width: 430px; margin: 0; box-shadow: 0 10px 30px rgba(31, 42, 34, .12); }
-  .card { position: absolute; right: 34px; top: 36px; width: 400px; max-height: calc(100% - 70px); overflow: auto; margin: 0; }
-  .made-up { top: 16px; bottom: auto; left: 50%; right: auto; transform: translateX(-50%); }
-  .scene-title { font-size: 30px; }
-}
-
 /* ---------- presenting, blanking, footer ---------- */
-body.presenting .bar, body.presenting .footer .keys { display: none; }
-.blank { position: fixed; inset: 0; background: #000; z-index: 100; }
-.footer { max-width: 1440px; margin: 24px auto 0; padding: 18px 20px 40px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--ink-3); }
+
+.footer { max-width: 1440px; margin: 0 auto; padding: 18px 20px 40px; font-size: 14px; color: var(--ink-3); }
 .footer p { margin: 4px 0; }
 kbd { font: 12px/1 var(--font-mono); background: var(--card); border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px; }
 
+/* An upright screen: the drawing keeps its shape across the top; pop-ups and the button sit under it. */
+@media (max-aspect-ratio: 1/1) {
+  .stage, .canvas { bottom: auto; height: 62.5vw; }
+  .about-btn { top: calc(62.5vw + 10px); bottom: auto; left: 10px; }
+  .backdrop { bottom: auto; height: 62.5vw; }
+  .about { bottom: auto; }
+  .states { bottom: auto; top: calc(100% + 10px); right: 2px; }
+  .pop { top: calc(62.5vw + 56px); left: 8px; right: 8px; width: auto; max-height: calc(100% - 62.5vw - 64px); }
+}
 @media (max-width: 640px) {
-  .bar { flex-wrap: wrap; gap: 8px 12px; padding: 10px 14px; }
-  .trail { order: 3; flex-basis: 100%; }
-  .scene { padding: 10px 10px 0; }
   .frame { border-radius: 14px; }
   .label { font-size: 12px; padding: 5px 9px 5px 7px; }
-  .scene-title { font-size: 23px; }
-  .made-up { right: 8px; bottom: 8px; font-size: 11px; }
+  .made-up { top: auto; left: auto; transform: none; right: 8px; bottom: 8px; font-size: 11px; }
+
+  .state-btn { font-size: 12px; padding: 7px 10px; }
+  .footer { font-size: 13px; padding: 14px 14px 30px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

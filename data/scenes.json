@@ -1,14 +1,20 @@
 {
   "site": {
     "title": "Project CAMPUS",
+    "heading": "Campus scenes",
     "masterDoc": "https://docs.projectcampus.org/"
   },
   "start": "campus",
   "paths": [
     {
       "id": "first",
-      "label": "The network and the intranet",
-      "scenes": ["campus", "building", "lab", "screen", "outside", "phone"]
+      "label": "The first walk",
+      "scenes": ["campus", "elsewhere", "a-place", "building", "lab", "screen", "outside", "phone"]
+    },
+    {
+      "id": "places",
+      "label": "Places, shaped like VSU",
+      "scenes": ["campus", "elsewhere", "a-place"]
     }
   ],
   "cards": [
@@ -90,6 +96,85 @@
         { "text": "A problem sits at a kind of place, never a named building or office, until VSU evidence ties it there.", "tag": "Established", "source": { "ref": "D-153" } }
       ],
       "chapter": { "chapter": "social-network", "label": "Chapter 3" }
+    },
+    {
+      "id": "feed-study",
+      "title": "What a study will count",
+      "text": "A manual study would observe public VSU pages and groups by hand: where notices first appear and whether they change, and whether questions get answered, and by whom. Nothing is counted yet, and no group is named.",
+      "claims": [
+        { "text": "The Facebook landscape study is manual and observation-only, and covers public VSU-related pages and groups.", "tag": "Established", "source": { "ref": "D-041" } },
+        { "text": "No channel has been counted yet, and no day tallied.", "tag": "Established", "source": { "chapter": "facebook-study", "label": "Ch 8.1" } },
+        { "text": "The study names no community-run page or group.", "tag": "Established", "source": { "ref": "D-044" } }
+      ],
+      "chapter": { "chapter": "facebook-study", "label": "Chapter 8.1" }
+    },
+    {
+      "id": "scholarships",
+      "title": "The scholarships place",
+      "text": "It would exist because scholarships do, and outlive every student who joins it. Its question boards could be split by kind: CHED, DOST-SEI, local government, private, and university scholarships.",
+      "claims": [
+        { "text": "A place exists because what it serves exists, not because someone started a chat.", "tag": "Established", "source": { "ref": "D-062" } },
+        { "text": "A large place can divide a board by topic, such as scholarships by kind.", "tag": "Proposed", "source": { "chapter": "network-design", "label": "Ch 3.2" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 3.2" }
+    },
+    {
+      "id": "boards",
+      "title": "Boards inside a place",
+      "text": "Notices, questions, guides, events, and discussion. A place would open only the boards it needs, and what is superseded or past would go to its archive.",
+      "claims": [
+        { "text": "Inside each place are boards for notices, questions, guides, events, and discussion.", "tag": "Established", "source": { "ref": "D-144" } },
+        { "text": "A place opens only the boards it needs.", "tag": "Proposed", "source": { "chapter": "network-design", "label": "Ch 3.2" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 3.2" }
+    },
+    {
+      "id": "steward",
+      "title": "Steward",
+      "text": "Looks after a place for a term: its boards, who may join, and the handover. An organization's officers would steward its place for their term, then pass it to the next officers.",
+      "claims": [
+        { "text": "No one owns a place: stewards look after it for a term and hand it on, as an organization's officers would to the next officers.", "tag": "Established", "source": { "ref": "D-144" } },
+        { "text": "The word steward is chosen over owner, and over admin, which is kept for running the platform.", "tag": "Established", "source": { "ref": "D-144" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 3.2" }
+    },
+    {
+      "id": "moderator",
+      "title": "Moderator",
+      "text": "Keeps the place within the rules. A moderator would never remove a post for criticizing VSU, and never answer for an office: whether a post needs a response is the office's call.",
+      "claims": [
+        { "text": "Moderators enforce the rules and never remove a post for criticizing VSU; offices answer concerns and never moderate.", "tag": "Established", "source": { "ref": "D-066" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 3.2" }
+    },
+    {
+      "id": "peer-guide",
+      "title": "Peer guide",
+      "text": "A helper the place recognizes, shown on their posts, like a senior who keeps answering first-years. Helping would be recognized without public scores, levels, or rankings.",
+      "claims": [
+        { "text": "The helper role in a place is called peer guide.", "tag": "Established", "source": { "ref": "D-144" } },
+        { "text": "The network shows no public reputation scores, levels, or rankings.", "tag": "Established", "source": { "ref": "D-072" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 3.2" }
+    },
+    {
+      "id": "vsu-role",
+      "title": "A VSU role is not a place role",
+      "text": "Faculty and staff would take part in their real roles, not as administrators. A faculty member who joins an organization's place is a member there; a student who stewards it has authority there and nowhere else.",
+      "claims": [
+        { "text": "A member's role at VSU is separate from their role in a place, and no VSU role gives authority in a place by default.", "tag": "Established", "source": { "ref": "D-145" } },
+        { "text": "Office accounts still post their offices' official notices.", "tag": "Established", "source": { "ref": "D-145" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 3.2" }
+    },
+    {
+      "id": "more-roles",
+      "title": "Roles still open",
+      "text": "Maintainers who keep guides current, contributors open to any volunteer: which other roles a place needs, what each may do, and for how long, is still open, to be designed with the prototype.",
+      "claims": [
+        { "text": "Which roles a place has beyond steward, moderator, peer guide, and member, what each may do, and how and for how long each is given, is open.", "tag": "Unresolved", "source": { "ref": "Q-69" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 3.2" }
     }
   ],
   "scenes": [
@@ -97,7 +182,7 @@
       "id": "campus",
       "art": "campus",
       "parent": null,
-      "title": "One campus, two layers",
+      "title": "Main Campus",
       "summary": "The intranet on the ground: what VSU makes would live on VSU's own network first. The network above it: a question would reach someone who can answer, and the answer would stay.",
       "madeUp": "layout",
       "claims": [
@@ -106,13 +191,12 @@
       ],
       "chapters": [{ "chapter": "social-network", "label": "Chapter 3" }, { "chapter": "intranet", "label": "Chapter 2" }],
       "objects": [
-        { "id": "building", "label": "An academic building", "opens": { "scene": "building" } },
+        { "id": "building", "label": "Academic building", "opens": { "scene": "building" } },
         { "id": "student", "label": "A student between classes", "opens": { "scene": "outside" } },
         { "id": "route", "label": "A question finds its answer", "opens": { "card": "route" } },
-        { "id": "rings", "label": "The intranet's rings", "opens": { "card": "rings" } },
         { "id": "dorms", "label": "Dormitories", "opens": { "card": "to-come" } },
-        { "id": "offices", "label": "Offices", "opens": { "card": "to-come" } },
-        { "id": "orgs", "label": "Organizations", "opens": { "card": "to-come" } }
+        { "id": "offices", "label": "Faculty offices", "opens": { "card": "to-come" } },
+        { "id": "orgs", "label": "Services offices", "opens": { "card": "to-come" } }
       ]
     },
     {
@@ -199,6 +283,64 @@
         { "id": "notice", "label": "An office notice", "opens": { "card": "labels" } },
         { "id": "answer", "label": "A confirmed answer", "opens": { "card": "kept" } },
         { "id": "saved", "label": "Saved on this phone", "opens": { "card": "device" } }
+      ]
+    },
+    {
+      "id": "elsewhere",
+      "art": "elsewhere",
+      "parent": "campus",
+      "title": "One feed for everything",
+      "summary": "A scholarship deadline, a lost ID, a dorm without water, a question about GIS: all in one feed. The feed doesn't know which office a post concerns, who it's for, or whether it's still true.",
+      "madeUp": "composite",
+      "claims": [
+        { "text": "Do students take institutional questions to unofficial groups, where peers answer and a wrong answer has no owner? Not yet known: the survey, the interviews, and the Facebook study will ask.", "tag": "Unresolved", "source": { "ref": "P-03" } },
+        { "text": "Do official notices and rumor look alike where campus talk happens? Not yet known: the survey and the Facebook study will ask.", "tag": "Unresolved", "source": { "ref": "P-06" } },
+        { "text": "A general platform knows nothing of VSU's roles, offices, or rules.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 3" } }
+      ],
+      "states": [
+        { "id": "today", "label": "Today" },
+        {
+          "id": "campus",
+          "label": "With CAMPUS",
+          "title": "A place for every post",
+          "summary": "On the network, each post would have a place, because what it's about exists at VSU: scholarships, a building, an organization, a dormitory. A place would outlive every student who joins it.",
+          "madeUp": "layout",
+          "claims": [
+            { "text": "In the network's design, every place is tied to something real at VSU: an office, a faculty or department, an organization, a council, a service, a subject, a residence, a building, a large yearly event, or an interest its members start.", "tag": "Established", "source": { "ref": "D-144" } },
+            { "text": "Places sit side by side, never inside one another, and a place may say where it is.", "tag": "Established", "source": { "ref": "D-144" } },
+            { "text": "Course sections are not places: their materials and grades stay in VSUEE.", "tag": "Established", "source": { "chapter": "network-design", "label": "Ch 3.2" } },
+            { "text": "Nothing about the network has been approved, built, or tested.", "tag": "Established", "source": { "chapter": "social-network", "label": "Ch 3" } }
+          ]
+        }
+      ],
+      "chapters": [{ "chapter": "network-design", "label": "Chapter 3.2" }, { "chapter": "social-network", "label": "Chapter 3" }],
+      "objects": [
+        { "id": "feed", "label": "What a study will count", "state": "today", "opens": { "card": "feed-study" } },
+        { "id": "office-notice", "label": "An office's notice", "state": "campus", "opens": { "card": "labels" } },
+        { "id": "scholarships", "label": "The scholarships place", "state": "campus", "opens": { "card": "scholarships" } },
+        { "id": "org-place", "label": "An organization's place", "state": "campus", "opens": { "scene": "a-place" } }
+      ]
+    },
+    {
+      "id": "a-place",
+      "art": "aPlace",
+      "parent": "elsewhere",
+      "title": "Stewards, not owners",
+      "summary": "On the network, no one would own a place: stewards would look after it for a term, then hand it on. A faculty member who joins would be a member there, with no authority from their VSU role.",
+      "madeUp": "illustration",
+      "claims": [
+        { "text": "In the network's design, no one owns a place: stewards look after it for a term, then hand it on.", "tag": "Established", "source": { "ref": "D-144" } },
+        { "text": "A member's role at VSU is separate from their role in a place, and no VSU role gives authority in a place by default.", "tag": "Established", "source": { "ref": "D-145" } },
+        { "text": "Which roles a place has beyond steward, moderator, peer guide, and member, such as maintainers of guides or contributors, is still open.", "tag": "Unresolved", "source": { "ref": "Q-69" } }
+      ],
+      "chapters": [{ "chapter": "network-design", "label": "Chapter 3.2" }],
+      "objects": [
+        { "id": "boards", "label": "The place's boards", "opens": { "card": "boards" } },
+        { "id": "steward", "label": "Steward, for a term", "opens": { "card": "steward" } },
+        { "id": "moderator", "label": "Moderator", "opens": { "card": "moderator" } },
+        { "id": "peer-guide", "label": "Peer guide", "opens": { "card": "peer-guide" } },
+        { "id": "faculty", "label": "A faculty member who joins", "opens": { "card": "vsu-role" } },
+        { "id": "more-roles", "label": "Roles still open", "opens": { "card": "more-roles" } }
       ]
     }
   ]

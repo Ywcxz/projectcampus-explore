@@ -11,54 +11,47 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#F3F4EE">
-<link rel="stylesheet" href="css/site.css?v=0.2.0">
-<script src="js/art.js?v=0.2.0" defer></script>
-<script src="js/main.js?v=0.2.0" defer></script>
+<link rel="stylesheet" href="css/site.css?v=0.30.0">
+<script src="js/art.js?v=0.30.0" defer></script>
+<script src="js/main.js?v=0.30.0" defer></script>
 </head>
 <body>
 
-<a class="skip" href="#caption">Skip to the words</a>
+<a class="skip" href="#about-btn">Skip to the words</a>
 
-<header class="bar">
-  <a class="brand" href="./">Project <span>CAMPUS</span></a>
-  <nav class="trail" id="trail" aria-label="Where you are"></nav>
-  <div class="actions">
-    <button type="button" class="btn" id="back-btn" hidden>← Back</button>
-    <button type="button" class="btn" id="words-btn" aria-pressed="true" title="Show or hide the words (W)">Words on</button>
-  </div>
-</header>
-<p class="notice notice-top">An independent proposal by one alumnus. Not affiliated with Visayas State University.</p>
-
+<div class="screen">
 <main class="scene" id="scene">
   <div class="stage">
-    <div class="frame" id="frame">
-      <noscript><p class="placeholder">These scenes need JavaScript. Everything they draw on is in the <a href="https://docs.projectcampus.org/">master doc</a>.</p></noscript>
+    <div class="canvas">
+      <div class="frame" id="frame">
+        <noscript><p class="placeholder">These scenes need JavaScript. Everything they draw on is in the <a href="https://docs.projectcampus.org/">master doc</a>.</p></noscript>
+      </div>
+      <div class="labels" id="labels"></div>
+      <p class="made-up" id="made-up" hidden></p>
+      <div class="states" id="states" role="group" aria-label="Today, or with CAMPUS" hidden></div>
     </div>
-    <div class="labels" id="labels"></div>
-    <p class="made-up" id="made-up" hidden></p>
   </div>
 
-  <section class="caption" id="caption" tabindex="-1" aria-live="polite">
+  <button type="button" class="up" id="back-btn" aria-label="Back up one level" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <button type="button" class="btn about-btn" id="about-btn" aria-expanded="false" aria-controls="caption">About this scene</button>
+  <aside class="pop about" id="caption" tabindex="-1" aria-label="About this scene" hidden>
+    <button type="button" class="card-close" id="about-close" aria-label="Close">Close</button>
     <h1 class="scene-title" id="scene-title"></h1>
     <p class="scene-summary" id="scene-summary"></p>
-    <details class="scene-sources">
+    <details class="scene-sources" open>
       <summary>Sources</summary>
       <ul class="claims" id="scene-claims"></ul>
     </details>
     <p class="chapters" id="scene-chapters"></p>
-  </section>
-
-  <aside class="card" id="card" aria-live="polite" hidden></aside>
+  </aside>
+  <aside class="pop card" id="card" aria-live="polite" hidden></aside>
 </main>
+</div>
 
-<div class="blank" id="blank" hidden></div>
 
 <footer class="footer">
-  <p class="notice">An independent proposal by one alumnus. Not affiliated with Visayas State University.</p>
-  <p class="byline">By Leo M. Subingsubing, a VSU Main Campus alumnus.</p>
-  <p>Every claim here links to the <a id="master-doc-link" href="https://docs.projectcampus.org/">master doc</a>, which wins wherever the two differ.</p>
-  <p>This site collects nothing: no forms, accounts, cookies, or tracking.</p>
-  <p class="keys">Tap anything that glows. <kbd>W</kbd> words · <kbd>Esc</kbd> back · <kbd>→</kbd> next on the path · <kbd>P</kbd> present · <kbd>B</kbd> blank</p>
+  <p><span class="notice">An independent proposal by one alumnus. Not affiliated with Visayas State University.</span> By Leo M. Subingsubing, a VSU Main Campus alumnus.<span class="more"> Every claim links to the <a id="master-doc-link" href="https://docs.projectcampus.org/">master doc</a>, which wins wherever the two differ. This site collects nothing: no forms, accounts, cookies, or tracking.</span></p>
+  <p class="keys">Point at anything to name it · <kbd>Ctrl</kbd> + scroll or <kbd>Ctrl</kbd> <kbd>+</kbd> <kbd>−</kbd> zoom the scene · drag to move around it · <kbd>Esc</kbd> close pop-ups · <kbd>←</kbd> <kbd>→</kbd> previous and next scene</p>
 </footer>
 
 </body>
