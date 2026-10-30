@@ -83,6 +83,29 @@
     }
     return out;
   }
+  /* A building: a box with windows on both faces we see, floor by floor, and a door
+     on the front face (j + d) that takes the place of one ground-floor window. */
+  function bldg(P, i, j, w, d, h, c, doorCol) {
+    var out = box(P, i, j, w, d, h, [c[0], c[1], c[2]]);
+    var floors = Math.max(1, Math.round(h / 0.95)), fh = h / floors, wh = Math.min(0.2, fh * 0.22);
+    var win = function (a) { return poly(a, c[3]); };
+    for (var fl = 0; fl < floors; fl++) {
+      var zc = fl * fh + fh * 0.55;
+      for (var col = 0; col + 0.7 <= w; col++) {
+        if (fl === 0 && col === doorCol) continue;
+        out += win([P(i + col + 0.3, j + d, zc + wh), P(i + col + 0.75, j + d, zc + wh), P(i + col + 0.75, j + d, zc - wh), P(i + col + 0.3, j + d, zc - wh)]);
+      }
+      for (var row = 0; row + 0.7 <= d; row++) {
+        out += win([P(i + w, j + row + 0.3, zc + wh), P(i + w, j + row + 0.75, zc + wh), P(i + w, j + row + 0.75, zc - wh), P(i + w, j + row + 0.3, zc - wh)]);
+      }
+    }
+    if (doorCol != null) {
+      var dh = Math.min(0.8, fh * 0.85);
+      out += poly([P(i + doorCol + 0.25, j + d + 0.01, 0), P(i + doorCol + 0.8, j + d + 0.01, 0), P(i + doorCol + 0.8, j + d + 0.01, dh), P(i + doorCol + 0.25, j + d + 0.01, dh)], "#7A5C3A");
+      out += poly([P(i + doorCol + 0.15, j + d + 0.01, dh + 0.06), P(i + doorCol + 0.9, j + d + 0.01, dh + 0.06), P(i + doorCol + 0.9, j + d + 0.01, dh), P(i + doorCol + 0.15, j + d + 0.01, dh)], c[3]);
+    }
+    return out;
+  }
   function isoTree(P, i, j, k) {
     var p = P(i, j), r = (k || 1) * 11;
     return '<ellipse cx="' + f(p[0]) + '" cy="' + f(p[1] + 2) + '" rx="' + f(r * 0.85) + '" ry="' + f(r * 0.35) + '" fill="#1F2A22" opacity=".08"/>' +
@@ -253,7 +276,7 @@
     { skin: 0, hair: "#1B1B22", style: "bun", top: K.gold, low: "#2F3B5E", skirt: true, item: "phone" }
   ];
   /* One of the cast, feet at (x, y), at scale k. */
-  function isoChar(x, y, n, k, legs) {
+  function isoChar(x, y, n, k, legs, phoneEvery) {
     var c = CAST[n % CAST.length], sk = SKIN[c.skin], h = c.hair, out = "";
     var swing = function (side) { return legs ? legs(side) : ""; };
     out += '<ellipse cy="1.5" rx="7" ry="2.6" fill="#1F2A22" opacity=".13"/>';
@@ -268,7 +291,10 @@
     if (c.style === "pony") out += '<ellipse cx="-6" cy="-25" rx="2.2" ry="3.6" fill="' + h + '"/>';
     if (c.style === "bun") out += '<circle cy="-32.5" r="2.6" fill="' + h + '"/>';
     if (c.item === "book") out += '<rect x="5" y="-15" width="4.5" height="6" rx="0.8" fill="' + K.red + '"/>';
-    if (c.item === "phone") out += '<rect x="3.8" y="-17" width="4" height="6.5" rx="1" fill="' + K.ink + '"/><rect class="glow-phone" x="4.6" y="-16.2" width="2.4" height="4.6" fill="' + K.gold3 + '"/>';
+    // Standing still, now and then: the phone comes out and lights up, then goes away.
+    if (phoneEvery) out += '<g opacity="0"><animate attributeName="opacity" dur="' + phoneEvery + 's" repeatCount="indefinite" keyTimes="0;0.3;0.34;0.8;0.84;1" values="0;0;1;1;0;0"/>' +
+      '<rect x="3.8" y="-19" width="4" height="6.5" rx="1" fill="' + K.ink + '"/><rect x="4.6" y="-18.2" width="2.4" height="4.6" fill="' + K.gold3 + '"/></g>';
+    else if (c.item === "phone") out += '<rect x="3.8" y="-17" width="4" height="6.5" rx="1" fill="' + K.ink + '"/><rect class="glow-phone" x="4.6" y="-16.2" width="2.4" height="4.6" fill="' + K.gold3 + '"/>';
     if (c.item === "laptop") out += '<rect x="5" y="-12" width="9" height="2.4" rx="0.8" fill="#8C9286"/>';
     if (c.item === "umbrella") out += '<path d="M6 -10V-36" stroke="' + K.ink2 + '" stroke-width="1.2"/><path d="M-6 -35a12 7 0 0 1 24 0Z" fill="' + K.sea2 + '"/>';
     return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k) + ')">' + out + "</g>";
@@ -291,6 +317,53 @@
     };
     return '<g class="walk">' + isoChar(0, 0, n, k, legs) +
       '<animateMotion dur="' + D + 's" begin="' + (begin || 0) + 's" repeatCount="indefinite" path="' + path + '" keyPoints="0;1;1;0;0" keyTimes="0;' + a.toFixed(4) + ";" + b.toFixed(4) + ";" + c.toFixed(4) + ';1" calcMode="linear"/></g>';
+  }
+  /* A journey: one of the cast walks through waypoints (i, j), stopping at some
+     of them for a while, and fades in and out where the walk begins and ends,
+     at the edge of campus or a door. stops[n] is the wait on reaching point n;
+     talk lists the points where a speech bubble shows during the wait. After
+     the last point the walker stays gone for gap seconds, so the loop is not
+     seen to repeat. */
+  function journey(P, n, k, way, speed, stops, talk, begin, gap) {
+    var pts_ = way.map(function (q) { return P(q[0], q[1], q[2] || 0); });
+    var lens = [0], total = 0;
+    for (var m = 1; m < pts_.length; m++) {
+      var dx = pts_[m][0] - pts_[m - 1][0], dy = pts_[m][1] - pts_[m - 1][1];
+      total += Math.sqrt(dx * dx + dy * dy); lens.push(total);
+    }
+    // Events: [time, fraction of the path, moving?]
+    var t = 0.6, ev = [[0, 0, false], [0.6, 0, false]], moving = [], waits = [];
+    for (m = 1; m < pts_.length; m++) {
+      var dur = (lens[m] - lens[m - 1]) / speed;
+      moving.push([t, t + dur]); t += dur; ev.push([t, lens[m] / total]);
+      var w = stops[m] || 0;
+      if (w) { waits.push([m, t, t + w]); t += w; ev.push([t, lens[m] / total]); }
+    }
+    var end = t + 0.6, D = end + gap;
+    ev.push([end, 1]); ev.push([D, 1]);
+    var kt = ev.map(function (e) { return (e[0] / D).toFixed(4); }).join(";"), kp = ev.map(function (e) { return e[1].toFixed(4); }).join(";");
+    var path = "M" + pts_.map(function (q) { return f(q[0]) + "," + f(q[1]); }).join(" L");
+    var STEP = 0.28, vals = [], times = [];
+    for (var s2 = 0; s2 <= D + 1e-6; s2 += STEP) {
+      var mv = moving.some(function (r) { return s2 > r[0] && s2 < r[1]; });
+      vals.push(mv ? (Math.round(s2 / STEP) % 2 ? 1 : -1) : 0); times.push(Math.min(1, s2 / D));
+    }
+    times[times.length - 1] = 1;
+    var legs = function (side) {
+      return '<animateTransform attributeName="transform" type="rotate" dur="' + f(D) + 's" begin="' + begin + 's" repeatCount="indefinite" calcMode="linear" keyTimes="' +
+        times.map(function (x) { return x.toFixed(4); }).join(";") + '" values="' + vals.map(function (v) { return (v * side * 22) + " " + (side > 0 ? -2.4 : 2.4) + " -11"; }).join(";") + '"/>';
+    };
+    var fade = '<animate attributeName="opacity" dur="' + f(D) + 's" begin="' + begin + 's" repeatCount="indefinite" keyTimes="0;' + (0.6 / D).toFixed(4) + ";" + ((end - 0.6) / D).toFixed(4) + ";" + (end / D).toFixed(4) + ';1" values="0;1;1;0;0"/>';
+    var out = '<g class="walk" opacity="0">' + fade + isoChar(0, 0, n, k, legs) +
+      '<animateMotion dur="' + f(D) + 's" begin="' + begin + 's" repeatCount="indefinite" path="' + path + '" keyPoints="' + kp + '" keyTimes="' + kt + '" calcMode="linear"/></g>';
+    waits.forEach(function (wt) {
+      if (talk.indexOf(wt[0]) < 0) return;
+      var q = pts_[wt[0]], a = (wt[1] / D).toFixed(4), b = (wt[2] / D).toFixed(4);
+      out += '<g opacity="0"><animate attributeName="opacity" dur="' + f(D) + 's" begin="' + begin + 's" repeatCount="indefinite" keyTimes="0;' + a + ";" + (Math.min(wt[1] + 0.4, wt[2]) / D).toFixed(4) + ";" + (Math.max(wt[2] - 0.4, wt[1]) / D).toFixed(4) + ";" + b + ';1" values="0;0;1;1;0;0"/>' +
+        '<rect x="' + f(q[0] - 2) + '" y="' + f(q[1] - 50 * k) + '" width="' + f(22 * k) + '" height="' + f(13 * k) + '" rx="' + f(5 * k) + '" fill="#FFFFFF" filter="url(#soft)"/>' +
+        '<circle cx="' + f(q[0] + 4 * k) + '" cy="' + f(q[1] - 43.5 * k) + '" r="' + f(1.6 * k) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 9 * k) + '" cy="' + f(q[1] - 43.5 * k) + '" r="' + f(1.6 * k) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 14 * k) + '" cy="' + f(q[1] - 43.5 * k) + '" r="' + f(1.6 * k) + '" fill="' + K.ink3 + '"/></g>';
+    });
+    return out;
   }
   /* A balcony on the front face (j + d) of a box: a slab and a railing, at height z. */
   function balcony(P, i0, w, jFront, z) {
@@ -318,13 +391,13 @@
      ============================================================ */
   var WORLD = Iso(800, 600, 37);
   // Where each kind of place stands, and the top of its roof (i, j, z).
-  var SPOT = { building: [4.25, -7.9, 3.0], dorms: [-7, -2, 2.4], orgs: [-4.7, 6, 1.9], offices: [6.1, 4.3, 1.8] };
+  var SPOT = { building: [5, -7.8, 3.0], dorms: [-7, -2, 2.4], orgs: [-4.7, 6, 1.9], offices: [6.1, 4.3, 1.8] };
   function world(live) {
     var P = WORLD, S = P.s / 26, c = P(0, 0);
     var ground = '<ellipse cx="' + c[0] + '" cy="' + f(c[1] + 40 * S) + '" rx="' + f(640 * S) + '" ry="' + f(250 * S) + '" fill="#1F2A22" opacity=".06" filter="url(#blur)"/>' +
       '<ellipse cx="' + c[0] + '" cy="' + f(c[1] + 18 * S) + '" rx="' + f(610 * S) + '" ry="' + f(232 * S) + '" fill="#B9CFA9"/>' +
       '<ellipse cx="' + c[0] + '" cy="' + c[1] + '" rx="' + f(610 * S) + '" ry="' + f(232 * S) + '" fill="url(#grass)"/>';
-    [[-8, 0, 8, 0], [0, -8, 0, 8]].forEach(function (w) {
+    [[-4.5, 0, 14, 0], [0, -14, 0, 14]].forEach(function (w) {
       var a = P(w[0], w[1]), b = P(w[2], w[3]);
       ground += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + K.sand + '" stroke-width="12" stroke-linecap="round"/>';
     });
@@ -332,20 +405,19 @@
       office = [K.paper, "#CFD7CC", "#B3BFAF", "#5B7F8F"], org = ["#F3DCC8", "#D9A47C", "#C68B5E", "#5B7F8F"];
     var place = function (id, lx, ly, body) { return live ? obj(id, lx, ly, body) : body; };
     var k = S * 0.92, items = [];
-    var stand = function (i, j, z, n) { var q = P(i, j, z || 0); return isoChar(q[0], q[1], n, k); };
+    var stand = function (i, j, z, n, phoneEvery) { var q = P(i, j, z || 0); return isoChar(q[0], q[1], n, k, null, phoneEvery); };
     var road = function (i0, j0, i1, j1, z) { var a = P(i0, j0, z || 0), b = P(i1, j1, z || 0); return "M" + f(a[0]) + "," + f(a[1]) + " L" + f(b[0]) + "," + f(b[1]); };
     // Buildings, each with a door, some with balconies and people on them; depth sorts the scene.
-    var acadB = box(P, 2.5, -9, 3.5, 2.2, 3.0, acad) + door(P, 3.9, -6.8, 0.7, 0.75) +
-      balcony(P, 2.8, 1.4, -6.8, 1.0) + stand(3.4, -6.55, 1.0, 9) + railing(P, 2.8, 1.4, -6.8, 1.0) +
-      balcony(P, 4.4, 1.3, -6.8, 2.0) + walker(road(4.6, -6.55, 5.5, -6.55, 2.0), 7, k, 3, 4, -2) + railing(P, 4.4, 1.3, -6.8, 2.0);
-    items.push({ d: 6 - 6.8, svg: place("building", P(4.4, -7.8, 4.4)[0], P(4.4, -7.8, 4.4)[1], acadB) });
-    items.push({ d: 8.7 - 6.3, svg: box(P, 6.5, -8.5, 2.2, 2.2, 1.6, acad) + door(P, 7.2, -6.3, 0.6, 0.7) });
-    var dormB = box(P, -9, -4, 4, 1.6, 2.4, dorm) + box(P, -9, -1.6, 4, 1.6, 2.4, dorm) + door(P, -7.4, 0, 0.7, 0.75) +
-      balcony(P, -8.6, 1.3, 0, 1.25) + stand(-8, 0.25, 1.25, 8) + railing(P, -8.6, 1.3, 0, 1.25) +
-      balcony(P, -6.6, 1.3, 0, 1.25) + walker(road(-6.4, 0.25, -5.5, 0.25, 1.25), 3, k, 3, 5, -1) + railing(P, -6.6, 1.3, 0, 1.25);
+    var acadB = bldg(P, 2.5, -9, 5, 2.4, 3.0, acad, 2) +
+      balcony(P, 2.75, 1.5, -6.6, 1.0) + stand(3.5, -6.35, 1.0, 9, 11) + railing(P, 2.75, 1.5, -6.6, 1.0) +
+      balcony(P, 5.75, 1.5, -6.6, 2.0) + walker(road(5.95, -6.35, 7.05, -6.35, 2.0), 7, k, 3, 4, -2) + railing(P, 5.75, 1.5, -6.6, 2.0);
+    items.push({ d: 7.5 - 6.6, svg: place("building", P(5, -7.8, 4.4)[0], P(5, -7.8, 4.4)[1], acadB) });
+    var dormB = bldg(P, -9, -4, 4, 1.6, 2.4, dorm) + bldg(P, -9, -1.6, 4, 1.6, 2.4, dorm, 1) +
+      balcony(P, -8.75, 0.9, 0, 1.2) + stand(-8.3, 0.25, 1.2, 8, 14) + railing(P, -8.75, 0.9, 0, 1.2) +
+      balcony(P, -6.75, 1.6, 0, 1.2) + walker(road(-6.55, 0.25, -5.45, 0.25, 1.2), 3, k, 3, 5, -1) + railing(P, -6.75, 1.6, 0, 1.2);
     items.push({ d: -5 + 0, svg: place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, dormB) });
-    items.push({ d: -3.4 + 7, svg: place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, box(P, -6, 5, 2.6, 2, 1.9, org) + door(P, -5.1, 7, 0.7, 0.75)) });
-    items.push({ d: 7.7 + 5.4, svg: place("offices", P(6.6, 6.4)[0], P(6.6, 6.4)[1] + 10, box(P, 4.5, 3.2, 3.2, 2.2, 1.8, office) + door(P, 5.7, 5.4, 0.7, 0.75)) });
+    items.push({ d: -3.4 + 7, svg: place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, bldg(P, -6, 5, 2.6, 2, 1.9, org, 1)) });
+    items.push({ d: 7.7 + 5.4, svg: place("offices", P(6.6, 6.4)[0], P(6.6, 6.4)[1] + 10, bldg(P, 4.5, 3.2, 3.2, 2.2, 1.8, office, 1)) });
     [[-3.5, -6], [-2, -7.5], [9, -3], [9.5, 1], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-2.5, 8.6], [8.6, 7.4], [-6, -8], [-11.5, -1], [10, 4.5]].forEach(function (t) {
       items.push({ d: t[0] + t[1], svg: isoTree(P, t[0], t[1], 1.6) });
     });
@@ -360,16 +432,20 @@
         '<circle cx="' + f(q[0] + 2.5 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 7 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 11.5 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
     });
     items.push({ d: 0.6, svg: circle });
-    var sp = P(2.2, -5.2), st = '<g class="walker">' + isoChar(sp[0], sp[1], 1, k) + "</g>";
+    var sp = P(2.2, -5.2), st = isoChar(sp[0], sp[1], 1, k, null, 9);
     items.push({ d: -3, svg: live ? obj("student", sp[0], sp[1] - 40, st) : st });
     items.sort(function (x, y) { return x.d - y.d; });
     var places = items.map(function (x) { return x.svg; }).join("");
-    // Walking to class along the walks, standing a while at each end, clear of the buildings.
-    places += walker(road(-4.4, 0.4, 7.5, 0.4), 0, k, 13, 4, 0);
-    places += walker(road(7.2, -0.4, -4.4, -0.4), 1, k, 12, 7, -6);
-    places += walker(road(0.4, 7.5, 0.4, -7.5), 2, k, 15, 3, -4);
-    places += walker(road(-0.4, -7.2, -0.4, 7.2), 4, k, 16, 6, -11);
-    places += walker(road(-3.6, 0.9, 5, 0.9), 6, k, 11, 9, -14);
+    // People come and go: in from the edge of campus or out of a door, and out again.
+    // Two meet, talk a while, and walk on together; one stops to check a phone.
+    var V = 1.15 * P.s / 26 * 26;
+    places += journey(P, 0, k, [[0.4, -14], [0.4, -1.4], [0.4, 14]], V, { 1: 6 }, [1], 0, 6);
+    places += journey(P, 6, k, [[-0.4, 14], [-0.4, -1.0], [-0.4, 14]], V, { 1: 6 }, [], -2, 4.4);
+    places += journey(P, 2, k, [[14, 0.4], [-3.4, 0.4], [-4.75, 7.4]], V * 0.9, { 1: 5 }, [], -11, 9);
+    places += journey(P, 4, k, [[-7.45, 0.3], [-7.45, 0.9], [14, 0.9]], V, { 1: 0, 2: 0 }, [], -23, 14);
+    places += journey(P, 5, k, [[-0.4, 14], [-0.4, 7.2], [6.05, 7.2], [6.05, 5.6]], V * 0.85, { 1: 3 }, [], -7, 11);
+    places += journey(P, 8, k, [[4.75, -6.4], [4.75, -2.9], [0.4, -2.9], [0.4, -14]], V, { 2: 4 }, [], -30, 8);
+    places += journey(P, 1, k, [[14, -0.4], [3.6, -0.4], [14, -0.4]], V * 1.1, { 1: 9 }, [], -17, 12);
     return { ground: ground, places: places };
   }
   function hills() {
