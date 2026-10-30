@@ -11,9 +11,9 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#F3F4EE">
-<link rel="stylesheet" href="css/site.css?v=0.30.0">
-<script src="js/art.js?v=0.30.0" defer></script>
-<script src="js/main.js?v=0.30.0" defer></script>
+<link rel="stylesheet" href="css/site.css?v=0.32.0">
+<script src="js/art.js?v=0.32.0" defer></script>
+<script src="js/main.js?v=0.32.0" defer></script>
 </head>
 <body>
 
@@ -48,6 +48,9 @@
 </main>
 </div>
 
+
+<!-- A request, not a lock (D-176): students are asked to come back after the survey. ?present skips it. -->
+<div class="menu notice-gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-t" hidden><div class="menu-card"><h2 id="gate-t"></h2><p id="gate-text"></p><div class="gate-actions"><a class="btn go" id="gate-survey" hidden></a><button type="button" class="btn go" id="gate-survey-closed" disabled hidden></button><button type="button" class="btn" id="gate-go"></button><button type="button" class="btn" id="gate-answered"></button><a class="btn link" id="gate-leave"></a></div></div></div>
 
 <footer class="footer">
   <p><span class="notice">An independent proposal by one alumnus. Not affiliated with Visayas State University.</span> By Leo M. Subingsubing, a VSU Main Campus alumnus.<span class="more"> Every claim links to the <a id="master-doc-link" href="https://docs.projectcampus.org/">master doc</a>, which wins wherever the two differ. This site collects nothing: no forms, accounts, cookies, or tracking.</span></p>
