@@ -8,6 +8,9 @@
       "go": "I'm not a student — continue",
       "leave": "Back to Project CAMPUS",
       "leaveHref": "https://projectcampus.org/",
+      "survey": "Answer the survey",
+      "surveyHref": "https://survey.projectcampus.org/student-life",
+      "surveyOpen": false,
       "source": "D-176"
     },
     "masterDoc": "https://docs.projectcampus.org/"

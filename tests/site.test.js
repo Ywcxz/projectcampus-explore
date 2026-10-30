@@ -361,6 +361,7 @@ section("a notice for students (D-176)", () => {
   const gate = doc.getElementById("gate");
   check(!gate.hidden && doc.getElementById("gate-t").textContent === data.site.studentNotice.title, "notice: a visit opens with the notice for students");
   check(doc.getElementById("gate-leave").getAttribute("href") === data.site.studentNotice.leaveHref, "notice: it offers the way back to the landing page");
+  check(doc.getElementById("gate-survey").hidden === !data.site.studentNotice.surveyOpen, "notice: links the survey only once it is open (D-114)");
   key(win, "ArrowRight");
   check(app.state.scene.id === data.start, "notice: keys wait behind it");
   doc.getElementById("gate-go").click();

@@ -620,6 +620,8 @@
       $("gate-go").textContent = gn.go;
       $("gate-leave").textContent = gn.leave;
       $("gate-leave").href = gn.leaveHref;
+      // The survey is linked only once it opens (D-114): the owner sets surveyOpen then.
+      if (gn.surveyOpen && $("gate-survey")) { $("gate-survey").textContent = gn.survey; $("gate-survey").href = gn.surveyHref; $("gate-survey").hidden = false; $("gate-go").classList.remove("go"); }
       gate.hidden = false;
       gateOpen = true;
       $("gate-go").addEventListener("click", function () { gate.hidden = true; gateOpen = false; });
