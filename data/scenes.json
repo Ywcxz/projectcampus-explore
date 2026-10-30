@@ -2,6 +2,14 @@
   "site": {
     "title": "Project CAMPUS",
     "heading": "Campus scenes",
+    "studentNotice": {
+      "title": "Are you a VSU student?",
+      "text": "These scenes show what Project CAMPUS proposes. A short student survey comes first, so your answers aren't shaped by what you see here. If you're a student, please come back after you've answered it.",
+      "go": "I'm not a student — continue",
+      "leave": "Back to Project CAMPUS",
+      "leaveHref": "https://projectcampus.org/",
+      "source": "D-176"
+    },
     "masterDoc": "https://docs.projectcampus.org/"
   },
   "start": "campus",

@@ -100,6 +100,8 @@
     }
 
     /* ---------- the address: ?scene=, ?path=, ?words=off ---------- */
+    // ?present skips the notice for students, for presentations (D-176), and stays in the address.
+    var present = params.has("present"), gate = $("gate"), gateOpen = false;
     function writeAddress(push) {
       if (!win.history || !state.scene) return;
       var q = new win.URLSearchParams();
@@ -107,7 +109,8 @@
       if (state.view && state.view !== firstState(state.scene)) q.set("state", state.view);
       if (state.path && params.get("path")) q.set("path", state.path.id);
       if (!state.words) q.set("words", "off");
-      var url = win.location.pathname + (q.toString() ? "?" + q.toString() : "");
+      if (present) q.set("present", "");
+      var url = win.location.pathname + (q.toString() ? "?" + q.toString().replace(/(^|&)present=(?=&|$)/, "$1present") : "");
       try {
         if (push) win.history.pushState({ scene: state.scene.id }, "", url);
         else win.history.replaceState({ scene: state.scene.id }, "", url);
@@ -581,6 +584,7 @@
 
     /* ---------- keys: Esc, the arrows, Home ---------- */
     function onKey(e) {
+      if (gateOpen) return;
       if ((e.ctrlKey || e.metaKey) && !e.altKey) {
         // The browser's zoom keys zoom the scene instead.
         if (e.key === "+" || e.key === "=") { zoomAt(1.25); e.preventDefault(); }
@@ -608,6 +612,19 @@
       else go(id, false, { view: q.get("state") });
     });
 
+    // The notice for students: shown on every visit without ?present, since the site remembers nothing (D-148).
+    var gn = (data.site || {}).studentNotice;
+    if (gate && gn && !present) {
+      $("gate-t").textContent = gn.title;
+      $("gate-text").textContent = gn.text;
+      $("gate-go").textContent = gn.go;
+      $("gate-leave").textContent = gn.leave;
+      $("gate-leave").href = gn.leaveHref;
+      gate.hidden = false;
+      gateOpen = true;
+      $("gate-go").addEventListener("click", function () { gate.hidden = true; gateOpen = false; });
+      win.setTimeout(function () { $("gate-go").focus(); }, 0);
+    }
     setWords(state.words);
     var first = scenes[params.get("scene")] || scenes[data.start];
     render(first, params.get("state"));

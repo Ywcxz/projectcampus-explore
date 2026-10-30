@@ -258,3 +258,14 @@ kbd { font: 12px/1 var(--font-mono); background: var(--card); border: 1px solid 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* The notice for students (D-176), in VSUrvey's dialog style. */
+.menu[hidden] { display: none; }
+.menu { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+.menu-card { width: min(480px, calc(100% - 24px)); max-height: 86vh; overflow: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 20px; padding: 22px 22px 20px; box-shadow: 0 16px 36px -18px rgba(31, 42, 34, .26); }
+.menu-card h2 { font: 600 24px/1.2 var(--font-display); margin: 0 0 10px; }
+.notice-gate { z-index: 20; background: rgba(31, 42, 34, .55); }
+.notice-gate p { margin: 0 0 14px; line-height: 1.5; }
+.gate-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0 !important; }
+.gate-actions .go { background: var(--green); color: #fff; border-color: var(--green); }
+.gate-actions a.btn { text-decoration: none; }

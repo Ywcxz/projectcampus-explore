@@ -201,7 +201,9 @@ for (const p of data.paths || []) {
 /* ---------- the page, rendered ---------- */
 
 const html = read("index.html");
-function page(url) {
+// Pages open as for a presentation (?present), except where the notice for students is tested.
+function page(url, withNotice) {
+  if (!withNotice && !/[?&]present/.test(url)) url += (url.includes("?") ? "&" : "?") + "present";
   const dom = new JSDOM(html, { url, runScripts: "outside-only", pretendToBeVisual: true });
   dom.window.CAMPUS_NO_BOOT = true;
   dom.window.eval(artJs);
@@ -350,6 +352,24 @@ section("about this scene, as a pop-up", () => {
   check(!about.hidden, "about: the button opens it again");
   key(win, "Escape");
   check(about.hidden && app.state.scene.id === "building", "about: Esc closes it and stays in the scene");
+});
+
+section("a notice for students (D-176)", () => {
+  const win = page("https://explore.projectcampus.org/", true);
+  const doc = win.document;
+  const app = win.CampusScenes.start(data, { doc, win });
+  const gate = doc.getElementById("gate");
+  check(!gate.hidden && doc.getElementById("gate-t").textContent === data.site.studentNotice.title, "notice: a visit opens with the notice for students");
+  check(doc.getElementById("gate-leave").getAttribute("href") === data.site.studentNotice.leaveHref, "notice: it offers the way back to the landing page");
+  key(win, "ArrowRight");
+  check(app.state.scene.id === data.start, "notice: keys wait behind it");
+  doc.getElementById("gate-go").click();
+  check(gate.hidden, "notice: continue closes it");
+  const win2 = page("https://explore.projectcampus.org/?present");
+  const app2 = win2.CampusScenes.start(data, { doc: win2.document, win: win2 });
+  check(win2.document.getElementById("gate").hidden, "notice: ?present skips it");
+  app2.go(scenes.get(data.start).objects.find((o) => o.opens && o.opens.scene).opens.scene, true, { instant: true });
+  check(/[?&]present(&|$)/.test(win2.location.search), "notice: ?present stays in the address between scenes");
 });
 
 section("zoom, on the scene only", () => {
