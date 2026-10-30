@@ -238,7 +238,8 @@ for (const s of data.scenes) section(`page ?scene=${s.id}`, () => {
   const claims = [...doc.querySelectorAll("#scene-claims .claim")];
   check(claims.length === (s.claims || []).length && claims.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), `?scene=${s.id}: every claim shows its tag and links its source`);
   check(doc.querySelectorAll("#scene-chapters a.chapter-link").length === (s.chapters || []).length, `?scene=${s.id}: links its chapters`);
-  const trail = [...doc.querySelectorAll("#trail .mname")].map((e) => e.textContent);
+  const trail = [...doc.querySelectorAll("#trail .on-way .mname")].map((e) => e.textContent);
+  check(doc.querySelectorAll("#trail button").length === scenes.size, `?scene=${s.id}: the panel maps every scene`);
   check(doc.getElementById("here-title").textContent === trail[trail.length - 1] && doc.querySelectorAll("#dots i").length === trail.length, `?scene=${s.id}: the pill names the scene, a dot for each level`);
   // A scene opened from one state of its parent shows that state's title in the trail.
   let chain = [], at = s;
@@ -270,7 +271,7 @@ section("zoom, cards, words, keys", () => {
   key(win, "Escape");
   check(app.state.scene.id === "lab", "Esc: stays in the scene");
   const lv = () => [...doc.querySelectorAll("#trail button")];
-  lv()[lv().length - 2].click();
+  doc.querySelector('#trail button[aria-current]').closest("li").previousElementSibling.querySelector("button").click();
   check(app.state.scene.id === "building", "back: the level above goes up one scene");
   lv()[0].click();
   check(app.state.scene.id === data.start, "trail: a step in the trail goes back there");
@@ -334,9 +335,7 @@ section("states: today and with CAMPUS", () => {
   check(app.state.scene.id === "elsewhere" && app.state.view === "campus", "path: next first switches a scene's state");
   label("org-place").click();
   check(app.state.scene.id === "a-place", "states: an object of a state opens its scene");
-  const trail = [...doc.querySelectorAll("#trail .mname")].map((a) => a.textContent);
-  check(trail[1] === later.title, "trail: a scene opened from a state shows that state");
-  doc.querySelectorAll("#trail button")[1].click();
+  doc.querySelector('#trail button[aria-current]').closest("li").previousElementSibling.querySelector("button").click();
   check(app.state.scene.id === "elsewhere" && app.state.view === "campus", "back: going up returns to the state it was opened from");
   key(win, "ArrowLeft");
   check(app.state.view === "today", "path: back steps through the states too");

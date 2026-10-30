@@ -474,17 +474,26 @@
       var chain = ancestors(scene);
       if (hereTitle) hereTitle.textContent = v.title;
       if (dots) { clear(dots); chain.forEach(function (s) { dots.appendChild(make(doc, "i", s === scene ? "now" : "done")); }); }
+      // The panel maps every scene as a tree from the start: the way here is
+      // marked, this scene most of all, and any scene is one click away.
       clear(trail);
-      chain.forEach(function (s, n) {
-        var o = n < chain.length - 1 ? objectOpening(s, chain[n + 1].id) : null, sv = s === scene ? state.view : (o && o.state ? o.state : null);
-        var li = make(doc, "li"), b = make(doc, "button", null);
-        b.type = "button";
-        b.appendChild(make(doc, "span", "mname", viewOf(s, sv || firstState(s)).title));
-        if (s === scene) { b.setAttribute("aria-current", "step"); b.appendChild(make(doc, "small", null, "You are here")); }
-        b.addEventListener("click", function () { closeLevels(); if (s !== scene) go(s.id, true); });
-        li.appendChild(b);
-        trail.appendChild(li);
-      });
+      var kids = {};
+      Object.keys(scenes).forEach(function (id) { var p = scenes[id].parent || ""; (kids[p] = kids[p] || []).push(scenes[id]); });
+      (function walk(list, depth) {
+        (list || []).forEach(function (s) {
+          var li = make(doc, "li", depth ? "depth" : null), b = make(doc, "button", chain.indexOf(s) > -1 ? "on-way" : null);
+          li.style.setProperty("--depth", depth);
+          b.type = "button";
+          var at = chain.indexOf(s), o = at > -1 && s !== scene ? objectOpening(s, chain[at + 1].id) : null;
+          var t = s === scene ? v.title : viewOf(s, (o && o.state) || firstState(s)).title;
+          b.appendChild(make(doc, "span", "mname", t));
+          if (s === scene) { b.setAttribute("aria-current", "step"); b.appendChild(make(doc, "small", null, "You are here")); }
+          b.addEventListener("click", function () { closeLevels(); if (s !== scene) go(s.id, true); });
+          li.appendChild(b);
+          trail.appendChild(li);
+          walk(kids[s.id], depth + 1);
+        });
+      })(kids[""], 0);
       doc.title = v.title + " · Project CAMPUS";
     }
 
