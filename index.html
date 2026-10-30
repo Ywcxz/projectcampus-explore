@@ -11,9 +11,9 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#F3F4EE">
-<link rel="stylesheet" href="css/site.css?v=0.3.0">
-<script src="js/art.js?v=0.3.0" defer></script>
-<script src="js/main.js?v=0.3.0" defer></script>
+<link rel="stylesheet" href="css/site.css?v=0.4.0">
+<script src="js/art.js?v=0.4.0" defer></script>
+<script src="js/main.js?v=0.4.0" defer></script>
 </head>
 <body>
 
@@ -27,39 +27,42 @@
     <button type="button" class="btn" id="words-btn" aria-pressed="true" title="Show or hide the words (W)">Words on</button>
   </div>
 </header>
-<p class="notice notice-top">An independent proposal by one alumnus. Not affiliated with Visayas State University.</p>
+
+<section class="heading" id="caption" tabindex="-1" aria-live="polite">
+  <h1 class="scene-title" id="scene-title"></h1>
+  <p class="scene-summary" id="scene-summary"></p>
+</section>
 
 <main class="scene" id="scene">
   <div class="stage">
-    <div class="frame" id="frame">
-      <noscript><p class="placeholder">These scenes need JavaScript. Everything they draw on is in the <a href="https://docs.projectcampus.org/">master doc</a>.</p></noscript>
+    <div class="canvas">
+      <div class="frame" id="frame">
+        <noscript><p class="placeholder">These scenes need JavaScript. Everything they draw on is in the <a href="https://docs.projectcampus.org/">master doc</a>.</p></noscript>
+      </div>
+      <div class="labels" id="labels"></div>
+      <p class="made-up" id="made-up" hidden></p>
+      <div class="states" id="states" role="group" aria-label="Today, or with CAMPUS" hidden></div>
     </div>
-    <div class="labels" id="labels"></div>
-    <p class="made-up" id="made-up" hidden></p>
-    <div class="states" id="states" role="group" aria-label="Today, or with CAMPUS" hidden></div>
   </div>
 
-  <section class="caption" id="caption" tabindex="-1" aria-live="polite">
-    <h1 class="scene-title" id="scene-title"></h1>
-    <p class="scene-summary" id="scene-summary"></p>
-    <details class="scene-sources">
-      <summary>Sources</summary>
-      <ul class="claims" id="scene-claims"></ul>
-    </details>
-    <p class="chapters" id="scene-chapters"></p>
-  </section>
-
-  <aside class="card" id="card" aria-live="polite" hidden></aside>
+  <aside class="panel" aria-label="More on this scene">
+    <div class="card" id="card" aria-live="polite" hidden></div>
+    <div class="panel-sources">
+      <p class="hint">Tap anything that glows to open it here.</p>
+      <details class="scene-sources">
+        <summary>Sources</summary>
+        <ul class="claims" id="scene-claims"></ul>
+      </details>
+      <p class="chapters" id="scene-chapters"></p>
+    </div>
+  </aside>
 </main>
 
 <div class="blank" id="blank" hidden></div>
 
 <footer class="footer">
-  <p class="notice">An independent proposal by one alumnus. Not affiliated with Visayas State University.</p>
-  <p class="byline">By Leo M. Subingsubing, a VSU Main Campus alumnus.</p>
-  <p>Every claim here links to the <a id="master-doc-link" href="https://docs.projectcampus.org/">master doc</a>, which wins wherever the two differ.</p>
-  <p>This site collects nothing: no forms, accounts, cookies, or tracking.</p>
-  <p class="keys">Tap anything that glows. <kbd>W</kbd> words · <kbd>S</kbd> today or with CAMPUS · <kbd>Esc</kbd> back · <kbd>→</kbd> next on the path · <kbd>P</kbd> present · <kbd>B</kbd> blank</p>
+  <p><span class="notice">An independent proposal by one alumnus. Not affiliated with Visayas State University.</span> By Leo M. Subingsubing, a VSU Main Campus alumnus.<span class="more"> Every claim links to the <a id="master-doc-link" href="https://docs.projectcampus.org/">master doc</a>, which wins wherever the two differ. This site collects nothing: no forms, accounts, cookies, or tracking.</span></p>
+  <p class="keys"><kbd>W</kbd> words · <kbd>S</kbd> today or with CAMPUS · <kbd>Esc</kbd> back · <kbd>→</kbd> next · <kbd>P</kbd> present · <kbd>B</kbd> blank</p>
 </footer>
 
 </body>

@@ -52,7 +52,7 @@ projectcampus-explore/
 
 ## Words and keys
 
-Words (titles, summaries, sources, labels) show or hide together with the **Words** button or **W**. With words off, a gold dot still marks everything that opens, and made-up labels and the notice stay.
+The page fits one screen with no scrolling: the scene's title on top, the drawing, a panel kept free for cards and sources beside it (under it on a phone), and a one-line footer with the notice. Words (titles, summaries, sources, labels) show or hide together with the **Words** button or **W**. With words off, a gold dot still marks everything that opens, and made-up labels and the notice stay.
 
 | Key | Does |
 | --- | --- |

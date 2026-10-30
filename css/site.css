@@ -43,10 +43,13 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .skip { position: absolute; left: -9999px; }
 .skip:focus { left: 12px; top: 12px; z-index: 50; background: var(--card); padding: 8px 12px; border-radius: 8px; }
 
-/* ---------- the bar ---------- */
+/* ---------- one screen, no scrolling: bar, title, stage beside a panel, footer ---------- */
+html, body { height: 100%; }
+body { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; height: 100vh; height: 100dvh; overflow: hidden; }
+
 .bar {
   display: flex; align-items: center; gap: 16px;
-  padding: 10px 20px; border-bottom: 1px solid var(--rule);
+  padding: 8px 20px; border-bottom: 1px solid var(--rule);
   background: rgba(243, 244, 238, .92);
 }
 .brand { font: 600 20px/1 var(--font-display); color: var(--ink); text-decoration: none; white-space: nowrap; }
@@ -63,19 +66,30 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 }
 .btn:hover { background: var(--paper-3); }
 .btn[aria-pressed="false"] { background: var(--card); color: var(--ink-3); }
-.notice { margin: 0; font-size: 13px; color: var(--ink-3); }
-.notice-top { padding: 6px 20px; border-bottom: 1px solid var(--rule); background: var(--paper-2); text-align: center; }
+.notice { color: var(--ink-2); font-weight: 600; }
 
-/* ---------- the stage ---------- */
-.scene { position: relative; max-width: 1440px; margin: 0 auto; padding: 16px 16px 0; }
-.stage { position: relative; }
+/* The scene's title, always at the top, with its summary beside it. */
+.heading { display: flex; align-items: baseline; gap: 6px 24px; flex-wrap: wrap; padding: 12px 20px 10px; min-height: 64px; }
+.heading:focus { outline: none; }
+.scene-title { margin: 0; font: 600 28px/1.15 var(--font-display); white-space: nowrap; }
+.scene-summary { margin: 0; flex: 1 1 26rem; font-size: 16px; line-height: 1.45; color: var(--ink-2); max-width: 60rem; }
+
+/* The stage and a panel kept free for cards, side by side. */
+.scene { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; padding: 0 20px 10px; min-height: 0; }
+.stage { container-type: size; min-height: 0; display: grid; place-items: center; }
+.canvas { position: relative; width: min(100cqw, 160cqh); aspect-ratio: 16 / 10; }
 .frame {
-  position: relative; aspect-ratio: 16 / 10; overflow: hidden;
+  position: relative; width: 100%; height: 100%; overflow: hidden;
   border-radius: 22px; background: var(--paper-2);
   box-shadow: 0 10px 30px rgba(31, 42, 34, .10), 0 1px 0 rgba(31, 42, 34, .05);
 }
 .frame > svg { display: block; width: 100%; height: 100%; }
 .frame .placeholder { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--ink-3); }
+
+.panel { min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
+.panel-sources { padding: 14px 16px; background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); }
+.hint { margin: 0 0 8px; font-size: 14px; color: var(--ink-3); }
+.card:not([hidden]) ~ .panel-sources .hint { display: none; }
 
 /* The camera: a zoom into an object, or out of it. */
 .frame > svg.zoom-in { transition: transform .62s cubic-bezier(.55, 0, .45, 1), opacity .62s ease-in; opacity: .15; }
@@ -183,24 +197,16 @@ body.no-words .label { padding: 6px; background: transparent; border-color: tran
 body.no-words .label .text { display: none; }
 body.no-words .label .dot { animation: beacon 2.2s ease-in-out infinite; }
 body.no-words .scene-title, body.no-words .scene-summary,
-body.no-words .scene-sources, body.no-words .chapters, body.no-words .trail { visibility: hidden; }
-body.no-words .caption { background: transparent; border-color: transparent; box-shadow: none; }
+body.no-words .scene-sources, body.no-words .chapters, body.no-words .trail, body.no-words .hint { visibility: hidden; }
+
 
 /* What is made up says so, always. */
 .made-up {
-  position: absolute; right: 14px; bottom: 14px; margin: 0;
+  position: absolute; top: 14px; left: 50%; transform: translateX(-50%); margin: 0; white-space: nowrap; pointer-events: none;
   font: 600 12px/1 var(--font-body); color: var(--brass);
   background: var(--brass-bg); border-radius: 999px; padding: 7px 12px;
 }
 
-/* ---------- the caption: title, summary, sources ---------- */
-.caption {
-  margin: 14px 0 0; padding: 18px 20px;
-  background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius);
-}
-.caption:focus { outline: none; }
-.scene-title { margin: 0 0 6px; font: 600 28px/1.15 var(--font-display); }
-.scene-summary { margin: 0 0 10px; font-size: 17px; color: var(--ink-2); max-width: 46rem; }
 .scene-sources summary { cursor: pointer; font-size: 14px; color: var(--ink-3); }
 .claims { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; font-size: 14px; color: var(--ink-2); }
 .claim .source { font-family: var(--font-mono); font-size: 12px; margin-left: 2px; }
@@ -213,9 +219,9 @@ body.no-words .caption { background: transparent; border-color: transparent; box
 .chapter-link { font-weight: 600; text-decoration: none; }
 .chapter-link:hover { text-decoration: underline; }
 
-/* ---------- a card that unfolds in place ---------- */
+/* ---------- a card that unfolds in the panel ---------- */
 .card {
-  margin: 14px 0 0; padding: 18px 20px 20px; position: relative;
+  margin: 0; padding: 18px 20px 20px; position: relative; flex: none;
   background: var(--card); border: 1px solid var(--rule); border-left: 5px solid var(--gold);
   border-radius: var(--radius); box-shadow: 0 10px 30px rgba(31, 42, 34, .12);
 }
@@ -223,33 +229,34 @@ body.no-words .caption { background: transparent; border-color: transparent; box
 .card-text { margin: 0; color: var(--ink-2); }
 .card-close { position: absolute; right: 14px; top: 14px; font: 500 13px/1 var(--font-body); background: var(--paper-2); border: 1px solid var(--rule); border-radius: 999px; padding: 7px 11px; cursor: pointer; }
 
-/* On a wide screen the caption and card sit over the drawing, like paper on a desk. */
-@media (min-width: 1000px) {
-  .scene { padding-top: 20px; }
-  .caption { position: absolute; left: 34px; bottom: 34px; width: 430px; margin: 0; box-shadow: 0 10px 30px rgba(31, 42, 34, .12); }
-  .card { position: absolute; right: 34px; top: 36px; width: 400px; max-height: calc(100% - 70px); overflow: auto; margin: 0; }
-  .made-up { top: 16px; bottom: auto; left: 50%; right: auto; transform: translateX(-50%); }
-  .states { left: 24px; top: 20px; }
-  .scene-title { font-size: 30px; }
-}
-
 /* ---------- presenting, blanking, footer ---------- */
 body.presenting .bar, body.presenting .footer .keys { display: none; }
+body.presenting .scene { grid-template-columns: minmax(0, 1fr) 320px; }
 .blank { position: fixed; inset: 0; background: #000; z-index: 100; }
-.footer { max-width: 1440px; margin: 24px auto 0; padding: 18px 20px 40px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--ink-3); }
-.footer p { margin: 4px 0; }
+.footer { display: flex; justify-content: space-between; gap: 6px 20px; flex-wrap: wrap; padding: 6px 20px 8px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--ink-3); }
+.footer p { margin: 0; }
 kbd { font: 12px/1 var(--font-mono); background: var(--card); border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px; }
 
+/* A narrow or upright screen: the stage across the top, the panel scrolling under it. */
+@media (max-width: 900px), (max-aspect-ratio: 1/1) {
+  .scene { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: 10px; padding: 0 10px 8px; }
+  .stage { container-type: normal; display: block; }
+  .canvas { width: 100%; }
+  .heading { padding: 8px 12px; min-height: 0; }
+  .scene-title { font-size: 21px; white-space: normal; }
+  .scene-summary { font-size: 14px; flex-basis: 100%; }
+  .footer .keys { display: none; }
+}
 @media (max-width: 640px) {
-  .bar { flex-wrap: wrap; gap: 8px 12px; padding: 10px 14px; }
-  .trail { order: 3; flex-basis: 100%; }
-  .scene { padding: 10px 10px 0; }
+  .bar { flex-wrap: wrap; gap: 6px 12px; padding: 8px 12px; }
+  .trail { order: 3; flex-basis: 100%; font-size: 13px; }
   .frame { border-radius: 14px; }
   .label { font-size: 12px; padding: 5px 9px 5px 7px; }
-  .scene-title { font-size: 23px; }
-  .made-up { right: 8px; bottom: 8px; font-size: 11px; }
+  .made-up { top: auto; left: auto; transform: none; right: 8px; bottom: 8px; font-size: 11px; }
   .states { left: 8px; top: auto; bottom: 8px; }
   .state-btn { font-size: 12px; padding: 7px 10px; }
+  .footer { font-size: 11px; padding: 4px 12px 6px; }
+  .footer .more { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
