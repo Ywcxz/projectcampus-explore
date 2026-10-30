@@ -290,12 +290,42 @@
     if (c.skirt) out += '<rect x="-3.4" y="-8" width="2.6" height="8" rx="1.2" fill="' + sk + '">' + swing(1) + '</rect><rect x="0.8" y="-8" width="2.6" height="8" rx="1.2" fill="' + sk + '">' + swing(-1) + '</rect><path d="M-5 -12H5L6 -6H-6Z" fill="' + c.low + '"/>';
     else out += '<rect x="-4.2" y="-11" width="3.6" height="11" rx="1.5" fill="' + c.low + '">' + swing(1) + '</rect><rect x="0.6" y="-11" width="3.6" height="11" rx="1.5" fill="' + c.low + '">' + swing(-1) + '</rect>';
     out += '<rect x="-5" y="-21" width="10" height="11" rx="4" fill="' + c.top + '"/>';
-    out += '<rect x="-7" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/><circle cx="-5.7" cy="-10.5" r="1.6" fill="' + sk + '"/>';
-    // The right arm: still, or gesturing while talking, or raised to hold a phone.
+    // Arms: each can move. A pose sets how: talk (gesture by turns), show (hold up a
+    // book or phone for the others), point (reach out to something), photo (raise a
+    // phone to take a picture), selfie (hold a phone high), or a phone check.
+    var R = function (vals, kt, dur, delay) { return anim(dur, delay, kt, vals.map(function (a) { return a + " 5.7 -19"; }).join(";")); };
+    var Lf = function (vals, kt, dur, delay) { return anim(dur, delay, kt, vals.map(function (a) { return a + " -5.7 -19"; }).join(";")); };
+    var left = '<rect x="-7" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/><circle cx="-5.7" cy="-10.5" r="1.6" fill="' + sk + '"/>';
     var arm = '<rect x="4.4" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/><circle cx="5.7" cy="-10.5" r="1.6" fill="' + sk + '"/>';
-    if (opts.talk) arm = '<g>' + anim(opts.talk[0], opts.talk[1], "0;0.2;0.35;0.5;0.65;1", "0 5.7 -19;-55 5.7 -19;-30 5.7 -19;-60 5.7 -19;0 5.7 -19;0 5.7 -19") + arm + "</g>";
-    else if (phoneEvery) arm = '<g>' + anim(phoneEvery, 0, "0;0.28;0.34;0.8;0.86;1", "0 5.7 -19;0 5.7 -19;-70 5.7 -19;-70 5.7 -19;0 5.7 -19;0 5.7 -19") + arm + "</g>";
-    out += arm;
+    var held = "", T6 = "0;0.15;0.25;0.75;0.85;1";
+    var reveal = function (dur, delay, body_) { return '<g opacity="0"><animate attributeName="opacity" dur="' + dur + 's" begin="' + (delay || 0) + 's" repeatCount="indefinite" keyTimes="0;0.2;0.25;0.75;0.8;1" values="0;0;1;1;0;0"/>' + body_ + "</g>"; };
+    if (opts.show) {
+      var sd = opts.show[0], sdel = opts.show[1];
+      arm = '<g>' + R([0, 0, -28, -28, 0, 0], T6, sd, sdel) + arm + "</g>";
+      left = '<g>' + Lf([0, 0, 28, 28, 0, 0], T6, sd, sdel) + left + "</g>";
+      held = reveal(sd, sdel, opts.show[2] === "book"
+        ? '<path d="M-8 -16L0 -14.5L8 -16V-9.5L0 -8L-8 -9.5Z" fill="#FFFDF6" stroke="' + K.red + '" stroke-width="1.2"/><path d="M0 -14.5V-8" stroke="#C9CFC2" stroke-width=".8"/><path d="M-6 -13.5h4M-6 -11.8h4M2 -13.5h4M2 -11.8h3" stroke="#B9BFB3" stroke-width=".7"/>'
+        : '<rect x="-3" y="-17" width="6.5" height="9" rx="1.2" fill="' + K.ink + '"/><rect x="-2.2" y="-16.2" width="4.9" height="7.4" fill="' + K.gold3 + '"/>');
+    } else if (opts.point) {
+      arm = '<g>' + R([0, 0, -82, -82, 0, 0], "0;0.3;0.38;0.7;0.78;1", opts.point[0], opts.point[1]) + arm + "</g>";
+    } else if (opts.photo) {
+      var pd = opts.photo[0], pdl = opts.photo[1];
+      arm = '<g>' + R([0, 0, -150, -150, 0, 0], T6, pd, pdl) + arm + "</g>";
+      held = reveal(pd, pdl, '<rect x="5.5" y="-31" width="8" height="5" rx="1" fill="' + K.ink + '"/><circle cx="9.5" cy="-28.5" r="1.4" fill="#5B7F8F"/>' +
+        '<circle cx="9.5" cy="-28.5" r="3" fill="#FFFFFF" opacity="0"><animate attributeName="opacity" dur="' + pd + 's" begin="' + (pdl || 0) + 's" repeatCount="indefinite" keyTimes="0;0.5;0.52;0.56;1" values="0;0;0.9;0;0"/></circle>');
+    } else if (opts.selfie) {
+      var fd = opts.selfie[0], fdl = opts.selfie[1];
+      arm = '<g>' + R([0, 0, -165, -165, 0, 0], T6, fd, fdl) + arm + "</g>";
+      held = reveal(fd, fdl, '<rect x="5" y="-36" width="5" height="7.5" rx="1" fill="' + K.ink + '"/>' +
+        '<circle cx="7.5" cy="-32" r="3" fill="#FFFFFF" opacity="0"><animate attributeName="opacity" dur="' + fd + 's" begin="' + (fdl || 0) + 's" repeatCount="indefinite" keyTimes="0;0.45;0.47;0.51;0.62;0.64;0.68;1" values="0;0;0.9;0;0;0.9;0;0"/></circle>');
+    } else if (opts.talk) {
+      var td = opts.talk[0], tdl = opts.talk[1];
+      arm = '<g>' + R([0, -55, -30, -60, 0, 0], "0;0.2;0.35;0.5;0.65;1", td, tdl) + arm + "</g>";
+      left = '<g>' + Lf([0, 0, 35, 15, 40, 0], "0;0.45;0.6;0.72;0.85;1", td * 1.3, tdl) + left + "</g>";
+    } else if (phoneEvery) {
+      arm = '<g>' + R([0, 0, -55, -55, 0, 0], "0;0.28;0.34;0.8;0.86;1", phoneEvery, 0) + arm + "</g>";
+    }
+    out += left + arm;
     // The head: nods while talking, tips down to look at a phone.
     var eyeX = opts.look ? opts.look * 1.3 : 0;
     var head = '<circle cy="-26" r="5.6" fill="' + sk + '"/><path d="M-5.7 -26.5a5.7 5.7 0 0 1 11.4 0c-3-2-8.4-2-11.4 0Z" fill="' + h + '"/>' +
@@ -306,11 +336,13 @@
     if (opts.talk) head = '<g>' + anim(opts.talk[0] * 0.7, opts.talk[1], "0;0.25;0.5;0.75;1", "0 0 -21;-6 0 -21;3 0 -21;-4 0 -21;0 0 -21") + head + "</g>";
     else if (phoneEvery) head = '<g>' + anim(phoneEvery, 0, "0;0.3;0.36;0.8;0.86;1", "0 0 -21;0 0 -21;12 0 -21;12 0 -21;0 0 -21;0 0 -21") + head + "</g>";
     out += head;
-    if (c.item === "book") out += '<rect x="5" y="-15" width="4.5" height="6" rx="0.8" fill="' + K.red + '"/>';
+    out += held;
+    if (c.item === "book" && !opts.show) out += '<rect x="4.2" y="-13.5" width="4.5" height="6" rx="0.8" fill="' + K.red + '"/>';
     // Standing still, now and then: the phone comes up in front of the face and lights it.
-    if (phoneEvery) out += '<g opacity="0"><animate attributeName="opacity" dur="' + phoneEvery + 's" repeatCount="indefinite" keyTimes="0;0.32;0.36;0.8;0.84;1" values="0;0;1;1;0;0"/>' +
-      '<rect x="3.2" y="-23" width="4.4" height="7" rx="1" fill="' + K.ink + '"/><rect x="4" y="-22.2" width="2.8" height="5" fill="' + K.gold3 + '"/></g>';
-    else if (c.item === "phone") out += '<rect x="3.8" y="-17" width="4" height="6.5" rx="1" fill="' + K.ink + '"/><rect class="glow-phone" x="4.6" y="-16.2" width="2.4" height="4.6" fill="' + K.gold3 + '"/>';
+    // A phone check: the phone sits in the raised hand, and the head tips to it.
+    if (phoneEvery && !opts.talk && !opts.show && !opts.point && !opts.photo && !opts.selfie) out += '<g opacity="0"><animate attributeName="opacity" dur="' + phoneEvery + 's" repeatCount="indefinite" keyTimes="0;0.32;0.36;0.8;0.84;1" values="0;0;1;1;0;0"/>' +
+      '<rect x="10.4" y="-18.6" width="4.4" height="7" rx="1" fill="' + K.ink + '"/><rect x="11.2" y="-17.8" width="2.8" height="5" fill="' + K.gold3 + '"/></g>';
+    else if (c.item === "phone" && !opts.show && !opts.photo && !opts.selfie) out += '<rect x="3.6" y="-14.6" width="4.2" height="6.4" rx="1" fill="' + K.ink + '"/><rect class="glow-phone" x="4.4" y="-13.8" width="2.6" height="4.6" fill="' + K.gold3 + '"/>';
     if (c.item === "laptop") out += '<rect x="5" y="-12" width="9" height="2.4" rx="0.8" fill="#8C9286"/>';
     if (c.item === "umbrella") out += '<path d="M6 -10V-36" stroke="' + K.ink2 + '" stroke-width="1.2"/><path d="M-6 -35a12 7 0 0 1 24 0Z" fill="' + K.sea2 + '"/>';
     if (opts.flip) return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(-k) + " " + f(k) + ')">' + out + "</g>";
@@ -378,11 +410,13 @@
       var dur = (lens[m] - lens[m - 1]) / speed;
       if (Math.abs(dx) > 0.5) flip = dx < 0 ? -1 : 1;
       back = dy < -0.5 ? 1 : 0;
-      spans.push([t, t + dur, flip, back, 0, 1]); t += dur; ev.push([t, lens[m] / total]);
+      var di = way[m][0] - way[m - 1][0], dj = way[m][1] - way[m - 1][1];
+      var dir = Math.abs(di) >= Math.abs(dj) ? (di < 0 ? "-i" : "+i") : (dj < 0 ? "-j" : "+j");
+      spans.push([t, t + dur, flip, back, 0, 1, dir]); t += dur; ev.push([t, lens[m] / total]);
       var w = stops[m] || 0;
       if (w) {
         var seated = sit.indexOf(m) > -1;
-        spans.push([t, t + w, seated ? 1 : flip, seated ? 0 : back, seated ? 1 : 0, 0]);
+        spans.push([t, t + w, seated ? 1 : flip, seated ? 0 : back, seated ? 1 : 0, 0, dir]);
         waits.push([m, t, t + w]); t += w; ev.push([t, lens[m] / total]);
       }
     }
@@ -409,9 +443,11 @@
     };
     legs.back = discrete("opacity", function (sp) { return sp[3]; });
     var fade = '<animate attributeName="opacity"' + B + ' keyTimes="0;' + (FADE / D).toFixed(4) + ";" + ((end - FADE) / D).toFixed(4) + ";" + (end / D).toFixed(4) + ';1" values="0;1;1;0;0"/>';
-    var body = ride ? bicycle(Iso(0, 0, P.s), n, k) : '<g>' + discrete("opacity", function (sp) { return sp[4] ? 0 : 1; }) + isoChar(0, 0, n, k, legs) + "</g>";
+    var body = ride ? ["+i", "-i", "+j", "-j"].map(function (d) {
+      return '<g>' + discrete("opacity", function (sp) { return sp[6] === d ? 1 : 0; }) + bicycle(Iso(0, 0, P.s), n, k, d) + "</g>";
+    }).join("") : '<g>' + discrete("opacity", function (sp) { return sp[4] ? 0 : 1; }) + isoChar(0, 0, n, k, legs) + "</g>";
     if (sit.length) body += '<g opacity="0">' + discrete("opacity", function (sp) { return sp[4]; }) + sitChar(0, -5 * k, n, k) + "</g>";
-    var out = '<g class="walk" opacity="0">' + fade + '<g>' + discrete(null, function (sp) { return sp[2] + " 1"; }, "scale") + body + "</g>" +
+    var out = '<g class="walk" opacity="0">' + fade + '<g>' + discrete(null, function (sp) { return (ride ? 1 : sp[2]) + " 1"; }, "scale") + body + "</g>" +
       '<animateMotion' + B + ' path="M' + pts_.map(function (q) { return f(q[0]) + "," + f(q[1]); }).join(" L") + '" keyPoints="' + kp + '" keyTimes="' + kt + '" calcMode="linear"/></g>';
     waits.forEach(function (wt) {
       if (talk.indexOf(wt[0]) < 0) return;
@@ -444,14 +480,19 @@
       '<circle cx="' + f(L(0.27, 0, 0.36)[0]) + '" cy="' + f(L(0.27, 0, 0.36)[1]) + '" r="' + f(0.04 * L.s) + '" fill="' + K.gold3 + '"/>';
   }
   /* A bicycle side on (along i) with a rider, in local iso L. */
-  function bicycle(L, n, k) {
+  /* dir: "+i", "-i", "+j", or "-j", the way the bicycle points. */
+  function bicycle(L0, n, k, dir) {
+    var sg = dir.charAt(0) === "-" ? -1 : 1, ax = dir.charAt(1);
+    var L = function (a, b, z) { return ax === "i" ? L0(sg * a, b, z) : L0(b, sg * a, z); };
+    L.s = L0.s;
+    var mirror = dir === "-i" || dir === "+j";
     var wh = function (i) { var c = L(i, 0, 0.13); return '<ellipse cx="' + f(c[0]) + '" cy="' + f(c[1]) + '" rx="' + f(0.13 * L.s) + '" ry="' + f(0.15 * L.s) + '" fill="none" stroke="#2A2A30" stroke-width="2.2"/>'; };
     var line = function (a, b) { return '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + K.sea2 + '" stroke-width="2" stroke-linecap="round"/>'; };
     var seat = L(-0.08, 0, 0.42), sh = L(0, 0, 0);
     return '<ellipse cx="' + f(sh[0]) + '" cy="' + f(sh[1] + 2) + '" rx="' + f(0.4 * L.s) + '" ry="' + f(0.1 * L.s) + '" fill="#1F2A22" opacity=".12"/>' +
       wh(-0.28) + wh(0.28) + line(L(-0.28, 0, 0.13), L(-0.08, 0, 0.4)) + line(L(-0.08, 0, 0.4), L(0.2, 0, 0.4)) + line(L(0.2, 0, 0.4), L(0.28, 0, 0.13)) +
       line(L(-0.28, 0, 0.13), L(0.04, 0, 0.13)) + line(L(0.04, 0, 0.13), L(-0.08, 0, 0.4)) + line(L(0.2, 0, 0.4), L(0.22, 0, 0.5)) +
-      sitChar(seat[0], seat[1] + 4 * k, n, k, "bars");
+      (mirror ? '<g transform="translate(' + f(2 * seat[0]) + ' 0) scale(-1 1)">' + sitChar(seat[0], seat[1] + 4 * k, n, k, "bars") + "</g>" : sitChar(seat[0], seat[1] + 4 * k, n, k, "bars"));
   }
   /* A motorcycle's trip: ridden in along the lane into a space, left there a while,
      then ridden out by someone else. riderIn and riderOut are cast numbers. */
@@ -561,8 +602,8 @@
     items.push({ d: 8.7 + 4.0, svg: place("offices", P(7.6, 4.4)[0], P(7.6, 4.4)[1] + 10, bldg(P, 5.5, 1.8, 3.2, 2.2, 1.8, office, 1)) });
     // A building nobody opens yet, with two people talking by it, and its path.
     items.push({ d: -8.6 + 9.5, svg: bldg(P, -11, 7.5, 2.4, 2, 1.6, ["#E3EBD6", "#BFD0B0", "#A9BD98", "#5B7F8F"], 1) });
-    var pair = stand(-11.9, 10.7, 0, 6, 0, { talk: [6.5, 0], look: 1 }) + stand(-11.3, 11.0, 0, 2, 0, { talk: [7.5, 3.2], look: 1, flip: true });
-    [[-11.9, 10.7, "c0"], [-11.3, 11.0, "c2"]].forEach(function (pp) {
+    var pair = stand(-12.2, 11.1, 0, 6, 0, { talk: [6.5, 0], look: 1 }) + stand(-11.55, 10.45, 0, 2, 0, { talk: [7.5, 3.2], look: 1, flip: true });
+    [[-12.2, 11.1, "c0"], [-11.55, 10.45, "c2"]].forEach(function (pp) {
       var qp = P(pp[0], pp[1]);
       pair += '<g class="chat ' + pp[2] + '"><rect x="' + f(qp[0] - 4) + '" y="' + f(qp[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/><circle cx="' + f(qp[0] + 2.5 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(qp[0] + 7 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(qp[0] + 11.5 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
     });
@@ -570,18 +611,18 @@
     // The parking area: two rows of spaces, a lane out to the edge, cars and motorcycles.
     ground += poly([P(8.6, -8.4), P(13.2, -8.4), P(13.2, -2.2), P(8.6, -2.2)], "#C9CCC4") +
       poly([P(10.45, -13.5), P(11.35, -13.5), P(11.35, -8.4), P(10.45, -8.4)], "#C9CCC4");
-    var SLOTS = [-7.9, -6.9, -5.9, -4.9, -3.9, -2.9];
-    SLOTS.concat([-2.0]).forEach(function (jj) {
+    // Six spaces a row, one vehicle each; lines only between and at the ends of spaces.
+    [-8.3, -7.3, -6.3, -5.3, -4.3, -3.3, -2.3].forEach(function (jb) {
       [[8.8, 10.3], [11.5, 13.0]].forEach(function (r) {
-        var a = P(r[0], jj + 0.45), bb = P(r[1], jj + 0.45);
+        var a = P(r[0], jb), bb = P(r[1], jb);
         ground += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(bb[0]) + '" y2="' + f(bb[1]) + '" stroke="#FFFFFF" stroke-width="2"/>';
       });
     });
     var park = function (ii, jj, color, moto) { var q = P(ii, jj); return '<g transform="translate(' + f(q[0]) + " " + f(q[1]) + ')">' + vehicle(P, color, moto, false) + "</g>"; };
-    [[9.55, -5.9, K.sea2], [12.25, -6.9, K.red]].forEach(function (c) {
+    [[9.55, -5.8, K.sea2], [12.25, -6.8, K.red]].forEach(function (c) {
       items.push({ d: c[0] + c[1], svg: park(c[0], c[1], c[2]) });
     });
-    [[9.55, -7.75], [9.55, -7.4], [9.55, -4.05], [9.55, -3.7], [9.55, -2.9], [9.55, -2.55], [12.25, -3.95], [12.25, -3.6], [12.25, -2.9], [12.25, -2.55], [12.25, -7.95]].forEach(function (c, n) {
+    [[9.55, -7.8], [9.55, -4.8], [9.55, -3.8], [9.55, -2.8], [12.25, -7.8], [12.25, -3.8], [12.25, -2.8]].forEach(function (c, n) {
       items.push({ d: c[0] + c[1], svg: park(c[0], c[1], [K.red, "#3B3B44", K.sea, K.gold2, K.green2, "#6A5A8C"][n % 6], true) });
     });
     // Walks: the parking area's path to the main walk, and the far building's path.
@@ -589,7 +630,9 @@
       ground += '<polyline points="' + pts(w.map(function (q) { return P(q[0], q[1]); })) + '" fill="none" stroke="' + K.sand + '" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>';
     });
     [[-3.5, -6], [-2, -7.5], [8, -1.6], [11, 2.8], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-2.5, 8.6], [8.6, 7.4], [-6, -8], [-11.5, -1], [10, 4.5],
-      [-12, 4], [-12.5, -4], [-13, 0.5], [2, -12.5], [8, -11], [6, -12], [-4, 12], [5, 11], [11, 6], [-7.5, 11.5], [13.8, -9.5]].forEach(function (t) {
+      [-12, 4], [-12.5, -4], [-13, 0.5], [2, -12.5], [8, -11], [6, -12], [-4, 12], [5, 11], [11, 6], [-7.5, 11.5], [13.8, -9.5],
+      [13.8, -7], [13.8, -4.6], [13.8, -2.2], [8.1, -8.6], [8.1, -4.2], [12.1, -1.4],
+      [4.4, -3.9], [-3.1, -3.9], [11.4, 1.9]].forEach(function (t) {
       items.push({ d: t[0] + t[1], svg: isoTree(P, t[0], t[1], 1.6) });
     });
     // Three benches, and two circles of people talking.
@@ -597,18 +640,22 @@
     items.push({ d: -4.9, svg: benchAt(-2.6, -3.7) });
     items.push({ d: 11.2, svg: benchAt(9.3, 1.2) });
     var three = "";
-    [[-0.5, -0.3], [0.5, -0.3], [0, 0.55]].forEach(function (o, n) { three += stand(4.6 + o[0], 5.6 + o[1], 0, [2, 5, 1][n], n === 2 ? 12 : 0, n === 2 ? null : { talk: [6 + n, n * 2.5], look: n === 0 ? 1 : -1, flip: n === 1 }); });
+    [[-0.5, -0.3], [0.5, -0.3], [0, 0.55]].forEach(function (o, n) { three += stand(4.6 + o[0], 5.6 + o[1], 0, [2, 5, 1][n], n === 2 ? 12 : 0,
+      [{ show: [13, 3, "phone"], look: 1 }, { point: [13, 3.6], look: -1, flip: true }, null][n]); });
     var q3 = P(4.1, 5.3);
     three += '<g class="chat c1"><rect x="' + f(q3[0] - 4) + '" y="' + f(q3[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/><circle cx="' + f(q3[0] + 2.5 * S) + '" cy="' + f(q3[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q3[0] + 7 * S) + '" cy="' + f(q3[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q3[0] + 11.5 * S) + '" cy="' + f(q3[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
     items.push({ d: 10.2, svg: three });
     var circle = "";
-    [[-0.6, -0.4], [0.5, -0.5], [0.6, 0.5], [-0.5, 0.6]].forEach(function (o, n) { circle += stand(-2.8 + o[0], 3.4 + o[1], 0, [7, 3, 8, 9][n], n === 1 ? 10 : 0, n === 1 ? null : { talk: [5.5 + n, n * 2.2], look: o[0] < 0 ? 1 : -1, flip: o[0] > 0 }); });
+    [[-0.6, -0.4], [0.5, -0.5], [0.6, 0.5], [-0.5, 0.6]].forEach(function (o, n) { circle += stand(-2.8 + o[0], 3.4 + o[1], 0, [7, 3, 8, 9][n], n === 1 ? 10 : 0,
+      [{ show: [11, 0, "book"], look: 1 }, null, { point: [11, 0.4], look: -1, flip: true }, { talk: [6.5, 2.2], look: 1 }][n]); });
     [0, 1, 2].forEach(function (n) {
       var q = P(-2.8 + [-0.6, 0.5, 0.6][n], 3.4 + [-0.4, -0.5, 0.5][n]);
       circle += '<g class="chat c' + n + '"><rect x="' + f(q[0] - 4) + '" y="' + f(q[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/>' +
         '<circle cx="' + f(q[0] + 2.5 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 7 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 11.5 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
     });
     items.push({ d: 0.6, svg: circle });
+    items.push({ d: 4.8, svg: stand(6.6, -1.8, 0, 3, 0, { photo: [9, 1] }) });
+    items.push({ d: -6.4, svg: stand(-4.6, -2.2, 0, 5, 0, { selfie: [10, 2], look: 1 }) + stand(-4.0, -2.8, 0, 7, 0, { look: -1, flip: true }) });
     var sp = P(2.2, -5.2), st = isoChar(sp[0], sp[1], 1, k, null, 9);
     items.push({ d: -3, svg: live ? obj("student", sp[0], sp[1] - 40, st) : st });
     // People come and go: in from the edge or out of a door, and out again, fading as
@@ -641,22 +688,22 @@
     J(4, [[14, 2.0], [9.95, 2.0], [9.95, 1.45], [9.95, 2.0], [14, 2.0]], 0.9, { 2: 18 }, [], -33, 0, [2], 64);
     // The parking area: a car comes in now and then; someone gets out and walks to the
     // academic building; later someone walks to it from the dormitory, and it leaves.
-    var lane = [[10.9, -13.5], [10.9, -4.9], [12.25, -4.9]], CAR = 0.9 * P.s, inT = walkTime(P, lane, CAR), wait = 46, PER = 150;
+    var lane = [[10.9, -13.5], [10.9, -4.8], [12.25, -4.8]], CAR = 0.9 * P.s, inT = walkTime(P, lane, CAR), wait = 46, PER = 150;
     items.push({ d: 6, svg: carTrip(P, K.sea, lane, CAR, wait, 0, PER) });
-    J(6, [[11.05, -4.3], [10.45, -4.3], [10.45, -0.9], [5.05, -0.9], [5.05, -6.5]], 1, {}, [], (inT + 1.5).toFixed(2), 0, [], PER, BEHIND);
-    var toCar = [[-7.45, 0.05], [-7.45, 0.9], [10.9, 0.9], [10.9, -4.3], [11.05, -4.3]];
+    J(6, [[11.05, -4.2], [10.45, -4.2], [10.45, -0.9], [5.05, -0.9], [5.05, -6.5]], 1, {}, [], (inT + 1.5).toFixed(2), 0, [], PER, BEHIND);
+    var toCar = [[-7.45, 0.05], [-7.45, 0.9], [10.9, 0.9], [10.9, -4.2], [11.05, -4.2]];
     J(0, toCar, 1, {}, [], (inT + wait - 1 - walkTime(P, toCar, V)).toFixed(2), 0, [], PER, BEHIND);
     // Someone walks to a parked car and gets in; someone gets out of one and walks off.
-    J(9, [[-4.45, 7.05], [-4.45, 7.6], [-1.5, 7.6], [-1.5, 1.4], [10.9, 1.4], [10.9, -2.2], [10.9, -6.9], [11.45, -6.9]], 1, {}, [], -40, 0, [], 95, BEHIND);
-    J(3, [[10.15, -5.9], [10.9, -5.9], [10.9, 0.9], [-7.45, 0.9], [-7.45, 0.05]], 1, {}, [], -58, 0, [], 110, BEHIND);
+    J(9, [[-4.45, 7.05], [-4.45, 7.6], [-1.5, 7.6], [-1.5, 0.9], [10.9, 0.9], [10.9, -2.2], [10.9, -6.8], [11.45, -6.8]], 1, {}, [], -40, 0, [], 95, BEHIND);
+    J(3, [[10.15, -5.8], [10.9, -5.8], [10.9, 0.9], [-7.45, 0.9], [-7.45, 0.05]], 1, {}, [], -58, 0, [], 110, BEHIND);
     // Motorcycles ridden in and out: the rider gets off and walks into a building; later
     // someone walks out of another building, gets on, and rides off.
     var MOTO = 1.1 * P.s;
     [
-      { slot: [9.55, -6.9], color: K.red, per: 96, wait: 50, at: 0, inN: 2, outN: 5,
-        off: [[10.9, -6.9], [10.9, -0.9], [5.05, -0.9], [5.05, -6.5]], on: [[-4.45, 7.05], [-4.45, 7.6], [-1.5, 7.6], [-1.5, 0.9], [10.9, 0.9], [10.9, -6.9], [10.1, -6.9]] },
-      { slot: [12.25, -5.9], color: K.green2, per: 124, wait: 64, at: -40, inN: 9, outN: 0, front: true,
-        off: [[11.6, -5.9], [10.9, -5.9], [10.9, -0.4], [11.6, -0.4], [11.6, 6.6], [7.05, 6.6], [7.05, 4.1]], on: [[5.05, -6.5], [5.05, -5.6], [10.9, -5.6], [10.9, -5.9], [11.6, -5.9]] }
+      { slot: [9.55, -6.8], color: K.red, per: 96, wait: 50, at: 34, inN: 2, outN: 5,
+        off: [[10.9, -6.8], [10.9, -0.9], [5.05, -0.9], [5.05, -6.5]], on: [[-4.45, 7.05], [-4.45, 7.6], [-1.5, 7.6], [-1.5, 0.9], [10.9, 0.9], [10.9, -6.8], [10.1, -6.8]] },
+      { slot: [12.25, -5.8], color: K.green2, per: 124, wait: 64, at: -40, inN: 9, outN: 0, front: true,
+        off: [[11.6, -5.8], [10.9, -5.8], [10.9, -0.4], [11.6, -0.4], [11.6, 6.6], [7.05, 6.6], [7.05, 4.1]], on: [[5.05, -6.5], [5.05, -5.6], [10.9, -5.6], [10.9, -5.8], [11.6, -5.8]] }
     ].forEach(function (m) {
       var lane2 = [[10.9, -13.5], [10.9, m.slot[1]], m.slot], tIn = walkTime(P, lane2, MOTO);
       items.push({ d: 6.5, svg: motoTrip(P, m.color, lane2, MOTO, m.wait, m.at, m.per, m.inN, m.outN, k) });
