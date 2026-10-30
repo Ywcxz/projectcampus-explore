@@ -257,6 +257,7 @@ section("zoom, cards, words, keys", () => {
   const doc = win.document;
   const app = win.CampusScenes.start(data, { doc, win });
   check(app.state.scene.id === data.start, "start: opens the start scene");
+  check(!doc.getElementById("hero").hidden && doc.getElementById("hero-title").textContent === scenes.get(data.start).heading.title, "start: carries its heading on the scene");
   check(doc.getElementById("master-doc-link").href === MASTER, "the footer links to the master doc");
 
   // Into a building, a room, a screen; out with Escape.

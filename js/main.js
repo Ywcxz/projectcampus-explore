@@ -352,6 +352,17 @@
         if (b) b.hidden = !on;
       });
 
+      // A scene may carry a heading on the scene itself, such as the start's.
+      var hero = $("hero");
+      if (hero) {
+        hero.hidden = !scene.heading;
+        if (scene.heading) {
+          $("hero-title").textContent = scene.heading.title;
+          $("hero-line").textContent = scene.heading.line || "";
+          $("hero-note").textContent = scene.heading.note || "";
+        }
+      }
+
       // The words: title, summary, sources, chapters.
       title.textContent = v.title;
       summary.textContent = v.summary;

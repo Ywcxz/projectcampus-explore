@@ -301,11 +301,12 @@
     var reveal = function (dur, delay, body_) { return '<g opacity="0"><animate attributeName="opacity" dur="' + dur + 's" begin="' + (delay || 0) + 's" repeatCount="indefinite" keyTimes="0;0.2;0.25;0.75;0.8;1" values="0;0;1;1;0;0"/>' + body_ + "</g>"; };
     if (opts.show) {
       var sd = opts.show[0], sdel = opts.show[1];
-      arm = '<g>' + R([0, 0, -28, -28, 0, 0], T6, sd, sdel) + arm + "</g>";
-      left = '<g>' + Lf([0, 0, 28, 28, 0, 0], T6, sd, sdel) + left + "</g>";
+      var reach = opts.show[2] === "book" ? 28 : 0;
+      arm = '<g>' + R([0, 0, opts.show[2] === "book" ? -28 : -42, opts.show[2] === "book" ? -28 : -42, 0, 0], T6, sd, sdel) + arm + "</g>";
+      if (reach) left = '<g>' + Lf([0, 0, reach, reach, 0, 0], T6, sd, sdel) + left + "</g>";
       held = reveal(sd, sdel, opts.show[2] === "book"
         ? '<path d="M-8 -16L0 -14.5L8 -16V-9.5L0 -8L-8 -9.5Z" fill="#FFFDF6" stroke="' + K.red + '" stroke-width="1.2"/><path d="M0 -14.5V-8" stroke="#C9CFC2" stroke-width=".8"/><path d="M-6 -13.5h4M-6 -11.8h4M2 -13.5h4M2 -11.8h3" stroke="#B9BFB3" stroke-width=".7"/>'
-        : '<rect x="-3" y="-17" width="6.5" height="9" rx="1.2" fill="' + K.ink + '"/><rect x="-2.2" y="-16.2" width="4.9" height="7.4" fill="' + K.gold3 + '"/>');
+        : '<rect x="7.4" y="-17.5" width="6" height="8.5" rx="1.2" fill="' + K.ink + '"/><rect x="8.1" y="-16.8" width="4.6" height="7" fill="' + K.gold3 + '"/>');
     } else if (opts.point) {
       arm = '<g>' + R([0, 0, -82, -82, 0, 0], "0;0.3;0.38;0.7;0.78;1", opts.point[0], opts.point[1]) + arm + "</g>";
     } else if (opts.photo) {
@@ -320,8 +321,8 @@
         '<circle cx="7.5" cy="-32" r="3" fill="#FFFFFF" opacity="0"><animate attributeName="opacity" dur="' + fd + 's" begin="' + (fdl || 0) + 's" repeatCount="indefinite" keyTimes="0;0.45;0.47;0.51;0.62;0.64;0.68;1" values="0;0;0.9;0;0;0.9;0;0"/></circle>');
     } else if (opts.talk) {
       var td = opts.talk[0], tdl = opts.talk[1];
-      arm = '<g>' + R([0, -55, -30, -60, 0, 0], "0;0.2;0.35;0.5;0.65;1", td, tdl) + arm + "</g>";
-      left = '<g>' + Lf([0, 0, 35, 15, 40, 0], "0;0.45;0.6;0.72;0.85;1", td * 1.3, tdl) + left + "</g>";
+      arm = '<g>' + R([0, -50, -28, 0, 0], "0;0.08;0.16;0.24;1", td * 2.2, tdl) + arm + "</g>";
+      left = '<g>' + Lf([0, 0, 32, 0, 0], "0;0.5;0.57;0.64;1", td * 2.9, tdl) + left + "</g>";
     } else if (phoneEvery) {
       arm = '<g>' + R([0, 0, -55, -55, 0, 0], "0;0.28;0.34;0.8;0.86;1", phoneEvery, 0) + arm + "</g>";
     }
@@ -333,7 +334,7 @@
     if (legs && legs.back) head += '<circle cy="-26" r="5.8" fill="' + h + '" opacity="0">' + legs.back + "</circle>";
     if (c.style === "pony") head += '<ellipse cx="-6" cy="-25" rx="2.2" ry="3.6" fill="' + h + '"/>';
     if (c.style === "bun") head += '<circle cy="-32.5" r="2.6" fill="' + h + '"/>';
-    if (opts.talk) head = '<g>' + anim(opts.talk[0] * 0.7, opts.talk[1], "0;0.25;0.5;0.75;1", "0 0 -21;-6 0 -21;3 0 -21;-4 0 -21;0 0 -21") + head + "</g>";
+    if (opts.talk) head = '<g>' + anim(opts.talk[0] * 1.6, opts.talk[1], "0;0.25;0.5;0.75;1", "0 0 -21;-6 0 -21;3 0 -21;-4 0 -21;0 0 -21") + head + "</g>";
     else if (phoneEvery) head = '<g>' + anim(phoneEvery, 0, "0;0.3;0.36;0.8;0.86;1", "0 0 -21;0 0 -21;12 0 -21;12 0 -21;0 0 -21;0 0 -21") + head + "</g>";
     out += head;
     out += held;
@@ -342,7 +343,7 @@
     // A phone check: the phone sits in the raised hand, and the head tips to it.
     if (phoneEvery && !opts.talk && !opts.show && !opts.point && !opts.photo && !opts.selfie) out += '<g opacity="0"><animate attributeName="opacity" dur="' + phoneEvery + 's" repeatCount="indefinite" keyTimes="0;0.32;0.36;0.8;0.84;1" values="0;0;1;1;0;0"/>' +
       '<rect x="10.4" y="-18.6" width="4.4" height="7" rx="1" fill="' + K.ink + '"/><rect x="11.2" y="-17.8" width="2.8" height="5" fill="' + K.gold3 + '"/></g>';
-    else if (c.item === "phone" && !opts.show && !opts.photo && !opts.selfie) out += '<rect x="3.6" y="-14.6" width="4.2" height="6.4" rx="1" fill="' + K.ink + '"/><rect class="glow-phone" x="4.4" y="-13.8" width="2.6" height="4.6" fill="' + K.gold3 + '"/>';
+    // Otherwise a phone stays in a pocket: it shows only when someone takes it out.
     if (c.item === "laptop") out += '<rect x="5" y="-12" width="9" height="2.4" rx="0.8" fill="#8C9286"/>';
     if (c.item === "umbrella") out += '<path d="M6 -10V-36" stroke="' + K.ink2 + '" stroke-width="1.2"/><path d="M-6 -35a12 7 0 0 1 24 0Z" fill="' + K.sea2 + '"/>';
     if (opts.flip) return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(-k) + " " + f(k) + ')">' + out + "</g>";
@@ -584,7 +585,7 @@
     var k = S * 0.92, items = [];
     var stand = function (i, j, z, n, phoneEvery, opts) { var q = P(i, j, z || 0); return isoChar(q[0], q[1], n, k, null, phoneEvery, opts); };
     var road = function (i0, j0, i1, j1, z) { var a = P(i0, j0, z || 0), b = P(i1, j1, z || 0); return "M" + f(a[0]) + "," + f(a[1]) + " L" + f(b[0]) + "," + f(b[1]); };
-    var V = 1.15 * P.s;
+    var V = 1.15 * P.s, trees = [], ways = [];
     var brown = [K.brown, "#5C4529", "#4A3820"];
     var benchAt = function (i0, j0) {
       var legC = ["#4A4A52", "#3B3B44", "#2F2F36"], out = "";
@@ -627,7 +628,11 @@
         ground += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(bb[0]) + '" y2="' + f(bb[1]) + '" stroke="#FFFFFF" stroke-width="2"/>';
       });
     });
-    var park = function (ii, jj, color, moto) { var q = P(ii, jj); return '<g transform="translate(' + f(q[0]) + " " + f(q[1]) + ')">' + vehicle(P, color, moto, false) + "</g>"; };
+    var park = function (ii, jj, color, moto) {
+      var q = P(ii, jj), seed = Math.abs(Math.sin(ii * 12.9898 + jj * 78.233) * 43758.5453) % 1, tilt = (seed - 0.5) * 7;
+      var body = moto ? motorcycle(Iso(0, 0, P.s), color, seed > 0.5 ? "+i" : "-i") : vehicle(P, color, false, false);
+      return '<g transform="translate(' + f(q[0]) + " " + f(q[1]) + ") rotate(" + f(tilt) + ')">' + body + "</g>";
+    };
     [[9.55, -5.8, K.sea2], [12.25, -6.8, K.red]].forEach(function (c) {
       items.push({ d: c[0] + c[1], svg: park(c[0], c[1], c[2]) });
     });
@@ -641,9 +646,7 @@
     [[-3.5, -6], [-2, -7.5], [8, -1.6], [11, 2.8], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-2.5, 8.6], [8.6, 7.4], [-6, -8], [-11.5, -1], [10, 4.5],
       [-12, 4], [-12.5, -4], [-13, 0.5], [2, -12.5], [8, -11], [6, -12], [-4, 12], [5, 11], [11, 6], [-7.5, 11.5], [13.8, -9.5],
       [13.8, -7], [13.8, -4.6], [13.8, -2.2], [8.1, -8.6], [8.1, -4.2], [12.1, -1.4],
-      [4.4, -3.9], [-3.1, -3.9], [11.4, 1.9]].forEach(function (t) {
-      items.push({ d: t[0] + t[1], svg: isoTree(P, t[0], t[1], 1.6) });
-    });
+      [4.4, -3.9], [-3.1, -3.9], [11.4, 1.9]].forEach(function (t) { trees.push(t); });
     // Three benches, and two circles of people talking.
     items.push({ d: -0.6, svg: benchAt(2.6, -3.7) });
     items.push({ d: -4.9, svg: benchAt(-2.6, -3.7) });
@@ -672,6 +675,7 @@
     // A walk that passes behind a building (the faculty offices) is drawn before it.
     var late = "", BEHIND = 9.5, FAR = -3.1;
     var J = function (n, way, sp_, stops, talk, begin, gap, sit, period, depth, cut, ride) {
+      ways.push(way);
       var svg_ = journey(P, n, k, way, V * sp_, stops, talk, begin, gap, sit, period, ride);
       if (!cut) { if (depth != null) items.push({ d: depth, svg: svg_ }); else late += svg_; return; }
       // A walk to or from the far edge passes behind the academic building. cut = [the
@@ -687,8 +691,8 @@
       if (depth != null) items.push({ d: depth, svg: near }); else late += near;
     };
     // Two meet in the middle, talk, and walk on together.
-    J(0, [[0.4, -14], [0.4, -7], [0.4, -1.4], [0.4, 14]], 1, { 2: 6 }, [2], 0, 6, null, null, null, [1, true]);
-    J(6, [[-0.4, 14], [-0.4, -1.0], [-0.4, 14]], 1, { 1: 6 }, [], -2.6, 3.7);
+    J(0, [[0.4, -14], [0.4, -7], [0.4, -1.4], [0.4, 14]], 1, { 2: 6 }, [2], 0, 0, null, 42, null, [1, true]);
+    J(6, [[-0.4, 14], [-0.4, -1.0], [-0.4, 14]], 1, { 1: 6 }, [], -2.1, 0, null, 42);
     // Into the services offices by its door; out of the dormitory into the academic building.
     J(2, [[14, 0.4], [-1.5, 0.4], [-1.5, 7.6], [-4.45, 7.6], [-4.45, 7.05]], 0.9, { 1: 4 }, [], -11, 9, null, null, BEHIND);
     J(4, [[-7.45, 0.05], [-7.45, 0.9], [-0.4, 0.9], [-0.4, -6.0], [5.05, -6.0], [5.05, -6.5]], 1, {}, [], -23, 10);
@@ -731,10 +735,25 @@
       J(m.outN, m.on, 1, {}, [], (m.at + tIn + m.wait - 0.4 - walkTime(P, m.on, V)).toFixed(2), 0, [], m.per, BEHIND);
     });
     // Cyclists ride the middle of the walks, between the people walking on either side.
-    late += journey(P, 4, k, [[14, 0], [0, 0], [0, 14]], V * 2.6, {}, [], -5, 22, [], 0, true);
-    J(8, [[0, -14], [0, -7], [0, 0], [14, 0]], 2.4, {}, [], -37, 31, [], 0, null, [1, true], true);
+    late += journey(P, 4, k, [[14, 0], [0, 0], [0, 14]], V * 1.8, {}, [], -5, 22, [], 0, true);
+    J(8, [[0, -14], [0, -7], [0, 0], [14, 0]], 1.7, {}, [], -37, 31, [], 0, null, [1, true], true);
+    // A tree beside a walk, nearer the viewer than the walk there, draws over the walkers.
+    var lateTrees = "";
+    trees.forEach(function (t) {
+      var front = ways.some(function (w) {
+        for (var m = 1; m < w.length; m++) {
+          for (var u = 0; u <= 1.0001; u += 0.1) {
+            var pi = w[m - 1][0] + (w[m][0] - w[m - 1][0]) * u, pj = w[m - 1][1] + (w[m][1] - w[m - 1][1]) * u;
+            if (Math.abs(pi - t[0]) < 1.1 && Math.abs(pj - t[1]) < 1.1 && t[0] + t[1] > pi + pj) return true;
+          }
+        }
+        return false;
+      });
+      if (front) lateTrees += isoTree(P, t[0], t[1], 1.6);
+      else items.push({ d: t[0] + t[1], svg: isoTree(P, t[0], t[1], 1.6) });
+    });
     items.sort(function (x, y) { return x.d - y.d; });
-    var places = items.map(function (x) { return x.svg; }).join("") + late;
+    var places = items.map(function (x) { return x.svg; }).join("") + late + lateTrees;
     return { ground: ground, places: places };
   }
   function hills() {
