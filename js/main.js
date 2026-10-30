@@ -527,10 +527,6 @@
       var j = i < 0 ? 0 : i + d;
       if (j >= 0 && j < list.length) go(list[j], true, d < 0 ? { view: "last" } : null);
     }
-    function nextState() {
-      var st = statesOf(state.scene);
-      if (st) setView(st[(stateIndex(state.scene, state.view) + 1) % st.length].id);
-    }
 
     /* Esc leaves only the scene: it closes any pop-up, the title line, and the navigation. */
     function minimal() {
@@ -542,13 +538,11 @@
       if (doc.activeElement && doc.activeElement.blur && navzone && navzone.contains(doc.activeElement)) doc.activeElement.blur();
     }
 
-    /* ---------- keys: labels, about, states, the arrows ---------- */
+    /* ---------- keys: Esc, the arrows, Home ---------- */
     function onKey(e) {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       var k = e.key;
-      if (k === "s" || k === "S") { nextState(); e.preventDefault(); }
-      else if (k === "Escape") { minimal(); }
-      else if (k === "i" || k === "I") { if (about && about.hidden) openAbout(); else closeAbout(); }
+      if (k === "Escape") { minimal(); }
       else if (k === "ArrowRight" || k === "PageDown" || k === " ") { step(1); e.preventDefault(); }
       else if (k === "ArrowLeft" || k === "PageUp") { step(-1); e.preventDefault(); }
       else if (k === "Home") { go(data.start, true); e.preventDefault(); }
@@ -586,7 +580,9 @@
     var doc = root.document;
     var stage = doc.getElementById("frame");
     if (!stage) return;
-    root.fetch("data/scenes.json")
+    // The words load with the same cache key as the script, so a new version is never stale.
+    var me = doc.querySelector('script[src*="js/main.js"]'), v = me && /\?v=([^&]+)/.exec(me.getAttribute("src"));
+    root.fetch("data/scenes.json" + (v ? "?v=" + v[1] : ""))
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (data) { start(data, { doc: doc, win: root }); })
       .catch(function () {

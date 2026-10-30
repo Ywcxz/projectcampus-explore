@@ -76,7 +76,7 @@ for (const [name, src] of [["js/main.js", js], ["js/art.js", artJs]]) {
 }
 check(!/https?:\/\//.test(js), "js/main.js: names no web address");
 check(!/https?:\/\/(?!www\.w3\.org\/2000\/svg)/.test(artJs), "js/art.js: names no web address but the SVG namespace");
-check(/fetch\("data\/scenes\.json"\)/.test(js) && (js.match(/fetch\(/g) || []).length === 1, "js/main.js: fetches only its own scene file");
+check(/fetch\("data\/scenes\.json"( \+ [^)]*)?\)/.test(js) && (js.match(/fetch\(/g) || []).length === 1, "js/main.js: fetches only its own scene file");
 
 /* ---------- the scene file ---------- */
 
@@ -316,8 +316,8 @@ section("states: today and with CAMPUS", () => {
   check(doc.getElementById("made-up").textContent === win.CampusScenes.MADE_UP.composite, "states: today says it is a composite (D-148)");
   const btns = [...doc.querySelectorAll("#states .state-btn")];
   check(btns.length === 2 && btns[0].getAttribute("aria-pressed") === "true", "states: the switch shows both states, the first pressed");
-  key(win, "s");
-  check(app.state.view === "campus" && title() === later.title && /state=campus/.test(win.location.search), "states: S switches to with CAMPUS and the address says so");
+  btns[1].click();
+  check(app.state.view === "campus" && title() === later.title && /state=campus/.test(win.location.search), "states: the switch changes to with CAMPUS and the address says so");
   check(doc.getElementById("made-up").textContent === win.CampusScenes.MADE_UP.layout, "states: each state says what is made up in it");
   check(doc.querySelectorAll("#scene-claims .claim").length === later.claims.length, "states: each state shows its own claims");
   check(label("feed").hidden && !label("org-place").hidden, "states: objects show only in their own state");
@@ -357,8 +357,12 @@ section("about this scene, as a pop-up", () => {
   doc.querySelector('#labels .label[data-object="ap"]').click();
   check(about.hidden && !doc.getElementById("card").hidden, "about: a card replaces it, so one pop-up shows at a time");
   key(win, "Escape");
+  const view0 = app.state.view;
   key(win, "i");
-  check(!about.hidden, "about: I opens it");
+  key(win, "s");
+  check(about.hidden && app.state.view === view0, "keys: I and S do nothing");
+  btn.click();
+  check(!about.hidden, "about: the button opens it again");
   key(win, "Escape");
   check(about.hidden && app.state.scene.id === "building", "about: Esc closes it and stays in the scene");
 });
