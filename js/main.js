@@ -231,16 +231,40 @@
         b.dataset.object = o.id;
         b.appendChild(make(doc, "span", "dot"));
         b.appendChild(make(doc, "span", "text", o.label));
-        b.style.left = (Number(g.getAttribute("data-lx")) / 16) + "%";
-        b.style.top = (Number(g.getAttribute("data-ly")) / 10) + "%";
+        b.dataset.lx = g.getAttribute("data-lx");
+        b.dataset.ly = g.getAttribute("data-ly");
         b.addEventListener("click", open);
         labels.appendChild(b);
       });
 
       if (backBtn) backBtn.hidden = !scene.parent;
+      // The drawing fills the space it has, trimming its edges if it must (slice).
+      if (svg) svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
+      placeLabels();
       showView(true);
       return svg;
     }
+
+    /* Labels sit on their points in the drawing, wherever the drawing is cut. */
+    function placeLabels() {
+      var svg = frame.querySelector("svg");
+      var ctm = svg && svg.getScreenCTM && svg.getScreenCTM();
+      var fr = frame.getBoundingClientRect();
+      each(labels.querySelectorAll(".label"), function (b) {
+        var x = Number(b.dataset.lx), y = Number(b.dataset.ly);
+        if (ctm && fr.width) {
+          var pt = svg.createSVGPoint();
+          pt.x = x; pt.y = y;
+          var p = pt.matrixTransform(ctm);
+          b.style.left = (p.x - fr.left) + "px";
+          b.style.top = (p.y - fr.top) + "px";
+        } else {
+          b.style.left = (x / 16) + "%";
+          b.style.top = (y / 10) + "%";
+        }
+      });
+    }
+    win.addEventListener("resize", function () { if (!state.busy) placeLabels(); });
 
     /* What a scene shows in its current state: the drawing, the objects
        that belong to it, the words, what is made up, and the trail. */

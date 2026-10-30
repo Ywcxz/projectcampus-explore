@@ -11,14 +11,15 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#F3F4EE">
-<link rel="stylesheet" href="css/site.css?v=0.4.0">
-<script src="js/art.js?v=0.4.0" defer></script>
-<script src="js/main.js?v=0.4.0" defer></script>
+<link rel="stylesheet" href="css/site.css?v=0.5.0">
+<script src="js/art.js?v=0.5.0" defer></script>
+<script src="js/main.js?v=0.5.0" defer></script>
 </head>
 <body>
 
 <a class="skip" href="#caption">Skip to the words</a>
 
+<div class="screen">
 <header class="bar">
   <a class="brand" href="./">Project <span>CAMPUS</span></a>
   <nav class="trail" id="trail" aria-label="Where you are"></nav>
@@ -27,11 +28,6 @@
     <button type="button" class="btn" id="words-btn" aria-pressed="true" title="Show or hide the words (W)">Words on</button>
   </div>
 </header>
-
-<section class="heading" id="caption" tabindex="-1" aria-live="polite">
-  <h1 class="scene-title" id="scene-title"></h1>
-  <p class="scene-summary" id="scene-summary"></p>
-</section>
 
 <main class="scene" id="scene">
   <div class="stage">
@@ -45,9 +41,11 @@
     </div>
   </div>
 
-  <aside class="panel" aria-label="More on this scene">
+  <aside class="panel" id="caption" tabindex="-1" aria-label="About this scene" aria-live="polite">
     <div class="card" id="card" aria-live="polite" hidden></div>
     <div class="panel-sources">
+      <h1 class="scene-title" id="scene-title"></h1>
+      <p class="scene-summary" id="scene-summary"></p>
       <p class="hint">Tap anything that glows to open it here.</p>
       <details class="scene-sources">
         <summary>Sources</summary>
@@ -57,6 +55,7 @@
     </div>
   </aside>
 </main>
+</div>
 
 <div class="blank" id="blank" hidden></div>
 
