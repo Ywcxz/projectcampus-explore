@@ -4,11 +4,13 @@
     "heading": "Campus scenes",
     "studentNotice": {
       "title": "Are you a VSU student?",
-      "text": "These scenes show what Project CAMPUS proposes. A short student survey comes first, so your answers aren't shaped by what you see here. If you're a student, please come back after you've answered it.",
+      "text": "These scenes show what Project CAMPUS proposes. A short student survey comes first, so your answers aren't shaped by what you see here.",
       "go": "I'm not a student — continue",
+      "answered": "I've answered the survey — explore",
+      "surveyClosed": "I'm a student — the survey isn't open yet",
       "leave": "Back to Project CAMPUS",
       "leaveHref": "https://projectcampus.org/",
-      "survey": "Answer the survey",
+      "survey": "I'm a student — let me take the survey first",
       "surveyHref": "https://survey.projectcampus.org/student-life",
       "surveyOpen": false,
       "source": "D-176"

@@ -266,7 +266,10 @@ kbd { font: 12px/1 var(--font-mono); background: var(--card); border: 1px solid 
 .menu-card h2 { font: 600 24px/1.2 var(--font-display); margin: 0 0 10px; }
 .notice-gate { z-index: 20; background: rgba(31, 42, 34, .55); }
 .notice-gate p { margin: 0 0 14px; line-height: 1.5; }
-.gate-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0 !important; }
+.gate-actions { display: grid; gap: 8px; margin-top: 18px; }
+.gate-actions .btn { text-align: center; padding: 11px 14px; }
+.gate-actions .btn[disabled] { opacity: .65; cursor: default; }
+.gate-actions .link { background: none; border-color: transparent; color: var(--ink-3); }
 .gate-actions .go { background: var(--green); color: #fff; border-color: var(--green); }
 .gate-actions a.btn { text-decoration: none; }
-.gate-actions a[hidden] { display: none; }
+.gate-actions [hidden] { display: none; }

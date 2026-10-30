@@ -361,11 +361,14 @@ section("a notice for students (D-176)", () => {
   const gate = doc.getElementById("gate");
   check(!gate.hidden && doc.getElementById("gate-t").textContent === data.site.studentNotice.title, "notice: a visit opens with the notice for students");
   check(doc.getElementById("gate-leave").getAttribute("href") === data.site.studentNotice.leaveHref, "notice: it offers the way back to the landing page");
-  check(doc.getElementById("gate-survey").hidden === !data.site.studentNotice.surveyOpen, "notice: links the survey only once it is open (D-114)");
+  const sn = data.site.studentNotice;
+  const order = [...doc.querySelectorAll(".gate-actions > *")].filter((e) => !e.hidden).map((e) => e.id);
+  check(JSON.stringify(order) === JSON.stringify([sn.surveyOpen ? "gate-survey" : "gate-survey-closed", "gate-go", "gate-answered", "gate-leave"]), "notice: four choices, students first, the landing page last");
+  check(sn.surveyOpen || !doc.querySelector("#gate a[href*='survey']"), "notice: the survey is linked only once it is open (D-114)");
   key(win, "ArrowRight");
   check(app.state.scene.id === data.start, "notice: keys wait behind it");
-  doc.getElementById("gate-go").click();
-  check(gate.hidden, "notice: continue closes it");
+  doc.getElementById("gate-answered").click();
+  check(gate.hidden, "notice: having answered lets them in");
   const win2 = page("https://explore.projectcampus.org/?present");
   const app2 = win2.CampusScenes.start(data, { doc: win2.document, win: win2 });
   check(win2.document.getElementById("gate").hidden, "notice: ?present skips it");

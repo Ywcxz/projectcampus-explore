@@ -620,11 +620,15 @@
       $("gate-go").textContent = gn.go;
       $("gate-leave").textContent = gn.leave;
       $("gate-leave").href = gn.leaveHref;
-      // The survey is linked only once it opens (D-114): the owner sets surveyOpen then.
-      if (gn.surveyOpen && $("gate-survey")) { $("gate-survey").textContent = gn.survey; $("gate-survey").href = gn.surveyHref; $("gate-survey").hidden = false; $("gate-go").classList.remove("go"); }
+      // Students first: the survey, linked only once it opens (D-114; the owner sets surveyOpen then).
+      if (gn.surveyOpen) { $("gate-survey").textContent = gn.survey; $("gate-survey").href = gn.surveyHref; $("gate-survey").hidden = false; }
+      else { $("gate-survey-closed").textContent = gn.surveyClosed; $("gate-survey-closed").hidden = false; }
+      $("gate-answered").textContent = gn.answered;
       gate.hidden = false;
       gateOpen = true;
-      $("gate-go").addEventListener("click", function () { gate.hidden = true; gateOpen = false; });
+      var pass = function () { gate.hidden = true; gateOpen = false; };
+      $("gate-go").addEventListener("click", pass);
+      $("gate-answered").addEventListener("click", pass);
       win.setTimeout(function () { $("gate-go").focus(); }, 0);
     }
     setWords(state.words);
