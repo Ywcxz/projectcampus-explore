@@ -510,6 +510,14 @@
     doc.addEventListener("keydown", onKey);
     if (wordsBtn) wordsBtn.addEventListener("click", function () { setWords(!state.words); });
     if (backBtn) backBtn.addEventListener("click", upOne);
+    // Navigation waits at the bottom: near the cursor on a computer, behind a button on a phone.
+    var menuBtn = $("menu-btn"), navzone = $("navzone");
+    if (menuBtn && navzone) menuBtn.addEventListener("click", function () {
+      var open = !navzone.classList.contains("open");
+      navzone.classList.toggle("open", open);
+      menuBtn.setAttribute("aria-expanded", String(open));
+      menuBtn.setAttribute("aria-label", open ? "Hide navigation" : "Show navigation");
+    });
     if (aboutBtn) aboutBtn.addEventListener("click", function () { if (about.hidden) openAbout(); else closeAbout(); });
     if (aboutClose) aboutClose.addEventListener("click", function () { closeAbout(); if (aboutBtn) aboutBtn.focus(); });
     if (blank) blank.addEventListener("click", function () { blank.hidden = true; });

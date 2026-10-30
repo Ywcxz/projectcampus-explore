@@ -363,6 +363,18 @@ section("about this scene, as a pop-up", () => {
   check(about.hidden && app.state.scene.id === "building", "about: Escape closes it before leaving the scene");
 });
 
+section("navigation, out of the way", () => {
+  const win = page("https://explore.projectcampus.org/?scene=lab");
+  const doc = win.document;
+  win.CampusScenes.start(data, { doc, win });
+  const zone = doc.getElementById("navzone"), btn = doc.getElementById("menu-btn");
+  check(!!zone && zone.contains(doc.getElementById("trail")) && !zone.classList.contains("open"), "nav: the bar waits at the bottom, closed");
+  btn.click();
+  check(zone.classList.contains("open") && btn.getAttribute("aria-expanded") === "true", "nav: the small button shows it on a phone");
+  btn.click();
+  check(!zone.classList.contains("open"), "nav: and hides it again");
+});
+
 section("?state=", () => {
   const win = page("https://explore.projectcampus.org/?scene=elsewhere&state=campus");
   const doc = win.document;

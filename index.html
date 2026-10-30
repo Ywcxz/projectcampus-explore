@@ -11,23 +11,15 @@
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#F3F4EE">
-<link rel="stylesheet" href="css/site.css?v=0.7.0">
-<script src="js/art.js?v=0.7.0" defer></script>
-<script src="js/main.js?v=0.7.0" defer></script>
+<link rel="stylesheet" href="css/site.css?v=0.8.0">
+<script src="js/art.js?v=0.8.0" defer></script>
+<script src="js/main.js?v=0.8.0" defer></script>
 </head>
 <body>
 
 <a class="skip" href="#about-btn">Skip to the words</a>
 
 <div class="screen">
-<header class="bar">
-  <a class="brand" href="./">Project <span>CAMPUS</span></a>
-  <nav class="trail" id="trail" aria-label="Where you are"></nav>
-  <div class="actions">
-    <button type="button" class="btn" id="back-btn" hidden>← Back</button>
-    <button type="button" class="btn" id="words-btn" aria-pressed="true" title="Show or hide the words (W)">Words on</button>
-  </div>
-</header>
 
 <main class="scene" id="scene">
   <div class="stage">
@@ -56,6 +48,17 @@
   </aside>
   <aside class="pop card" id="card" aria-live="polite" hidden></aside>
 </main>
+<div class="navzone" id="navzone">
+  <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="bar" aria-label="Show navigation"><span></span><span></span><span></span></button>
+<header class="bar" id="bar">
+  <a class="brand" href="./">Project <span>CAMPUS</span></a>
+  <nav class="trail" id="trail" aria-label="Where you are"></nav>
+  <div class="actions">
+    <button type="button" class="btn" id="back-btn" hidden>← Back</button>
+    <button type="button" class="btn" id="words-btn" aria-pressed="true" title="Show or hide the words (W)">Words on</button>
+  </div>
+</header>
+</div>
 </div>
 
 <div class="blank" id="blank" hidden></div>

@@ -44,7 +44,34 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .skip:focus { left: 12px; top: 12px; z-index: 50; background: var(--card); padding: 8px 12px; border-radius: 8px; }
 
 /* ---------- the screen: navigation on top, the scene filling the rest; scroll for the footer ---------- */
-.screen { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+.screen { position: relative; display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+
+/* Navigation waits under the bottom edge and slides up when the cursor comes
+   near it, or when it has focus; on a touch screen, a small button shows it. */
+.navzone { position: absolute; left: 0; right: 0; bottom: 0; height: 18px; z-index: 5; display: flex; align-items: flex-end; pointer-events: none; }
+.navzone .bar { pointer-events: auto; position: absolute; left: 0; right: 0; bottom: 0; border-top: 1px solid var(--rule); border-bottom: 0;
+  background: rgba(243, 244, 238, .96); box-shadow: 0 -8px 24px rgba(31, 42, 34, .1);
+  transform: translateY(100%); transition: transform .25s ease; }
+.navzone:hover, .navzone:focus-within, .navzone.open { pointer-events: auto; }
+.navzone:hover .bar, .navzone:focus-within .bar, .navzone.open .bar { transform: none; }
+@media (hover: hover) { .navzone { pointer-events: auto; } }
+/* While it shows, what sits at the bottom of the scene moves up out of its way. */
+.about-btn, .states, .about, .arrival { transition: translate .25s ease; }
+@media (hover: hover) {
+  .screen:has(.navzone:hover, .navzone:focus-within) :is(.about-btn, .states, .about, .arrival) { translate: 0 -56px; }
+}
+.menu-btn { display: none; }
+@media (hover: none) {
+  .menu-btn {
+    display: grid; place-content: center; gap: 4px; pointer-events: auto;
+    position: absolute; right: 10px; top: 10px; width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255, 253, 246, .95); border: 1px solid var(--rule); box-shadow: 0 2px 10px rgba(31, 42, 34, .12); cursor: pointer;
+  }
+  .menu-btn span { display: block; width: 16px; height: 2px; border-radius: 1px; background: var(--ink); }
+  .navzone { top: 0; height: auto; }
+  .navzone .bar { pointer-events: auto; }
+  .navzone:not(.open) .bar { visibility: hidden; transition: transform .25s ease, visibility 0s .25s; }
+}
 
 .bar {
   display: flex; align-items: center; gap: 16px;
@@ -143,7 +170,7 @@ body.moving .labels { opacity: 0; }
 
 /* The switch between today and with CAMPUS, a control that stays with words off. */
 .states {
-  position: absolute; left: 14px; top: 14px; display: inline-flex; padding: 4px; gap: 4px;
+  position: absolute; right: 16px; bottom: 16px; display: inline-flex; padding: 4px; gap: 4px;
   background: rgba(255, 253, 246, .94); border: 1px solid var(--rule); border-radius: 999px;
   box-shadow: 0 2px 10px rgba(31, 42, 34, .1);
 }
@@ -243,7 +270,7 @@ body.no-words .trail { visibility: hidden; }
 .card-close { position: absolute; right: 14px; top: 14px; font: 500 13px/1 var(--font-body); background: var(--paper-2); border: 1px solid var(--rule); border-radius: 999px; padding: 7px 11px; cursor: pointer; }
 
 /* ---------- presenting, blanking, footer ---------- */
-body.presenting .bar, body.presenting .footer .keys { display: none; }
+body.presenting .navzone, body.presenting .footer .keys { display: none; }
 
 .blank { position: fixed; inset: 0; background: #000; z-index: 100; }
 .footer { max-width: 1440px; margin: 0 auto; padding: 18px 20px 40px; font-size: 14px; color: var(--ink-3); }
@@ -255,8 +282,11 @@ kbd { font: 12px/1 var(--font-mono); background: var(--card); border: 1px solid 
   .stage, .canvas { bottom: auto; height: 62.5vw; }
   .about-btn { top: calc(62.5vw + 10px); bottom: auto; left: 10px; }
   .backdrop { bottom: auto; height: 62.5vw; }
-  .arrival { bottom: auto; top: calc(62.5vw - 54px); max-width: calc(100% - 20px); border-radius: 14px; font-size: 13px; }
+  .arrival { bottom: auto; top: calc(62.5vw + 60px); left: 8px; right: 8px; max-width: none; transform: none; border-radius: 14px; font-size: 14px; }
+  @keyframes arrive-line-m { 0% { opacity: 0; } 10%, 85% { opacity: 1; } 100% { opacity: 0; } }
+  .arrival.show { animation-name: arrive-line-m; }
   .about { bottom: auto; }
+  .states { bottom: auto; top: calc(100% + 10px); right: 2px; }
   .pop { top: calc(62.5vw + 56px); left: 8px; right: 8px; width: auto; max-height: calc(100% - 62.5vw - 64px); }
 }
 @media (max-width: 640px) {
@@ -265,7 +295,7 @@ kbd { font: 12px/1 var(--font-mono); background: var(--card); border: 1px solid 
   .frame { border-radius: 14px; }
   .label { font-size: 12px; padding: 5px 9px 5px 7px; }
   .made-up { top: auto; left: auto; transform: none; right: 8px; bottom: 8px; font-size: 11px; }
-  .states { left: 8px; top: auto; bottom: 8px; }
+
   .state-btn { font-size: 12px; padding: 7px 10px; }
   .footer { font-size: 13px; padding: 14px 14px 30px; }
 }
