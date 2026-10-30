@@ -231,6 +231,7 @@ body.moving .labels { opacity: 0; }
 }
 .label:hover { border-color: var(--gold); }
 .label[hidden] { display: none; }
+.label .dot { display: none; }
 .label .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(226, 174, 28, .25); }
 .label.goes-deeper .dot { background: var(--green); box-shadow: 0 0 0 4px rgba(23, 100, 58, .2); }
 @keyframes beacon { 0%, 100% { box-shadow: 0 0 0 3px rgba(226, 174, 28, .35); } 50% { box-shadow: 0 0 0 9px rgba(226, 174, 28, 0); } }

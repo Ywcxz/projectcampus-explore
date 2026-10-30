@@ -190,7 +190,7 @@
       ],
       "chapters": [{ "chapter": "social-network", "label": "Chapter 3" }, { "chapter": "intranet", "label": "Chapter 2" }],
       "objects": [
-        { "id": "building", "label": "An academic building", "opens": { "scene": "building" } },
+        { "id": "building", "label": "Academic building", "opens": { "scene": "building" } },
         { "id": "student", "label": "A student between classes", "opens": { "scene": "outside" } },
         { "id": "route", "label": "A question finds its answer", "opens": { "card": "route" } },
         { "id": "dorms", "label": "Dormitories", "opens": { "card": "to-come" } },

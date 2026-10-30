@@ -467,7 +467,10 @@
       : box(L, -0.55, -0.3, 1.1, 0.6, 0.28, [color, color, color]) + box(L, -0.25, -0.25, 0.6, 0.5, 0.2, glass, 0.28);
   }
   /* A motorcycle side on (along i), in local iso L: two wheels, a body, a seat, handlebars, a lamp. */
-  function motorcycle(L, color) {
+  function motorcycle(L0, color, dir) {
+    var sg = dir && dir.charAt(0) === "-" ? -1 : 1, ax = dir ? dir.charAt(1) : "i";
+    var L = function (a, b, z) { return ax === "i" ? L0(sg * a, b, z) : L0(b, sg * a, z); };
+    L.s = L0.s;
     var wh = function (i) { var c = L(i, 0, 0.11); return '<ellipse cx="' + f(c[0]) + '" cy="' + f(c[1]) + '" rx="' + f(0.11 * L.s) + '" ry="' + f(0.13 * L.s) + '" fill="#2A2A30"/><ellipse cx="' + f(c[0]) + '" cy="' + f(c[1]) + '" rx="' + f(0.04 * L.s) + '" ry="' + f(0.05 * L.s) + '" fill="#9AA0A6"/>'; };
     var line = function (a, b, w, col) { return '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + col + '" stroke-width="' + w + '" stroke-linecap="round"/>'; };
     var sh = L(0, 0, 0);
@@ -497,18 +500,24 @@
   /* A motorcycle's trip: ridden in along the lane into a space, left there a while,
      then ridden out by someone else. riderIn and riderOut are cast numbers. */
   function motoTrip(P, color, way, speed, wait, begin, period, riderIn, riderOut, k) {
-    var L = Iso(0, 0, P.s), Lj = function (i, j, z) { return L(j, i, z); };
-    Lj.s = L.s;
+    var L = Iso(0, 0, P.s);
     var pts_ = way.map(function (q) { return P(q[0], q[1]); }), path = "M" + pts_.map(function (q) { return f(q[0]) + "," + f(q[1]); }).join(" L");
     var t1 = walkTime(P, way.slice(0, 2), speed), t2 = walkTime(P, way.slice(1), speed), go = t1 + t2, D = period, p1 = t1 / go;
     var B = ' dur="' + D + 's" begin="' + begin + 's" repeatCount="indefinite"', T = function (x) { return (x / D).toFixed(4); }, end = 2 * go + wait;
     var show = function (vals) { return '<animate attributeName="opacity"' + B + ' calcMode="discrete" keyTimes="0;' + T(t1) + ";" + T(go) + ";" + T(go + wait) + ";" + T(go + wait + t2) + '" values="' + vals + '"/>'; };
-    var seatJ = Lj(-0.08, 0, 0.33), seatI = L(-0.08, 0, 0.33);
-    var inJ = '<g>' + show("1;0;0;0;1") + motorcycle(Lj, color) + "</g>";
-    var inI = '<g opacity="0">' + show("0;1;1;1;0") + motorcycle(L, color) + "</g>";
-    var rideA = '<g>' + show("1;1;0;0;0") + sitChar(seatJ[0], seatJ[1] + 3 * k, riderIn, k, "bars") + "</g>";
-    var rideB = '<g opacity="0">' + show("0;0;0;1;1") + sitChar(seatI[0], seatI[1] + 3 * k, riderOut, k, "bars") + "</g>";
-    return '<g opacity="0"><animate attributeName="opacity"' + B + ' keyTimes="0;' + T(0.8) + ";" + T(end - 0.8) + ";" + T(end) + ';1" values="0;1;1;0;0"/>' + inJ + inI + rideA + rideB +
+    // In along the lane (+j), into the space, parked, back out of it, and out along the lane (-j).
+    var into = way[2][0] < way[1][0] ? "-i" : "+i", outOf = into === "-i" ? "+i" : "-i";
+    var phases = ["+j", into, into, outOf, "-j"];
+    var out = "";
+    ["+j", "-j", "+i", "-i"].forEach(function (d) {
+      var vis = phases.map(function (ph) { return ph === d ? 1 : 0; }).join(";");
+      var mirror = d === "-i" || d === "+j", sg = d.charAt(0) === "-" ? -1 : 1;
+      var seat = d.charAt(1) === "i" ? L(sg * -0.08, 0, 0.33) : L(0, sg * -0.08, 0.33);
+      var rider = function (n) { var r = sitChar(seat[0], seat[1] + 3 * k, n, k, "bars"); return mirror ? '<g transform="translate(' + f(2 * seat[0]) + ' 0) scale(-1 1)">' + r + "</g>" : r; };
+      out += '<g opacity="' + (d === "+j" ? 1 : 0) + '">' + show(vis) + motorcycle(L, color, d) +
+        '<g>' + show("1;1;0;0;0") + rider(riderIn) + "</g>" + '<g opacity="0">' + show("0;0;0;1;1") + rider(riderOut) + "</g></g>";
+    });
+    return '<g opacity="0"><animate attributeName="opacity"' + B + ' keyTimes="0;' + T(0.8) + ";" + T(end - 0.8) + ";" + T(end) + ';1" values="0;1;1;0;0"/>' + out +
       '<animateMotion' + B + ' path="' + path + '" keyPoints="0;' + p1.toFixed(4) + ';1;1;' + p1.toFixed(4) + ';0;0" keyTimes="0;' + T(t1) + ";" + T(go) + ";" + T(go + wait) + ";" + T(go + wait + t2) + ";" + T(end) + ';1" calcMode="linear"/></g>';
   }
   /* A car's trip: in along the lane from the edge, into a space, a long stop, and out again. */
@@ -594,14 +603,14 @@
     };
     // Buildings, each with a door; balconies have doorways; depth sorts the scene.
     var acadB = bldg(P, 2.5, -9, 5, 2.4, 3.0, acad, 2, ["1:0", "1:1", "2:3", "2:4"]) + balc(2.6, 1.6, -6.6, 1.0, 9, 8, -3, 9, acad[1]) + balc(5.6, 1.6, -6.6, 2.0, 7, 6, -9, 12, acad[1]);
-    items.push({ d: 7.5 - 6.6, svg: place("building", P(5, -7.8, 4.4)[0], P(5, -7.8, 4.4)[1], acadB) });
+    items.push({ d: 5 - 7.8, svg: place("building", P(5, -7.8, 4.4)[0], P(5, -7.8, 4.4)[1], acadB) });
     var dormB = bldg(P, -9, -4, 4, 1.6, 2.4, dorm) + bldg(P, -9, -1.6, 4, 1.6, 2.4, dorm, 1, ["1:0", "1:2", "1:3"]) +
       balc(-8.95, 1.1, 0, 1.2, 8, 10, -6, 7, dorm[1], 0.6) + balc(-6.85, 1.7, 0, 1.2, 3, 7, -1, 10, dorm[1], 0.6);
-    items.push({ d: -5 + 0, svg: place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, dormB) });
-    items.push({ d: -3.4 + 7, svg: place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, bldg(P, -6, 5, 2.6, 2, 1.9, org, 1)) });
-    items.push({ d: 8.7 + 4.0, svg: place("offices", P(7.6, 4.4)[0], P(7.6, 4.4)[1] + 10, bldg(P, 5.5, 1.8, 3.2, 2.2, 1.8, office, 1)) });
+    items.push({ d: -7 - 0.8, svg: place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, dormB) });
+    items.push({ d: -4.7 + 6, svg: place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, bldg(P, -6, 5, 2.6, 2, 1.9, org, 1)) });
+    items.push({ d: 7.1 + 2.9, svg: place("offices", P(7.6, 4.4)[0], P(7.6, 4.4)[1] + 10, bldg(P, 5.5, 1.8, 3.2, 2.2, 1.8, office, 1)) });
     // A building nobody opens yet, with two people talking by it, and its path.
-    items.push({ d: -8.6 + 9.5, svg: bldg(P, -11, 7.5, 2.4, 2, 1.6, ["#E3EBD6", "#BFD0B0", "#A9BD98", "#5B7F8F"], 1) });
+    items.push({ d: -9.8 + 8.5, svg: bldg(P, -11, 7.5, 2.4, 2, 1.6, ["#E3EBD6", "#BFD0B0", "#A9BD98", "#5B7F8F"], 1) });
     var pair = stand(-12.2, 11.1, 0, 6, 0, { talk: [6.5, 0], look: 1 }) + stand(-11.55, 10.45, 0, 2, 0, { talk: [7.5, 3.2], look: 1, flip: true });
     [[-12.2, 11.1, "c0"], [-11.55, 10.45, "c2"]].forEach(function (pp) {
       var qp = P(pp[0], pp[1]);
@@ -653,38 +662,49 @@
       circle += '<g class="chat c' + n + '"><rect x="' + f(q[0] - 4) + '" y="' + f(q[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/>' +
         '<circle cx="' + f(q[0] + 2.5 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 7 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 11.5 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
     });
-    items.push({ d: 0.6, svg: circle });
+    items.push({ d: 2.0, svg: circle });
     items.push({ d: 4.8, svg: stand(6.6, -1.8, 0, 3, 0, { photo: [9, 1] }) });
     items.push({ d: -6.4, svg: stand(-4.6, -2.2, 0, 5, 0, { selfie: [10, 2], look: 1 }) + stand(-4.0, -2.8, 0, 7, 0, { look: -1, flip: true }) });
     var sp = P(2.2, -5.2), st = isoChar(sp[0], sp[1], 1, k, null, 9);
-    items.push({ d: -3, svg: live ? obj("student", sp[0], sp[1] - 40, st) : st });
+    items.push({ d: -2.5, svg: live ? obj("student", sp[0], sp[1] - 40, st) : st });
     // People come and go: in from the edge or out of a door, and out again, fading as
     // they reach the edge or step through a door, each on a loop of its own length.
     // A walk that passes behind a building (the faculty offices) is drawn before it.
-    var late = "", BEHIND = 12;
-    var J = function (n, way, sp_, stops, talk, begin, gap, sit, period, depth) {
-      var svg_ = journey(P, n, k, way, V * sp_, stops, talk, begin, gap, sit, period);
-      if (depth != null) items.push({ d: depth, svg: svg_ }); else late += svg_;
+    var late = "", BEHIND = 9.5, FAR = -3.1;
+    var J = function (n, way, sp_, stops, talk, begin, gap, sit, period, depth, cut, ride) {
+      var svg_ = journey(P, n, k, way, V * sp_, stops, talk, begin, gap, sit, period, ride);
+      if (!cut) { if (depth != null) items.push({ d: depth, svg: svg_ }); else late += svg_; return; }
+      // A walk to or from the far edge passes behind the academic building. cut = [the
+      // waypoint where it does, true if the far part comes first]: the walk is drawn
+      // twice, behind the building and in front, each copy shown only for its part.
+      var tc = 0, total = 0, m;
+      for (m = 1; m <= cut[0]; m++) { tc += walkTime(P, [way[m - 1], way[m]], V * sp_); if (m < cut[0]) tc += (stops[m] || 0); }
+      for (m = 1; m < way.length; m++) total += walkTime(P, [way[m - 1], way[m]], V * sp_) + (stops[m] || 0);
+      var D = period ? Math.max(period, total + 1) : total + gap, x = (tc / D).toFixed(4);
+      var part = function (firstOn) { return '<g><animate attributeName="opacity" dur="' + f(D) + 's" begin="' + begin + 's" repeatCount="indefinite" calcMode="discrete" keyTimes="0;' + x + '" values="' + (firstOn ? "1;0" : "0;1") + '"/>' + svg_ + "</g>"; };
+      items.push({ d: FAR, svg: part(cut[1]) });
+      var near = part(!cut[1]);
+      if (depth != null) items.push({ d: depth, svg: near }); else late += near;
     };
     // Two meet in the middle, talk, and walk on together.
-    J(0, [[0.4, -14], [0.4, -1.4], [0.4, 14]], 1, { 1: 6 }, [1], 0, 6);
+    J(0, [[0.4, -14], [0.4, -7], [0.4, -1.4], [0.4, 14]], 1, { 2: 6 }, [2], 0, 6, null, null, null, [1, true]);
     J(6, [[-0.4, 14], [-0.4, -1.0], [-0.4, 14]], 1, { 1: 6 }, [], -2.6, 3.7);
     // Into the services offices by its door; out of the dormitory into the academic building.
     J(2, [[14, 0.4], [-1.5, 0.4], [-1.5, 7.6], [-4.45, 7.6], [-4.45, 7.05]], 0.9, { 1: 4 }, [], -11, 9, null, null, BEHIND);
     J(4, [[-7.45, 0.05], [-7.45, 0.9], [-0.4, 0.9], [-0.4, -6.0], [5.05, -6.0], [5.05, -6.5]], 1, {}, [], -23, 10);
-    J(9, [[5.05, -6.5], [5.05, -5.6], [0.4, -5.6], [0.4, -14]], 1.05, { 2: 3 }, [], -31, 13);
+    J(9, [[5.05, -6.5], [5.05, -5.6], [0.4, -5.6], [0.4, -7], [0.4, -14]], 1.05, { 2: 3 }, [], -31, 13, null, null, null, [3, false]);
     // Into and out of the faculty offices.
     J(5, [[-0.4, 14], [-0.4, 7.2], [7.05, 7.2], [7.05, 4.1]], 0.85, { 1: 3 }, [], -7, 11);
     J(8, [[7.05, 4.1], [7.05, 6.6], [0.4, 6.6], [0.4, 14]], 1, {}, [], -19, 16);
     // Out of the far building, across campus, and off.
     J(3, [[-9.47, 9.55], [-9.47, 10.4], [-0.4, 10.4], [-0.4, 0.9], [14, 0.9]], 1, { 3: 5 }, [], -14, 8, null, null, BEHIND);
     // Benches: two sit and talk a while on one; one sits alone on another; one on the third.
-    var b1 = [[0.4, -14], [0.4, -2.9], [2.95, -2.9], [2.95, -3.45], [2.95, -2.9], [5.05, -2.9], [5.05, -6.5]];
+    var b1 = [[0.4, -14], [0.4, -7], [0.4, -2.9], [2.95, -2.9], [2.95, -3.45], [2.95, -2.9], [5.05, -2.9], [5.05, -6.5]];
     var b2 = [[-7.45, 0.05], [-7.45, 0.9], [3.55, 0.9], [3.55, -2.9], [3.55, -3.45], [3.55, -2.9], [3.55, -0.4], [14, -0.4]];
-    var arrive1 = walkTime(P, b1.slice(0, 4), V), arrive2 = walkTime(P, b2.slice(0, 5), V * 0.95);
-    J(7, b1, 1, { 3: 16 }, [3], 0, 0, [3], 70);
+    var arrive1 = walkTime(P, b1.slice(0, 5), V), arrive2 = walkTime(P, b2.slice(0, 5), V * 0.95);
+    J(7, b1, 1, { 4: 16 }, [4], 0, 0, [4], 70, null, [1, true]);
     J(1, b2, 0.95, { 4: 14 }, [], (arrive1 - arrive2 + 1).toFixed(2), 0, [4], 70, BEHIND);
-    J(8, [[-4.45, 7.05], [-4.45, 7.6], [-1.3, 7.6], [-1.3, -2.9], [-1.95, -2.9], [-1.95, -3.45], [-1.95, -2.9], [-0.4, -2.9], [-0.4, -14]], 1, { 5: 22 }, [], -12, 0, [5], 85);
+    J(8, [[-4.45, 7.05], [-4.45, 7.6], [-1.3, 7.6], [-1.3, -2.9], [-1.95, -2.9], [-1.95, -3.45], [-1.95, -2.9], [-0.4, -2.9], [-0.4, -7], [-0.4, -14]], 1, { 5: 22 }, [], -12, 0, [5], 85, null, [8, false]);
     J(4, [[14, 2.0], [9.95, 2.0], [9.95, 1.45], [9.95, 2.0], [14, 2.0]], 0.9, { 2: 18 }, [], -33, 0, [2], 64);
     // The parking area: a car comes in now and then; someone gets out and walks to the
     // academic building; later someone walks to it from the dormitory, and it leaves.
@@ -712,7 +732,7 @@
     });
     // Cyclists ride the middle of the walks, between the people walking on either side.
     late += journey(P, 4, k, [[14, 0], [0, 0], [0, 14]], V * 2.6, {}, [], -5, 22, [], 0, true);
-    late += journey(P, 8, k, [[0, -14], [0, 0], [14, 0]], V * 2.4, {}, [], -37, 31, [], 0, true);
+    J(8, [[0, -14], [0, -7], [0, 0], [14, 0]], 2.4, {}, [], -37, 31, [], 0, null, [1, true], true);
     items.sort(function (x, y) { return x.d - y.d; });
     var places = items.map(function (x) { return x.svg; }).join("") + late;
     return { ground: ground, places: places };
