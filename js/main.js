@@ -55,6 +55,7 @@
     var frame = $("frame"), labels = $("labels"), madeUp = $("made-up"), trail = $("trail");
     var title = $("scene-title"), summary = $("scene-summary"), claimList = $("scene-claims"), chapters = $("scene-chapters");
     var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), blank = $("blank"), switcher = $("states");
+    var about = $("caption"), aboutBtn = $("about-btn"), aboutClose = $("about-close");
     var masterLink = $("master-doc-link");
     if (masterLink) masterLink.href = base;
 
@@ -110,9 +111,25 @@
     }
 
     /* ---------- a card unfolds in place ---------- */
+    /* ---------- about this scene: title, summary, sources, as a pop-up ---------- */
+    function openAbout() {
+      if (!about) return;
+      closeCard();
+      about.hidden = false;
+      if (aboutBtn) aboutBtn.setAttribute("aria-expanded", "true");
+      if (aboutClose) aboutClose.focus();
+    }
+    function closeAbout() {
+      if (!about || about.hidden) return false;
+      about.hidden = true;
+      if (aboutBtn) aboutBtn.setAttribute("aria-expanded", "false");
+      return true;
+    }
+
     function openCard(id, from) {
       var c = cards[id];
       if (!c) return;
+      closeAbout();
       state.card = { id: id, from: from };
       clear(card);
       var close = make(doc, "button", "card-close", "Close");
@@ -208,6 +225,7 @@
       clear(frame);
       clear(labels);
       closeCard();
+      closeAbout();
       var svg = drawing(scene);
       if (svg) frame.appendChild(svg);
       else frame.appendChild(make(doc, "p", "placeholder", "Picture to come."));
@@ -446,8 +464,9 @@
       var k = e.key;
       if (k === "w" || k === "W") { setWords(!state.words); e.preventDefault(); }
       else if (k === "s" || k === "S") { nextState(); e.preventDefault(); }
-      else if (k === "Escape") { if (state.card) closeCard(); else upOne(); }
-      else if (k === "Backspace") { if (state.card) closeCard(); else upOne(); e.preventDefault(); }
+      else if (k === "Escape") { if (state.card) closeCard(); else if (!closeAbout()) upOne(); }
+      else if (k === "Backspace") { if (state.card) closeCard(); else if (!closeAbout()) upOne(); e.preventDefault(); }
+      else if (k === "i" || k === "I") { if (about && about.hidden) openAbout(); else closeAbout(); }
       else if (k === "ArrowRight" || k === "PageDown" || k === " ") { step(1); e.preventDefault(); }
       else if (k === "ArrowLeft" || k === "PageUp") { step(-1); e.preventDefault(); }
       else if (k === "Home") { go(data.start, true); e.preventDefault(); }
@@ -457,6 +476,8 @@
     doc.addEventListener("keydown", onKey);
     if (wordsBtn) wordsBtn.addEventListener("click", function () { setWords(!state.words); });
     if (backBtn) backBtn.addEventListener("click", upOne);
+    if (aboutBtn) aboutBtn.addEventListener("click", function () { if (about.hidden) openAbout(); else closeAbout(); });
+    if (aboutClose) aboutClose.addEventListener("click", function () { closeAbout(); if (aboutBtn) aboutBtn.focus(); });
     if (blank) blank.addEventListener("click", function () { blank.hidden = true; });
     win.addEventListener("popstate", function () {
       var q = new win.URLSearchParams(win.location.search);
@@ -472,7 +493,7 @@
     arrive();
     writeAddress(false);
 
-    return { state: state, go: go, up: upOne, step: step, setView: setView, setWords: setWords, openCard: openCard, closeCard: closeCard };
+    return { state: state, openAbout: openAbout, closeAbout: closeAbout, go: go, up: upOne, step: step, setView: setView, setWords: setWords, openCard: openCard, closeCard: closeCard };
   }
 
   function boot() {

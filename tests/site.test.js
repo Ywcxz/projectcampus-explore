@@ -343,6 +343,23 @@ section("states: today and with CAMPUS", () => {
   check(app.state.scene.id === "elsewhere" && app.state.view === "today", "path: next arrives in a scene's first state");
 });
 
+section("about this scene, as a pop-up", () => {
+  const win = page("https://explore.projectcampus.org/?scene=building");
+  const doc = win.document;
+  const app = win.CampusScenes.start(data, { doc, win });
+  const about = doc.getElementById("caption"), btn = doc.getElementById("about-btn");
+  check(about.hidden && btn.getAttribute("aria-expanded") === "false", "about: the scene shows alone at first");
+  btn.click();
+  check(!about.hidden && doc.getElementById("scene-title").textContent === scenes.get("building").title, "about: the button opens the title, summary, and sources");
+  doc.querySelector('#labels .label[data-object="ap"]').click();
+  check(about.hidden && !doc.getElementById("card").hidden, "about: a card replaces it, so one pop-up shows at a time");
+  key(win, "Escape");
+  key(win, "i");
+  check(!about.hidden, "about: I opens it");
+  key(win, "Escape");
+  check(about.hidden && app.state.scene.id === "building", "about: Escape closes it before leaving the scene");
+});
+
 section("?state=", () => {
   const win = page("https://explore.projectcampus.org/?scene=elsewhere&state=campus");
   const doc = win.document;
