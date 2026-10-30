@@ -46,43 +46,46 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 /* ---------- the screen: navigation on top, the scene filling the rest; scroll for the footer ---------- */
 .screen { position: relative; display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
 
-/* Navigation waits under the bottom edge and slides up when the cursor comes
-   near it, or when it has focus; on a touch screen, a small button shows it. */
-.navzone { position: absolute; left: 0; right: 0; top: 0; height: 18px; z-index: 5; display: flex; align-items: flex-end; pointer-events: none; }
+/* Navigation, with the site's title, shows at the top of the scene. Esc tucks it
+   above the edge; the cursor near the top, focus, or on a touch screen a small
+   button brings it back. */
+.navzone { position: absolute; left: 0; right: 0; top: 0; height: 18px; z-index: 5; pointer-events: none; }
 .navzone .bar { pointer-events: auto; position: absolute; left: 0; right: 0; top: 0;
-  background: rgba(243, 244, 238, .96); box-shadow: 0 8px 24px rgba(31, 42, 34, .1);
-  transform: translateY(-100%); transition: transform .25s ease; }
-.navzone:hover, .navzone:focus-within, .navzone.open { pointer-events: auto; }
-.navzone:hover .bar, .navzone:focus-within .bar, .navzone.open .bar { transform: none; }
-@media (hover: hover) { .navzone { pointer-events: auto; } }
-/* While it shows, what sits at the bottom of the scene moves up out of its way. */
+  background: rgba(243, 244, 238, .96); box-shadow: 0 6px 20px rgba(31, 42, 34, .08);
+  transition: transform .25s ease; }
+.navzone.tucked .bar { transform: translateY(-100%); }
+.navzone.tucked:hover .bar, .navzone.tucked:focus-within .bar { transform: none; }
+@media (hover: hover) { .navzone.tucked { pointer-events: auto; } }
+/* While it shows, a card at the top of the scene moves down out of its way. */
 .card { transition: translate .25s ease; }
-.screen:has(.navzone:hover, .navzone:focus-within, .navzone.open) .card { translate: 0 56px; }
+.screen:has(.navzone:not(.tucked), .navzone:hover, .navzone:focus-within) .card { translate: 0 48px; }
 .menu-btn { display: none; }
 @media (hover: none) {
-  .menu-btn {
+  .navzone.tucked .menu-btn {
     display: grid; place-content: center; gap: 4px; pointer-events: auto;
     position: absolute; right: 10px; top: 10px; width: 38px; height: 38px; border-radius: 50%;
     background: rgba(255, 253, 246, .95); border: 1px solid var(--rule); box-shadow: 0 2px 10px rgba(31, 42, 34, .12); cursor: pointer;
   }
   .menu-btn span { display: block; width: 16px; height: 2px; border-radius: 1px; background: var(--ink); }
-  .navzone { height: auto; }
-  .navzone .bar { pointer-events: auto; }
-  .navzone:not(.open) .bar { visibility: hidden; transition: transform .25s ease, visibility 0s .25s; }
+  .navzone.tucked .bar { visibility: hidden; transition: transform .25s ease, visibility 0s .25s; }
 }
 
 .bar {
-  display: flex; align-items: center; gap: 16px;
-  padding: 8px 20px; border-bottom: 1px solid var(--rule);
+  display: flex; align-items: baseline; gap: 14px;
+  padding: 9px 18px; border-bottom: 1px solid var(--rule);
   background: rgba(243, 244, 238, .92);
 }
-.brand { font: 600 20px/1 var(--font-display); color: var(--ink); text-decoration: none; white-space: nowrap; }
-.brand span { font-style: italic; color: var(--green); }
-.trail { flex: 1; min-width: 0; font-size: 14px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand { font: 600 17px/1.2 var(--font-display); color: var(--ink); text-decoration: none; white-space: nowrap; }
+.tagline { margin: 0; font-size: 13px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 0 1 auto; }
+.tagline[hidden] { display: none; }
+.trail { flex: 1 0 auto; margin-left: auto; text-align: right; font-size: 13px; color: var(--ink-3); white-space: nowrap; }
 .trail a { color: var(--ink-2); }
-.trail .sep { margin: 0 8px; color: var(--rule); }
+.trail .sep { margin: 0 6px; color: var(--ink-3); opacity: .6; }
 .trail .here { color: var(--ink); font-weight: 600; }
-.actions { display: flex; gap: 8px; }
+.trail .more { font: inherit; color: var(--ink-2); background: none; border: 0; padding: 0 2px; cursor: pointer; }
+.trail .more:hover { color: var(--green); }
+.actions { display: flex; gap: 8px; align-self: center; }
+.bar .btn { font-size: 13px; padding: 6px 11px; }
 .btn {
   font: 500 14px/1 var(--font-body); color: var(--ink);
   background: var(--paper-2); border: 1px solid var(--rule); border-radius: 999px;
@@ -97,20 +100,13 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .scene { position: relative; flex: 1; min-height: 0; background: #EEF0E7; }
 .stage { position: absolute; inset: 0; }
 .canvas { position: absolute; inset: 0; }
-.frame { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--paper-2); }
+.frame { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--paper-2); touch-action: pan-y; }
+/* Zoomed in: drag to move around; a pinch or Ctrl and the wheel zoom (main.js). */
+.frame.zoomed { touch-action: none; cursor: grab; }
+.frame.dragging { cursor: grabbing; }
+.frame.dragging [data-object] { pointer-events: none; }
 .frame > svg { display: block; width: 100%; height: 100%; }
 .frame .placeholder { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--ink-3); }
-
-/* A heading on the scene itself, top left, such as the start's. */
-.hero { position: absolute; left: 32px; top: 60px; max-width: 520px; pointer-events: none; z-index: 1; }
-.hero[hidden] { display: none; }
-.hero p { margin: 0; }
-.hero p:empty { display: none; }
-.hero-title { font: 600 44px/1.05 var(--font-display); color: var(--ink); letter-spacing: -.01em; }
-.hero-line { margin-top: 6px !important; font: italic 400 19px/1.3 var(--font-display); color: var(--green); }
-.hero-note { margin-top: 10px !important; font-size: 14px; line-height: 1.45; color: var(--ink-2); max-width: 400px; }
-@keyframes hero-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.hero:not([hidden]) { animation: hero-in .6s ease both; }
 
 /* On arrival: the title and a line, for a few seconds. */
 .arrival {

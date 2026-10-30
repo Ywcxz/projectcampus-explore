@@ -238,7 +238,7 @@ for (const s of data.scenes) section(`page ?scene=${s.id}`, () => {
   const claims = [...doc.querySelectorAll("#scene-claims .claim")];
   check(claims.length === (s.claims || []).length && claims.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), `?scene=${s.id}: every claim shows its tag and links its source`);
   check(doc.querySelectorAll("#scene-chapters a.chapter-link").length === (s.chapters || []).length, `?scene=${s.id}: links its chapters`);
-  const trail = [...doc.querySelectorAll("#trail a, #trail .here")].map((e) => e.textContent);
+  const trail = [...doc.querySelectorAll("#trail a, #trail .here, #trail .more")].map((e) => e.textContent);
   // A scene opened from one state of its parent shows that state's title in the trail.
   let chain = [], at = s;
   while (at) {
@@ -249,6 +249,7 @@ for (const s of data.scenes) section(`page ?scene=${s.id}`, () => {
     at = at.parent ? scenes.get(at.parent) : null;
   }
   chain = chain.map((c) => c.title);
+  if (chain.length > 3) chain = [chain[0], "…", chain[chain.length - 1]];
   check(JSON.stringify(trail) === JSON.stringify(chain), `?scene=${s.id}: the trail shows where you are`);
 });
 
@@ -257,7 +258,7 @@ section("zoom, cards, words, keys", () => {
   const doc = win.document;
   const app = win.CampusScenes.start(data, { doc, win });
   check(app.state.scene.id === data.start, "start: opens the start scene");
-  check(!doc.getElementById("hero").hidden && doc.getElementById("hero-title").textContent === scenes.get(data.start).heading.title, "start: carries its heading on the scene");
+  check(doc.getElementById("brand").textContent === data.site.heading && doc.getElementById("tagline").textContent === data.site.line, "start: the title and its line sit in the navigation");
   check(doc.getElementById("master-doc-link").href === MASTER, "the footer links to the master doc");
 
   // Into a building, a room, a screen; out with Escape.
@@ -367,19 +368,49 @@ section("about this scene, as a pop-up", () => {
   check(about.hidden && app.state.scene.id === "building", "about: Esc closes it and stays in the scene");
 });
 
-section("navigation, out of the way", () => {
+section("navigation, at the top", () => {
   const win = page("https://explore.projectcampus.org/?scene=lab");
   const doc = win.document;
-  win.CampusScenes.start(data, { doc, win });
+  const app = win.CampusScenes.start(data, { doc, win });
   const zone = doc.getElementById("navzone"), btn = doc.getElementById("menu-btn");
-  check(!!zone && zone.contains(doc.getElementById("trail")) && !zone.classList.contains("open"), "nav: the bar waits at the top, closed");
-  btn.click();
-  check(zone.classList.contains("open") && btn.getAttribute("aria-expanded") === "true", "nav: the small button shows it on a phone");
-  btn.click();
-  check(!zone.classList.contains("open"), "nav: and hides it again");
-  btn.click();
+  check(!!zone && zone.contains(doc.getElementById("trail")) && zone.contains(doc.getElementById("brand")) && !zone.classList.contains("tucked"), "nav: the bar shows at the top, with the title");
   key(win, "Escape");
-  check(!zone.classList.contains("open"), "nav: Esc hides it with any pop-up");
+  check(zone.classList.contains("tucked"), "nav: Esc tucks it away with any pop-up");
+  btn.click();
+  check(!zone.classList.contains("tucked") && btn.getAttribute("aria-expanded") === "true", "nav: the small button brings it back on a touch screen");
+  // A trail of more than three levels folds to the first, "…", and this one.
+  const deep = [...scenes.values()].find((sc) => { let n = 1, x = sc; while (x.parent) { x = scenes.get(x.parent); n++; } return n > 3; });
+  if (deep) {
+    app.go(deep.id, false, { instant: true });
+    const tr = doc.getElementById("trail");
+    const more = tr.querySelector(".more");
+    check(!!more && tr.querySelectorAll("a").length === 1 && !!tr.querySelector(".here"), "nav: a deep trail shows the first level, …, and this one");
+    more.click();
+    check(!tr.querySelector(".more") && tr.querySelectorAll("a").length > 1, "nav: … opens every level");
+  }
+  const lowest = [...scenes.values()].filter((sc) => { let n = 1, x = sc; while (x.parent) { x = scenes.get(x.parent); n++; } return n <= 3 && sc.parent; })[0];
+  app.go(lowest.id, false, { instant: true });
+  check(!doc.getElementById("trail").querySelector(".more"), "nav: three levels or fewer show whole");
+});
+
+section("zoom, on the scene only", () => {
+  const win = page("https://explore.projectcampus.org/");
+  const doc = win.document;
+  // A screen of 1600 by 900, which the test's page does not lay out by itself.
+  win.HTMLElement.prototype.getBoundingClientRect = () => ({ left: 0, top: 0, width: 1600, height: 900, right: 1600, bottom: 900 });
+  const app = win.CampusScenes.start(data, { doc, win });
+  const svg = doc.querySelector("#frame svg");
+  const vb0 = svg.getAttribute("viewBox");
+  const ctrl = (k) => win.document.dispatchEvent(new win.KeyboardEvent("keydown", { key: k, ctrlKey: true, bubbles: true, cancelable: true }));
+  ctrl("=");
+  const vb1 = svg.getAttribute("viewBox");
+  check(app.zoom.k > 1 && vb1 !== vb0 && Number(vb1.split(" ")[2]) < Number(vb0.split(" ")[2]), "zoom: Ctrl + zooms into the drawing's view, not the page");
+  ctrl("-"); ctrl("-"); ctrl("-");
+  check(app.zoom.k === 1, "zoom: never out past the whole scene");
+  ctrl("="); ctrl("0");
+  check(app.zoom.k === 1 && svg.getAttribute("viewBox") === vb0, "zoom: Ctrl 0 puts it back");
+  ctrl("="); app.go(scenes.get(data.start).objects.find((o) => o.opens && o.opens.scene).opens.scene, false, { instant: true });
+  check(app.zoom.k === 1, "zoom: a new scene starts unzoomed");
 });
 
 section("?state=", () => {

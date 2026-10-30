@@ -56,6 +56,11 @@
     var title = $("scene-title"), summary = $("scene-summary"), claimList = $("scene-claims"), chapters = $("scene-chapters");
     var card = $("card"), wordsBtn = $("words-btn"), backBtn = $("back-btn"), switcher = $("states");
     var menuBtn = $("menu-btn"), navzone = $("navzone");
+    var site = data.site || {};
+    if ($("brand") && site.heading) $("brand").textContent = site.heading;
+    if ($("tagline")) { $("tagline").textContent = site.line || ""; $("tagline").hidden = !site.line; }
+    // The scene's own zoom: the drawing's view box, never the page, so words keep their size.
+    var zoom = { k: 1, cx: null, cy: null }, baseVB = null, trailOpen = false;
     var arrival = $("arrival"), arrivalTitle = $("arrival-title"), arrivalLine = $("arrival-line"), arrivalTimer = null;
     var about = $("caption"), aboutBtn = $("about-btn"), aboutClose = $("about-close");
     var masterLink = $("master-doc-link");
@@ -90,10 +95,7 @@
     function setWords(on, byUser) {
       state.words = !!on;
       // Pressing W (or the button) also shows or hides the navigation with the words.
-      if (byUser && navzone) {
-        navzone.classList.toggle("open", state.words);
-        if (menuBtn) menuBtn.setAttribute("aria-expanded", String(state.words));
-      }
+      if (byUser) tuck(!state.words);
       doc.body.classList.toggle("no-words", !state.words);
       if (!state.words) hush();
       if (wordsBtn) {
@@ -253,6 +255,7 @@
       clear(labels);
       closeCard();
       closeAbout();
+      trailOpen = false;
       var svg = drawing(scene);
       if (svg) frame.appendChild(svg);
       else frame.appendChild(make(doc, "p", "placeholder", "Picture to come."));
@@ -292,6 +295,8 @@
       if (backBtn) backBtn.hidden = !scene.parent;
       // The drawing widens (or deepens) to the screen's shape: its middle,
       // 1600 by 1000, always shows whole, and its backgrounds run on past it.
+      // A new scene starts unzoomed.
+      zoom.k = 1; zoom.cx = null; zoom.cy = null;
       fitView();
       // Walkers move by SVG animation, which stops for those who ask for less motion.
       if (svg && reduced() && svg.pauseAnimations) svg.pauseAnimations();
@@ -306,8 +311,102 @@
       var a = r.width / r.height, vb;
       if (a >= 1.6) { var w = Math.min(1000 * a, 4000); vb = [-(w - 1600) / 2, 0, w, 1000]; }
       else { var h = Math.min(1600 / a, 3000); vb = [0, -(h - 1000) / 2, 1600, h]; }
-      svg.setAttribute("viewBox", vb.map(function (n) { return Math.round(n); }).join(" "));
+      baseVB = vb.map(function (n) { return Math.round(n); });
+      applyZoom();
     }
+
+    /* ---------- zoom: Ctrl and the wheel, Ctrl + and -, a pinch; drag to move ---------- */
+    function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+    function applyZoom() {
+      var svg = frame.querySelector("svg");
+      if (!svg || !baseVB) return;
+      var w = baseVB[2] / zoom.k, h = baseVB[3] / zoom.k;
+      var cx = zoom.cx === null ? baseVB[0] + baseVB[2] / 2 : zoom.cx;
+      var cy = zoom.cy === null ? baseVB[1] + baseVB[3] / 2 : zoom.cy;
+      zoom.cx = clamp(cx, baseVB[0] + w / 2, baseVB[0] + baseVB[2] - w / 2);
+      zoom.cy = clamp(cy, baseVB[1] + h / 2, baseVB[1] + baseVB[3] - h / 2);
+      svg.setAttribute("viewBox", [zoom.cx - w / 2, zoom.cy - h / 2, w, h].map(function (n) { return Math.round(n * 10) / 10; }).join(" "));
+      frame.classList.toggle("zoomed", zoom.k > 1.001);
+      placeLabels();
+    }
+    function zoomAt(factor, x, y) {
+      var r = frame.getBoundingClientRect();
+      if (!baseVB || !r.width) return;
+      var k2 = clamp(zoom.k * factor, 1, 5);
+      var w = baseVB[2] / zoom.k, h = baseVB[3] / zoom.k;
+      var fx = x === undefined ? 0.5 : clamp((x - r.left) / r.width, 0, 1), fy = y === undefined ? 0.5 : clamp((y - r.top) / r.height, 0, 1);
+      // The point under the cursor stays under it.
+      var px = zoom.cx - w / 2 + fx * w, py = zoom.cy - h / 2 + fy * h;
+      var w2 = baseVB[2] / k2, h2 = baseVB[3] / k2;
+      zoom.k = k2;
+      zoom.cx = px - fx * w2 + w2 / 2;
+      zoom.cy = py - fy * h2 + h2 / 2;
+      applyZoom();
+    }
+    function resetZoom() { zoom.k = 1; zoom.cx = null; zoom.cy = null; applyZoom(); }
+    function panBy(dx, dy) {
+      var r = frame.getBoundingClientRect();
+      if (!baseVB || !r.width || zoom.k <= 1.001) return;
+      zoom.cx -= dx * (baseVB[2] / zoom.k) / r.width;
+      zoom.cy -= dy * (baseVB[3] / zoom.k) / r.height;
+      applyZoom();
+    }
+    // The browser's own zoom would grow the words with the scene; these take its place.
+    win.addEventListener("wheel", function (e) {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      zoomAt(Math.exp(-clamp(e.deltaY, -60, 60) * 0.004), e.clientX, e.clientY);
+    }, { passive: false });
+    ["gesturestart", "gesturechange"].forEach(function (t) {
+      // Safari's trackpad pinch.
+      var last = 1;
+      doc.addEventListener(t, function (e) {
+        e.preventDefault();
+        if (t === "gesturestart") last = 1;
+        else { zoomAt(e.scale / last, e.clientX, e.clientY); last = e.scale; }
+      }, { passive: false });
+    });
+    var ptrs = {}, pinch = null, drag = null, dragged = false;
+    frame.addEventListener("pointerdown", function (e) {
+      ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ids = Object.keys(ptrs);
+      if (ids.length === 2) {
+        var a = ptrs[ids[0]], b = ptrs[ids[1]];
+        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1 };
+        drag = null;
+      } else if (ids.length === 1 && zoom.k > 1.001 && (e.pointerType !== "mouse" || e.button === 0)) {
+        drag = { x: e.clientX, y: e.clientY, moved: false };
+      }
+    });
+    win.addEventListener("pointermove", function (e) {
+      if (!ptrs[e.pointerId]) return;
+      ptrs[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ids = Object.keys(ptrs);
+      if (pinch && ids.length === 2) {
+        var a = ptrs[ids[0]], b = ptrs[ids[1]], d = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+        zoomAt(d / pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2);
+        pinch.d = d;
+        dragged = true;
+      } else if (drag) {
+        var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+        if (!drag.moved && Math.hypot(dx, dy) < 6) return;
+        drag.moved = true;
+        dragged = true;
+        frame.classList.add("dragging");
+        panBy(dx, dy);
+        drag.x = e.clientX;
+        drag.y = e.clientY;
+      }
+    });
+    function lift(e) {
+      delete ptrs[e.pointerId];
+      if (Object.keys(ptrs).length < 2) pinch = null;
+      if (!Object.keys(ptrs).length) { drag = null; frame.classList.remove("dragging"); win.setTimeout(function () { dragged = false; }, 0); }
+    }
+    win.addEventListener("pointerup", lift);
+    win.addEventListener("pointercancel", lift);
+    // A drag is not a click on what it ends over.
+    frame.addEventListener("click", function (e) { if (dragged) { e.stopPropagation(); e.preventDefault(); dragged = false; } }, true);
 
     /* Labels sit on their points in the drawing, wherever the drawing is cut. */
     function placeLabels() {
@@ -352,17 +451,6 @@
         if (b) b.hidden = !on;
       });
 
-      // A scene may carry a heading on the scene itself, such as the start's.
-      var hero = $("hero");
-      if (hero) {
-        hero.hidden = !scene.heading;
-        if (scene.heading) {
-          $("hero-title").textContent = scene.heading.title;
-          $("hero-line").textContent = scene.heading.line || "";
-          $("hero-note").textContent = scene.heading.note || "";
-        }
-      }
-
       // The words: title, summary, sources, chapters.
       title.textContent = v.title;
       summary.textContent = v.summary;
@@ -393,7 +481,21 @@
       // Where you are. A scene opened from one state shows that state's title.
       clear(trail);
       var chain = ancestors(scene);
+      // More than three levels: the first and this one, with the rest behind "…".
+      var fold = chain.length > 3 && !trailOpen;
       chain.forEach(function (s, n) {
+        if (fold && n > 0 && n < chain.length - 1) {
+          if (n === 1) {
+            trail.appendChild(make(doc, "span", "sep", "›"));
+            var more = make(doc, "button", "more", "…");
+            more.type = "button";
+            more.setAttribute("aria-label", "Show every level: " + chain.slice(1, -1).map(function (x) { return viewOf(x, firstState(x)).title; }).join(", "));
+            more.title = chain.slice(1, -1).map(function (x) { return viewOf(x, firstState(x)).title; }).join(" › ");
+            more.addEventListener("click", function () { trailOpen = true; showView(true); });
+            trail.appendChild(more);
+          }
+          return;
+        }
         if (n) trail.appendChild(make(doc, "span", "sep", "›"));
         if (s === scene) {
           var here = make(doc, "span", "here", v.title);
@@ -528,18 +630,34 @@
       if (j >= 0 && j < list.length) go(list[j], true, d < 0 ? { view: "last" } : null);
     }
 
-    /* Esc leaves only the scene: it closes any pop-up, the title line, and the navigation. */
+    /* The navigation, with the title, shows at the top. Esc tucks it above the
+       edge, where the cursor near the top or the small button brings it back. */
+    function tuck(on) {
+      if (!navzone) return;
+      navzone.classList.toggle("tucked", !!on);
+      if (menuBtn) {
+        menuBtn.setAttribute("aria-expanded", String(!on));
+        menuBtn.setAttribute("aria-label", on ? "Show navigation" : "Hide navigation");
+      }
+    }
+    /* Esc leaves only the scene: it closes any pop-up and the title line, and tucks the navigation. */
     function minimal() {
       closeCard();
       closeAbout();
       hush();
-      if (navzone) navzone.classList.remove("open");
-      if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+      tuck(true);
       if (doc.activeElement && doc.activeElement.blur && navzone && navzone.contains(doc.activeElement)) doc.activeElement.blur();
     }
 
     /* ---------- keys: Esc, the arrows, Home ---------- */
     function onKey(e) {
+      if ((e.ctrlKey || e.metaKey) && !e.altKey) {
+        // The browser's zoom keys zoom the scene instead.
+        if (e.key === "+" || e.key === "=") { zoomAt(1.25); e.preventDefault(); }
+        else if (e.key === "-" || e.key === "_") { zoomAt(0.8); e.preventDefault(); }
+        else if (e.key === "0") { resetZoom(); e.preventDefault(); }
+        return;
+      }
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       var k = e.key;
       if (k === "Escape") { minimal(); }
@@ -550,13 +668,8 @@
     doc.addEventListener("keydown", onKey);
     if (wordsBtn) wordsBtn.addEventListener("click", function () { setWords(!state.words); });
     if (backBtn) backBtn.addEventListener("click", upOne);
-    // Navigation waits at the bottom: near the cursor on a computer, behind a button on a phone.
-    if (menuBtn && navzone) menuBtn.addEventListener("click", function () {
-      var open = !navzone.classList.contains("open");
-      navzone.classList.toggle("open", open);
-      menuBtn.setAttribute("aria-expanded", String(open));
-      menuBtn.setAttribute("aria-label", open ? "Hide navigation" : "Show navigation");
-    });
+    // On a touch screen, a small button brings the tucked navigation back.
+    if (menuBtn && navzone) menuBtn.addEventListener("click", function () { tuck(!navzone.classList.contains("tucked")); });
     if (aboutBtn) aboutBtn.addEventListener("click", function () { if (about.hidden) openAbout(); else closeAbout(); });
     if (aboutClose) aboutClose.addEventListener("click", function () { closeAbout(); if (aboutBtn) aboutBtn.focus(); });
     win.addEventListener("popstate", function () {
@@ -568,12 +681,13 @@
     });
 
     setWords(state.words);
+    tuck(!state.words);
     var first = scenes[params.get("scene")] || scenes[data.start];
     render(first, params.get("state"));
     arrive();
     writeAddress(false);
 
-    return { state: state, openAbout: openAbout, closeAbout: closeAbout, go: go, up: upOne, step: step, setView: setView, setWords: setWords, openCard: openCard, closeCard: closeCard };
+    return { state: state, zoom: zoom, zoomAt: zoomAt, resetZoom: resetZoom, openAbout: openAbout, closeAbout: closeAbout, go: go, up: upOne, step: step, setView: setView, setWords: setWords, openCard: openCard, closeCard: closeCard };
   }
 
   function boot() {
