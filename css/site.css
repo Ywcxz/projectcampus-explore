@@ -237,9 +237,7 @@ body.moving .labels { opacity: 0; }
 
 /* Words off: only the dots stay, so a visitor still sees what opens. */
 /* Labels: a dot marks everything that opens; its name shows while the cursor is over it. */
-.label:not(.show) { padding: 6px; background: transparent; border-color: transparent; box-shadow: none; }
-.label:not(.show) .text { display: none; }
-.label:not(.show) .dot { animation: beacon 2.6s ease-in-out infinite; }
+.label:not(.show) { display: none; }
 body.no-words .trail { visibility: hidden; }
 
 

@@ -194,8 +194,8 @@
         { "id": "student", "label": "A student between classes", "opens": { "scene": "outside" } },
         { "id": "route", "label": "A question finds its answer", "opens": { "card": "route" } },
         { "id": "dorms", "label": "Dormitories", "opens": { "card": "to-come" } },
-        { "id": "offices", "label": "Offices", "opens": { "card": "to-come" } },
-        { "id": "orgs", "label": "Organizations", "opens": { "card": "to-come" } }
+        { "id": "offices", "label": "Faculty offices", "opens": { "card": "to-come" } },
+        { "id": "orgs", "label": "University offices", "opens": { "card": "to-come" } }
       ]
     },
     {

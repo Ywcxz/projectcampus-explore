@@ -73,7 +73,7 @@
     out += poly([P(i + w, j, z0), P(i + w, j + d, z0), P(i + w, j + d, t), P(i + w, j, t)], c[2]);
     out += poly([P(i, j, t), P(i + w, j, t), P(i + w, j + d, t), P(i, j + d, t)], c[0]);
     if (c[3]) {
-      var rows = h > 1.6 ? [0.32, 0.68] : [0.5];
+      var rows = h > 2.6 ? [0.2, 0.5, 0.8] : h > 1.6 ? [0.32, 0.68] : [0.5];
       for (var k = 0; k + 0.6 < w; k++) {
         rows.forEach(function (r) {
           var z = z0 + h * r;
@@ -253,13 +253,14 @@
     { skin: 0, hair: "#1B1B22", style: "bun", top: K.gold, low: "#2F3B5E", skirt: true, item: "phone" }
   ];
   /* One of the cast, feet at (x, y), at scale k. */
-  function isoChar(x, y, n, k) {
+  function isoChar(x, y, n, k, legs) {
     var c = CAST[n % CAST.length], sk = SKIN[c.skin], h = c.hair, out = "";
+    var swing = function (side) { return legs ? legs(side) : ""; };
     out += '<ellipse cy="1.5" rx="7" ry="2.6" fill="#1F2A22" opacity=".13"/>';
     if (c.item === "bag") out += '<rect x="-8.5" y="-21" width="5" height="10" rx="2" fill="#5B4A3A"/>';
     if (c.style === "long") out += '<rect x="-6" y="-28" width="12" height="13" rx="4" fill="' + h + '"/>';
-    if (c.skirt) out += '<rect x="-3.4" y="-8" width="2.6" height="8" rx="1.2" fill="' + sk + '"/><rect x="0.8" y="-8" width="2.6" height="8" rx="1.2" fill="' + sk + '"/><path d="M-5 -12H5L6 -6H-6Z" fill="' + c.low + '"/>';
-    else out += '<rect x="-4.2" y="-11" width="3.6" height="11" rx="1.5" fill="' + c.low + '"/><rect x="0.6" y="-11" width="3.6" height="11" rx="1.5" fill="' + c.low + '"/>';
+    if (c.skirt) out += '<rect x="-3.4" y="-8" width="2.6" height="8" rx="1.2" fill="' + sk + '">' + swing(1) + '</rect><rect x="0.8" y="-8" width="2.6" height="8" rx="1.2" fill="' + sk + '">' + swing(-1) + '</rect><path d="M-5 -12H5L6 -6H-6Z" fill="' + c.low + '"/>';
+    else out += '<rect x="-4.2" y="-11" width="3.6" height="11" rx="1.5" fill="' + c.low + '">' + swing(1) + '</rect><rect x="0.6" y="-11" width="3.6" height="11" rx="1.5" fill="' + c.low + '">' + swing(-1) + '</rect>';
     out += '<rect x="-5" y="-21" width="10" height="11" rx="4" fill="' + c.top + '"/>';
     out += '<rect x="-7" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/><rect x="4.4" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/>';
     out += '<circle cx="-5.7" cy="-10.5" r="1.6" fill="' + sk + '"/><circle cx="5.7" cy="-10.5" r="1.6" fill="' + sk + '"/>';
@@ -272,22 +273,44 @@
     if (c.item === "umbrella") out += '<path d="M6 -10V-36" stroke="' + K.ink2 + '" stroke-width="1.2"/><path d="M-6 -35a12 7 0 0 1 24 0Z" fill="' + K.sea2 + '"/>';
     return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k) + ')">' + out + "</g>";
   }
-  /* One of the cast walking a path, there and back, for dur seconds. */
-  function walker(path, n, k, dur, begin) {
-    return '<g class="walk"><g class="step">' + isoChar(0, 0, n, k) + '</g>' +
-      '<animateMotion dur="' + dur + 's" begin="' + (begin || 0) + 's" repeatCount="indefinite" path="' + path + '" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear"/></g>';
+  /* One of the cast walking a path and back, standing a while at each end.
+     walk is seconds per way, rest seconds standing; the legs swing only
+     while walking. Everything is SVG animation, paused for less motion. */
+  function walker(path, n, k, walk, rest, begin) {
+    var D = 2 * (walk + rest), a = walk / D, b = (walk + rest) / D, c = (2 * walk + rest) / D;
+    var vals = [], times = [], t, STEP = 0.28;
+    for (t = 0; t <= D + 1e-6; t += STEP) {
+      var moving = t < walk || (t > walk + rest && t < 2 * walk + rest);
+      vals.push(moving ? (Math.round(t / STEP) % 2 ? 1 : -1) : 0);
+      times.push(Math.min(1, t / D));
+    }
+    times[times.length - 1] = 1;
+    var legs = function (side) {
+      return '<animateTransform attributeName="transform" type="rotate" dur="' + D + 's" begin="' + (begin || 0) + 's" repeatCount="indefinite" calcMode="linear" keyTimes="' +
+        times.map(function (x) { return x.toFixed(4); }).join(";") + '" values="' + vals.map(function (v) { return (v * side * 22) + " " + (side > 0 ? -2.4 : 2.4) + " -11"; }).join(";") + '"/>';
+    };
+    return '<g class="walk">' + isoChar(0, 0, n, k, legs) +
+      '<animateMotion dur="' + D + 's" begin="' + (begin || 0) + 's" repeatCount="indefinite" path="' + path + '" keyPoints="0;1;1;0;0" keyTimes="0;' + a.toFixed(4) + ";" + b.toFixed(4) + ";" + c.toFixed(4) + ';1" calcMode="linear"/></g>';
   }
-  /* A rooftop terrace: a railing around the top of a box. */
-  function terrace(P, i, j, w, d, z) {
-    var t = z + 0.32, rail = [P(i, j, t), P(i + w, j, t), P(i + w, j + d, t), P(i, j + d, t)];
-    var out = '<polygon points="' + pts(rail) + '" fill="none" stroke="#8C9286" stroke-width="2"/>';
-    [[i, j], [i + w, j], [i + w, j + d], [i, j + d], [i + w / 2, j + d], [i + w, j + d / 2]].forEach(function (q) {
-      var a = P(q[0], q[1], z), b = P(q[0], q[1], t);
-      out += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="#8C9286" stroke-width="2"/>';
-    });
+  /* A balcony on the front face (j + d) of a box: a slab and a railing, at height z. */
+  function balcony(P, i0, w, jFront, z) {
+    var j1 = jFront + 0.45, out = "";
+    out += poly([P(i0, jFront, z), P(i0 + w, jFront, z), P(i0 + w, j1, z), P(i0, j1, z)], "#E9E4D3");
+    out += poly([P(i0, j1, z), P(i0 + w, j1, z), P(i0 + w, j1, z - 0.08), P(i0, j1, z - 0.08)], "#BDB6A0");
     return out;
   }
-
+  function railing(P, i0, w, jFront, z) {
+    var j1 = jFront + 0.45, t = z + 0.3, out = '<polyline points="' + pts([P(i0, jFront, t), P(i0, j1, t), P(i0 + w, j1, t), P(i0 + w, jFront, t)]) + '" fill="none" stroke="#7E8A80" stroke-width="2"/>';
+    for (var q = 0; q <= w + 1e-6; q += w / 4) {
+      var a = P(i0 + q, j1, z), bb = P(i0 + q, j1, t);
+      out += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(bb[0]) + '" y2="' + f(bb[1]) + '" stroke="#7E8A80" stroke-width="1.6"/>';
+    }
+    return out;
+  }
+  /* A door on the front face (j + d) of a box. */
+  function door(P, i0, jFront, w, h, fill) {
+    return poly([P(i0, jFront + 0.01, 0), P(i0 + w, jFront + 0.01, 0), P(i0 + w, jFront + 0.01, h), P(i0, jFront + 0.01, h)], fill || "#7A5C3A");
+  }
   /* ============================================================
      The campus world, shared by every scene that shows the whole
      campus: ground, walks, buildings by kind, trees, and its people.
@@ -295,7 +318,7 @@
      ============================================================ */
   var WORLD = Iso(800, 600, 37);
   // Where each kind of place stands, and the top of its roof (i, j, z).
-  var SPOT = { building: [4.25, -7.9, 2.0], dorms: [-7, -2, 2.4], orgs: [-4.7, 6, 1.9], offices: [6.1, 4.3, 1.8] };
+  var SPOT = { building: [4.25, -7.9, 3.0], dorms: [-7, -2, 2.4], orgs: [-4.7, 6, 1.9], offices: [6.1, 4.3, 1.8] };
   function world(live) {
     var P = WORLD, S = P.s / 26, c = P(0, 0);
     var ground = '<ellipse cx="' + c[0] + '" cy="' + f(c[1] + 40 * S) + '" rx="' + f(640 * S) + '" ry="' + f(250 * S) + '" fill="#1F2A22" opacity=".06" filter="url(#blur)"/>' +
@@ -308,45 +331,45 @@
     var dorm = [K.cream, "#D9C48A", "#C7AE6E", "#5B7F8F"], acad = ["#DCE8EE", "#AFC6D0", "#94AFBB", "#3E5D69"],
       office = [K.paper, "#CFD7CC", "#B3BFAF", "#5B7F8F"], org = ["#F3DCC8", "#D9A47C", "#C68B5E", "#5B7F8F"];
     var place = function (id, lx, ly, body) { return live ? obj(id, lx, ly, body) : body; };
-    var places = "";
-    places += place("building", P(4.4, -7.8, 3.6)[0], P(4.4, -7.8, 3.6)[1], box(P, 2.5, -9, 3.5, 2.2, 2.0, acad) + box(P, 6.5, -8.5, 2.2, 2.2, 1.6, acad));
-    places += place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, box(P, -9, -4, 4, 1.6, 2.4, dorm) + box(P, -9, -1.6, 4, 1.6, 2.4, dorm));
-    [[-3.5, -6], [-2, -7.5], [9, -3], [9.5, 1], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-1.5, 9.8], [8, 6.5], [-6, -8], [-11.5, -1], [10, 4.5]].forEach(function (t) { places += isoTree(P, t[0], t[1], 1.6); });
-    places += place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, box(P, -6, 5, 2.6, 2, 1.9, org));
-    places += place("offices", P(6.6, 6.4)[0], P(6.6, 6.4)[1] + 10, box(P, 4.5, 3.2, 3.2, 2.2, 1.8, office));
-
-    // People: walking to class along the walks, one on a bench with a phone,
-    // four standing in a circle talking, and the student a visitor can follow.
-    var k = S * 1.1, life = "";
+    var k = S * 0.92, items = [];
+    var stand = function (i, j, z, n) { var q = P(i, j, z || 0); return isoChar(q[0], q[1], n, k); };
     var road = function (i0, j0, i1, j1, z) { var a = P(i0, j0, z || 0), b = P(i1, j1, z || 0); return "M" + f(a[0]) + "," + f(a[1]) + " L" + f(b[0]) + "," + f(b[1]); };
-    // Walking to class along the walks.
-    life += walker(road(-7.5, 0.4, 7.5, 0.4), 0, k, 34, 0);
-    life += walker(road(7.2, -0.4, -7.2, -0.4), 1, k, 30, -9);
-    life += walker(road(0.4, 7.5, 0.4, -7.5), 2, k, 28, -4);
-    life += walker(road(-0.4, -7.2, -0.4, 7.2), 4, k, 36, -20);
-    life += walker(road(-6, 0.9, 5, 0.9), 6, k, 40, -14);
-    // On a bench, with a phone.
-    var bp = P(3.25, -3.5);
-    life += box(P, 2.6, -3.7, 1.3, 0.4, 0.18, [K.brown, "#5C4529", "#4A3820"]) + isoChar(bp[0], bp[1] - 5 * S, 5, k);
-    // Four in a circle, talking.
-    [[-0.6, -0.4], [0.5, -0.5], [0.6, 0.5], [-0.5, 0.6]].forEach(function (o, n) {
-      var q = P(-2.8 + o[0], 3.4 + o[1]);
-      life += isoChar(q[0], q[1], [7, 3, 8, 9][n], k);
+    // Buildings, each with a door, some with balconies and people on them; depth sorts the scene.
+    var acadB = box(P, 2.5, -9, 3.5, 2.2, 3.0, acad) + door(P, 3.9, -6.8, 0.7, 0.75) +
+      balcony(P, 2.8, 1.4, -6.8, 1.0) + stand(3.4, -6.55, 1.0, 9) + railing(P, 2.8, 1.4, -6.8, 1.0) +
+      balcony(P, 4.4, 1.3, -6.8, 2.0) + walker(road(4.6, -6.55, 5.5, -6.55, 2.0), 7, k, 3, 4, -2) + railing(P, 4.4, 1.3, -6.8, 2.0);
+    items.push({ d: 6 - 6.8, svg: place("building", P(4.4, -7.8, 4.4)[0], P(4.4, -7.8, 4.4)[1], acadB) });
+    items.push({ d: 8.7 - 6.3, svg: box(P, 6.5, -8.5, 2.2, 2.2, 1.6, acad) + door(P, 7.2, -6.3, 0.6, 0.7) });
+    var dormB = box(P, -9, -4, 4, 1.6, 2.4, dorm) + box(P, -9, -1.6, 4, 1.6, 2.4, dorm) + door(P, -7.4, 0, 0.7, 0.75) +
+      balcony(P, -8.6, 1.3, 0, 1.25) + stand(-8, 0.25, 1.25, 8) + railing(P, -8.6, 1.3, 0, 1.25) +
+      balcony(P, -6.6, 1.3, 0, 1.25) + walker(road(-6.4, 0.25, -5.5, 0.25, 1.25), 3, k, 3, 5, -1) + railing(P, -6.6, 1.3, 0, 1.25);
+    items.push({ d: -5 + 0, svg: place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, dormB) });
+    items.push({ d: -3.4 + 7, svg: place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, box(P, -6, 5, 2.6, 2, 1.9, org) + door(P, -5.1, 7, 0.7, 0.75)) });
+    items.push({ d: 7.7 + 5.4, svg: place("offices", P(6.6, 6.4)[0], P(6.6, 6.4)[1] + 10, box(P, 4.5, 3.2, 3.2, 2.2, 1.8, office) + door(P, 5.7, 5.4, 0.7, 0.75)) });
+    [[-3.5, -6], [-2, -7.5], [9, -3], [9.5, 1], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-2.5, 8.6], [8.6, 7.4], [-6, -8], [-11.5, -1], [10, 4.5]].forEach(function (t) {
+      items.push({ d: t[0] + t[1], svg: isoTree(P, t[0], t[1], 1.6) });
     });
+    // On a bench, with a phone; four in a circle, talking.
+    var bp = P(3.25, -3.5);
+    items.push({ d: -0.2, svg: box(P, 2.6, -3.7, 1.3, 0.4, 0.18, [K.brown, "#5C4529", "#4A3820"]) + isoChar(bp[0], bp[1] - 5 * S, 5, k) });
+    var circle = "";
+    [[-0.6, -0.4], [0.5, -0.5], [0.6, 0.5], [-0.5, 0.6]].forEach(function (o, n) { circle += stand(-2.8 + o[0], 3.4 + o[1], 0, [7, 3, 8, 9][n]); });
     [0, 1, 2].forEach(function (n) {
       var q = P(-2.8 + [-0.6, 0.5, 0.6][n], 3.4 + [-0.4, -0.5, 0.5][n]);
-      life += '<g class="chat c' + n + '"><rect x="' + f(q[0] - 4) + '" y="' + f(q[1] - 62 * S) + '" width="' + f(24 * S) + '" height="' + f(15 * S) + '" rx="' + f(6 * S) + '" fill="#FFFFFF" filter="url(#soft)"/>' +
-        '<circle cx="' + f(q[0] + 3 * S) + '" cy="' + f(q[1] - 54.5 * S) + '" r="' + f(1.8 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 8 * S) + '" cy="' + f(q[1] - 54.5 * S) + '" r="' + f(1.8 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 13 * S) + '" cy="' + f(q[1] - 54.5 * S) + '" r="' + f(1.8 * S) + '" fill="' + K.ink3 + '"/></g>';
+      circle += '<g class="chat c' + n + '"><rect x="' + f(q[0] - 4) + '" y="' + f(q[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/>' +
+        '<circle cx="' + f(q[0] + 2.5 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 7 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 11.5 * S) + '" cy="' + f(q[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
     });
-    places += life;
-    // Terraces on the dormitory and the academic building, with people on them.
-    var roof = terrace(P, -9, -1.6, 4, 1.6, 2.4) + isoChar(P(-7.6, -0.9, 2.4)[0], P(-7.6, -0.9, 2.4)[1], 8, k) +
-      walker(road(-8.6, -0.5, -5.5, -0.5, 2.4), 3, k, 18, -6);
-    roof += terrace(P, 2.5, -9, 3.5, 2.2, 2.0) + isoChar(P(3.4, -8.2, 2.0)[0], P(3.4, -8.2, 2.0)[1], 9, k) +
-      walker(road(3, -7.4, 5.5, -7.4, 2.0), 7, k, 22, -3);
-    places += roof;
+    items.push({ d: 0.6, svg: circle });
     var sp = P(2.2, -5.2), st = '<g class="walker">' + isoChar(sp[0], sp[1], 1, k) + "</g>";
-    places += live ? obj("student", sp[0], sp[1] - 40, st) : st;
+    items.push({ d: -3, svg: live ? obj("student", sp[0], sp[1] - 40, st) : st });
+    items.sort(function (x, y) { return x.d - y.d; });
+    var places = items.map(function (x) { return x.svg; }).join("");
+    // Walking to class along the walks, standing a while at each end, clear of the buildings.
+    places += walker(road(-4.4, 0.4, 7.5, 0.4), 0, k, 13, 4, 0);
+    places += walker(road(7.2, -0.4, -4.4, -0.4), 1, k, 12, 7, -6);
+    places += walker(road(0.4, 7.5, 0.4, -7.5), 2, k, 15, 3, -4);
+    places += walker(road(-0.4, -7.2, -0.4, 7.2), 4, k, 16, 6, -11);
+    places += walker(road(-3.6, 0.9, 5, 0.9), 6, k, 11, 9, -14);
     return { ground: ground, places: places };
   }
   function hills() {
@@ -659,11 +682,11 @@
      ============================================================ */
   // Each post: its icon, its kind of place, and the place it lands on (x, y of the tile).
   var FEED = [
-    { ic: "medal", kind: "service", at: "offices", dx: 100 },
+    { ic: "medal", kind: "service", at: "orgs", dx: 100 },
     { ic: "tap", kind: "residence", at: "dorms", dx: 0 },
     { ic: "id", kind: "building", at: "building", dx: 0 },
-    { ic: "storm", kind: "office", at: "offices", dx: -100 },
-    { ic: "megaphone", kind: "org", at: "orgs", dx: 0 },
+    { ic: "storm", kind: "office", at: "orgs", dx: -100 },
+    { ic: "megaphone", kind: "org", at: null, to: [330, 300] },
     { ic: "map", kind: "interest", at: null, to: [1290, 230] }
   ];
   // A post's tile floats over its place on the shared campus, tied to its roof.
