@@ -304,7 +304,7 @@
     return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k) + ')">' + out + "</g>";
   }
   /* One of the cast sitting, hips at (x, y): legs bent forward. */
-  function sitChar(x, y, n, k) {
+  function sitChar(x, y, n, k, hands) {
     var c = CAST[n % CAST.length], sk = SKIN[c.skin], h = c.hair, out = "";
     if (c.style === "long") out += '<rect x="-6" y="-24" width="12" height="13" rx="4" fill="' + h + '"/>';
     out += '<rect x="-4" y="-7" width="10" height="3.4" rx="1.5" fill="' + (c.skirt ? sk : c.low) + '"/><rect x="4" y="-7" width="3" height="8" rx="1.4" fill="' + (c.skirt ? sk : c.low) + '"/>';
@@ -313,7 +313,8 @@
     out += '<circle cy="-22" r="5.6" fill="' + sk + '"/><path d="M-5.7 -22.5a5.7 5.7 0 0 1 11.4 0c-3-2-8.4-2-11.4 0Z" fill="' + h + '"/><circle cx="-2" cy="-21" r=".75" fill="' + K.ink + '"/><circle cx="2" cy="-21" r=".75" fill="' + K.ink + '"/>';
     if (c.style === "pony") out += '<ellipse cx="-6" cy="-21" rx="2.2" ry="3.6" fill="' + h + '"/>';
     if (c.style === "bun") out += '<circle cy="-28.5" r="2.6" fill="' + h + '"/>';
-    out += '<rect x="2.6" y="-14" width="4" height="6.5" rx="1" fill="' + K.ink + '"/><rect class="glow-phone" x="3.4" y="-13.2" width="2.4" height="4.6" fill="' + K.gold3 + '"/>';
+    if (hands === "bars") out += '<rect x="4.4" y="-13" width="6" height="2.4" rx="1.2" fill="' + c.top + '"/><circle cx="10.5" cy="-11.8" r="1.6" fill="' + sk + '"/>';
+    else out += '<rect x="2.6" y="-14" width="4" height="6.5" rx="1" fill="' + K.ink + '"/><rect class="glow-phone" x="3.4" y="-13.2" width="2.4" height="4.6" fill="' + K.gold3 + '"/>';
     return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k) + ')">' + out + "</g>";
   }
   /* One of the cast walking a path and back, standing a while at each end.
@@ -350,7 +351,7 @@
      the points in talk, and sitting at the points in sit. They fade in and out
      while walking, at the edge of campus or a door. The loop lasts period seconds
      (or the walk plus gap), so it is not seen to repeat. */
-  function journey(P, n, k, way, speed, stops, talk, begin, gap, sit, period) {
+  function journey(P, n, k, way, speed, stops, talk, begin, gap, sit, period, ride) {
     sit = sit || [];
     var pts_ = way.map(function (q) { return P(q[0], q[1], q[2] || 0); });
     var lens = [0], total = 0;
@@ -395,7 +396,7 @@
     };
     legs.back = discrete("opacity", function (sp) { return sp[3]; });
     var fade = '<animate attributeName="opacity"' + B + ' keyTimes="0;' + (FADE / D).toFixed(4) + ";" + ((end - FADE) / D).toFixed(4) + ";" + (end / D).toFixed(4) + ';1" values="0;1;1;0;0"/>';
-    var body = '<g>' + discrete("opacity", function (sp) { return sp[4] ? 0 : 1; }) + isoChar(0, 0, n, k, legs) + "</g>";
+    var body = ride ? bicycle(Iso(0, 0, P.s), n, k) : '<g>' + discrete("opacity", function (sp) { return sp[4] ? 0 : 1; }) + isoChar(0, 0, n, k, legs) + "</g>";
     if (sit.length) body += '<g opacity="0">' + discrete("opacity", function (sp) { return sp[4]; }) + sitChar(0, -5 * k, n, k) + "</g>";
     var out = '<g class="walk" opacity="0">' + fade + '<g>' + discrete(null, function (sp) { return sp[2] + " 1"; }, "scale") + body + "</g>" +
       '<animateMotion' + B + ' path="M' + pts_.map(function (q) { return f(q[0]) + "," + f(q[1]); }).join(" L") + '" keyPoints="' + kp + '" keyTimes="' + kt + '" calcMode="linear"/></g>';
@@ -411,18 +412,43 @@
   /* A car or a motorcycle, centred on the origin, long side along i (or along j). */
   function vehicle(P, color, moto, alongJ) {
     var L = Iso(0, 0, P.s);
-    if (moto) return alongJ ? box(L, -0.1, -0.35, 0.2, 0.7, 0.22, [color, color, "#3B3B44"]) + box(L, -0.08, 0.05, 0.16, 0.2, 0.12, ["#2A2A30", "#2A2A30", "#2A2A30"], 0.22)
-      : box(L, -0.35, -0.1, 0.7, 0.2, 0.22, [color, color, "#3B3B44"]) + box(L, 0.05, -0.08, 0.2, 0.16, 0.12, ["#2A2A30", "#2A2A30", "#2A2A30"], 0.22);
+    if (moto) return motorcycle(L, color);
     var glass = ["#DDE8EE", "#AFC6D0", "#94AFBB"];
     return alongJ ? box(L, -0.3, -0.55, 0.6, 1.1, 0.28, [color, color, color]) + box(L, -0.25, -0.25, 0.5, 0.6, 0.2, glass, 0.28)
       : box(L, -0.55, -0.3, 1.1, 0.6, 0.28, [color, color, color]) + box(L, -0.25, -0.25, 0.6, 0.5, 0.2, glass, 0.28);
   }
-  /* A car's trip along the lane: in from the edge, a long stop, and out again. */
+  /* A motorcycle side on (along i), in local iso L: two wheels, a body, a seat, handlebars, a lamp. */
+  function motorcycle(L, color) {
+    var wh = function (i) { var c = L(i, 0, 0.11); return '<ellipse cx="' + f(c[0]) + '" cy="' + f(c[1]) + '" rx="' + f(0.11 * L.s) + '" ry="' + f(0.13 * L.s) + '" fill="#2A2A30"/><ellipse cx="' + f(c[0]) + '" cy="' + f(c[1]) + '" rx="' + f(0.04 * L.s) + '" ry="' + f(0.05 * L.s) + '" fill="#9AA0A6"/>'; };
+    var line = function (a, b, w, col) { return '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + col + '" stroke-width="' + w + '" stroke-linecap="round"/>'; };
+    var sh = L(0, 0, 0);
+    return '<ellipse cx="' + f(sh[0]) + '" cy="' + f(sh[1] + 2) + '" rx="' + f(0.42 * L.s) + '" ry="' + f(0.12 * L.s) + '" fill="#1F2A22" opacity=".14"/>' +
+      wh(-0.3) + wh(0.3) +
+      '<polygon points="' + pts([L(-0.2, 0, 0.13), L(0.2, 0, 0.13), L(0.17, 0, 0.29), L(-0.1, 0, 0.31)]) + '" fill="' + color + '"/>' +
+      line(L(0.17, 0, 0.18), L(0.3, 0, 0.11), 2.4, "#6E7466") +
+      line(L(-0.24, 0, 0.32), L(0.04, 0, 0.33), 4.5, "#2A2A30") +
+      line(L(0.18, 0, 0.29), L(0.24, 0, 0.44), 2.2, "#6E7466") + line(L(0.24, -0.1, 0.45), L(0.24, 0.1, 0.45), 2.2, "#3B3B44") +
+      '<circle cx="' + f(L(0.27, 0, 0.36)[0]) + '" cy="' + f(L(0.27, 0, 0.36)[1]) + '" r="' + f(0.04 * L.s) + '" fill="' + K.gold3 + '"/>';
+  }
+  /* A bicycle side on (along i) with a rider, in local iso L. */
+  function bicycle(L, n, k) {
+    var wh = function (i) { var c = L(i, 0, 0.13); return '<ellipse cx="' + f(c[0]) + '" cy="' + f(c[1]) + '" rx="' + f(0.13 * L.s) + '" ry="' + f(0.15 * L.s) + '" fill="none" stroke="#2A2A30" stroke-width="2.2"/>'; };
+    var line = function (a, b) { return '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + K.sea2 + '" stroke-width="2" stroke-linecap="round"/>'; };
+    var seat = L(-0.08, 0, 0.42), sh = L(0, 0, 0);
+    return '<ellipse cx="' + f(sh[0]) + '" cy="' + f(sh[1] + 2) + '" rx="' + f(0.4 * L.s) + '" ry="' + f(0.1 * L.s) + '" fill="#1F2A22" opacity=".12"/>' +
+      wh(-0.28) + wh(0.28) + line(L(-0.28, 0, 0.13), L(-0.08, 0, 0.4)) + line(L(-0.08, 0, 0.4), L(0.2, 0, 0.4)) + line(L(0.2, 0, 0.4), L(0.28, 0, 0.13)) +
+      line(L(-0.28, 0, 0.13), L(0.04, 0, 0.13)) + line(L(0.04, 0, 0.13), L(-0.08, 0, 0.4)) + line(L(0.2, 0, 0.4), L(0.22, 0, 0.5)) +
+      sitChar(seat[0], seat[1] + 4 * k, n, k, "bars");
+  }
+  /* A car's trip: in along the lane from the edge, into a space, a long stop, and out again. */
   function carTrip(P, color, way, speed, wait, begin, period) {
-    var pts_ = way.map(function (q) { return P(q[0], q[1]); }), go = walkTime(P, way, speed), D = period, path = "M" + pts_.map(function (q) { return f(q[0]) + "," + f(q[1]); }).join(" L");
-    var B = ' dur="' + D + 's" begin="' + begin + 's" repeatCount="indefinite"', a = go / D, b = (go + wait) / D, c = (2 * go + wait) / D;
-    return '<g opacity="0"><animate attributeName="opacity"' + B + ' keyTimes="0;' + (0.8 / D).toFixed(4) + ";" + (c - 0.8 / D).toFixed(4) + ";" + c.toFixed(4) + ';1" values="0;1;1;0;0"/>' + vehicle(P, color, false, true) +
-      '<animateMotion' + B + ' path="' + path + '" keyPoints="0;1;1;0;0" keyTimes="0;' + a.toFixed(4) + ";" + b.toFixed(4) + ";" + c.toFixed(4) + ';1" calcMode="linear"/></g>';
+    var pts_ = way.map(function (q) { return P(q[0], q[1]); }), path = "M" + pts_.map(function (q) { return f(q[0]) + "," + f(q[1]); }).join(" L");
+    var t1 = walkTime(P, way.slice(0, 2), speed), t2 = walkTime(P, way.slice(1), speed), go = t1 + t2, D = period, p1 = t1 / go;
+    var B = ' dur="' + D + 's" begin="' + begin + 's" repeatCount="indefinite"', T = function (x) { return (x / D).toFixed(4); }, end = 2 * go + wait;
+    var alongJ = '<g>' + '<animate attributeName="opacity"' + B + ' calcMode="discrete" keyTimes="0;' + T(t1) + ";" + T(go + wait + t2) + '" values="1;0;1"/>' + vehicle(P, color, false, true) + "</g>";
+    var alongI = '<g opacity="0">' + '<animate attributeName="opacity"' + B + ' calcMode="discrete" keyTimes="0;' + T(t1) + ";" + T(go + wait + t2) + '" values="0;1;0"/>' + vehicle(P, color, false, false) + "</g>";
+    return '<g opacity="0"><animate attributeName="opacity"' + B + ' keyTimes="0;' + T(0.8) + ";" + T(end - 0.8) + ";" + T(end) + ';1" values="0;1;1;0;0"/>' + alongJ + alongI +
+      '<animateMotion' + B + ' path="' + path + '" keyPoints="0;' + p1.toFixed(4) + ';1;1;' + p1.toFixed(4) + ';0;0" keyTimes="0;' + T(t1) + ";" + T(go) + ";" + T(go + wait) + ";" + T(go + wait + t2) + ";" + T(end) + ';1" calcMode="linear"/></g>';
   }
   /* A balcony on the front face (j + d) of a box: a slab and a railing, at height z. */
   function balcony(P, i0, w, jFront, z) {
@@ -440,8 +466,16 @@
     return out;
   }
   /* A doorway onto a balcony, on the front face (j + d) at height z. */
-  function balconyDoor(P, i0, jFront, z) {
-    return poly([P(i0, jFront + 0.01, z), P(i0 + 0.4, jFront + 0.01, z), P(i0 + 0.4, jFront + 0.01, z + 0.7), P(i0, jFront + 0.01, z + 0.7)], "#5C4A3A");
+  function lighten(hex, a) {
+    var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+    var m = function (c) { return Math.round(c + (255 - c) * a); };
+    return "#" + ((1 << 24) + (m(r) << 16) + (m(g) << 8) + m(b)).toString(16).slice(1);
+  }
+  /* An open doorway onto a balcony, as wide as the balcony: the room inside shows a little lighter. */
+  function balconyDoor(P, i0, w, jFront, z, wall) {
+    var a = i0 + 0.08, b = i0 + w - 0.08, top = z + 0.72;
+    return poly([P(a, jFront + 0.01, z), P(b, jFront + 0.01, z), P(b, jFront + 0.01, top), P(a, jFront + 0.01, top)], lighten(wall, 0.38)) +
+      poly([P(a, jFront + 0.01, top), P(b, jFront + 0.01, top), P(b, jFront + 0.01, top - 0.05), P(a, jFront + 0.01, top - 0.05)], lighten(wall, 0.15));
   }
   /* A door on the front face (j + d) of a box. */
   function door(P, i0, jFront, w, h, fill) {
@@ -472,27 +506,37 @@
     var road = function (i0, j0, i1, j1, z) { var a = P(i0, j0, z || 0), b = P(i1, j1, z || 0); return "M" + f(a[0]) + "," + f(a[1]) + " L" + f(b[0]) + "," + f(b[1]); };
     var V = 1.15 * P.s;
     var brown = [K.brown, "#5C4529", "#4A3820"];
+    var benchAt = function (i0, j0) {
+      var legC = ["#4A4A52", "#3B3B44", "#2F2F36"], out = "";
+      [0.08, 1.12].forEach(function (di) { out += box(P, i0 + di, j0 + 0.05, 0.1, 0.32, 0.14, legC) + box(P, i0 + di, j0, 0.1, 0.06, 0.42, legC); });
+      out += box(P, i0, j0, 1.3, 0.06, 0.14, brown, 0.24) + box(P, i0, j0, 1.3, 0.06, 0.08, brown, 0.42);
+      out += box(P, i0, j0 + 0.02, 1.3, 0.4, 0.05, brown, 0.14);
+      [0.13, 0.26].forEach(function (dj) { var a = P(i0, j0 + 0.02 + dj, 0.19), b = P(i0 + 1.3, j0 + 0.02 + dj, 0.19); out += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="#5C4529" stroke-width="1"/>'; });
+      return out;
+    };
     // A balcony with a doorway: someone steps out, stays a while, and goes back in.
-    var balc = function (i0, w, jf, z, n, stay, begin, gap) {
+    var balc = function (i0, w, jf, z, n, stay, begin, gap, wall) {
       var dI = i0 + 0.12, mid = i0 + w * 0.6;
-      return balcony(P, i0, w, jf, z) + balconyDoor(P, dI, jf, z) +
+      return balconyDoor(P, i0, w, jf, z, wall) + balcony(P, i0, w, jf, z) +
         journey(P, n, k, [[dI + 0.2, jf + 0.02, z], [dI + 0.2, jf + 0.25, z], [mid, jf + 0.25, z], [dI + 0.2, jf + 0.25, z], [dI + 0.2, jf + 0.02, z]], V * 0.45, { 2: stay }, [], begin, gap) +
         railing(P, i0, w, jf, z);
     };
     // Buildings, each with a door; balconies have doorways; depth sorts the scene.
-    var acadB = bldg(P, 2.5, -9, 5, 2.4, 3.0, acad, 2, ["1:0", "1:1", "2:3", "2:4"]) + balc(2.6, 1.6, -6.6, 1.0, 9, 8, -3, 9) + balc(5.6, 1.6, -6.6, 2.0, 7, 6, -9, 12);
+    var acadB = bldg(P, 2.5, -9, 5, 2.4, 3.0, acad, 2, ["1:0", "1:1", "2:3", "2:4"]) + balc(2.6, 1.6, -6.6, 1.0, 9, 8, -3, 9, acad[1]) + balc(5.6, 1.6, -6.6, 2.0, 7, 6, -9, 12, acad[1]);
     items.push({ d: 7.5 - 6.6, svg: place("building", P(5, -7.8, 4.4)[0], P(5, -7.8, 4.4)[1], acadB) });
     var dormB = bldg(P, -9, -4, 4, 1.6, 2.4, dorm) + bldg(P, -9, -1.6, 4, 1.6, 2.4, dorm, 1, ["1:0", "1:2", "1:3"]) +
-      balc(-8.95, 1.1, 0, 1.2, 8, 10, -6, 7) + balc(-6.85, 1.7, 0, 1.2, 3, 7, -1, 10);
+      balc(-8.95, 1.1, 0, 1.2, 8, 10, -6, 7, dorm[1]) + balc(-6.85, 1.7, 0, 1.2, 3, 7, -1, 10, dorm[1]);
     items.push({ d: -5 + 0, svg: place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, dormB) });
     items.push({ d: -3.4 + 7, svg: place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, bldg(P, -6, 5, 2.6, 2, 1.9, org, 1)) });
     items.push({ d: 8.7 + 4.0, svg: place("offices", P(7.6, 4.4)[0], P(7.6, 4.4)[1] + 10, bldg(P, 5.5, 1.8, 3.2, 2.2, 1.8, office, 1)) });
     // A building nobody opens yet, with two people talking by it, and its path.
     items.push({ d: -8.6 + 9.5, svg: bldg(P, -11, 7.5, 2.4, 2, 1.6, ["#E3EBD6", "#BFD0B0", "#A9BD98", "#5B7F8F"], 1) });
-    var pair = stand(-10.7, 10.0, 0, 6, 15) + stand(-10.1, 10.3, 0, 2, 0);
-    var qp = P(-10.6, 9.8);
-    pair += '<g class="chat c2"><rect x="' + f(qp[0] - 4) + '" y="' + f(qp[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/><circle cx="' + f(qp[0] + 2.5 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(qp[0] + 7 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(qp[0] + 11.5 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
-    items.push({ d: 0.3, svg: pair });
+    var pair = stand(-11.9, 10.7, 0, 6, 15) + stand(-11.3, 11.0, 0, 2, 0);
+    [[-11.9, 10.7, "c0"], [-11.3, 11.0, "c2"]].forEach(function (pp) {
+      var qp = P(pp[0], pp[1]);
+      pair += '<g class="chat ' + pp[2] + '"><rect x="' + f(qp[0] - 4) + '" y="' + f(qp[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/><circle cx="' + f(qp[0] + 2.5 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(qp[0] + 7 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(qp[0] + 11.5 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
+    });
+    items.push({ d: 1.5, svg: pair });
     // The parking area: two rows of spaces, a lane out to the edge, cars and motorcycles.
     ground += poly([P(8.6, -8.4), P(13.2, -8.4), P(13.2, -2.2), P(8.6, -2.2)], "#C9CCC4") +
       poly([P(10.45, -13.5), P(11.35, -13.5), P(11.35, -8.4), P(10.45, -8.4)], "#C9CCC4");
@@ -504,11 +548,11 @@
       });
     });
     var park = function (ii, jj, color, moto) { var q = P(ii, jj); return '<g transform="translate(' + f(q[0]) + " " + f(q[1]) + ')">' + vehicle(P, color, moto, false) + "</g>"; };
-    [[9.55, -5.9, K.sea2], [12.25, -6.9, K.red], [9.55, -3.9, K.gold2], [12.25, -4.9, "#6A5A8C"], [12.25, -2.9, K.green2]].forEach(function (c) {
+    [[9.55, -5.9, K.sea2], [12.25, -6.9, K.red]].forEach(function (c) {
       items.push({ d: c[0] + c[1], svg: park(c[0], c[1], c[2]) });
     });
-    [[9.3, -2.95], [9.75, -2.95], [10.15, -2.95], [9.5, -7.9]].forEach(function (c, n) {
-      items.push({ d: c[0] + c[1], svg: park(c[0], c[1], [K.red, "#3B3B44", K.sea, K.gold][n], true) });
+    [[9.55, -7.75], [9.55, -7.4], [9.55, -4.05], [9.55, -3.7], [9.55, -2.9], [9.55, -2.55], [12.25, -3.95], [12.25, -3.6], [12.25, -2.9], [12.25, -2.55], [12.25, -7.95]].forEach(function (c, n) {
+      items.push({ d: c[0] + c[1], svg: park(c[0], c[1], [K.red, "#3B3B44", K.sea, K.gold2, K.green2, "#6A5A8C"][n % 6], true) });
     });
     // Walks: the parking area's path to the main walk, and the far building's path.
     [[[-9.47, 9.5], [-9.47, 10.4], [-0.4, 10.4]], [[10.9, -2.2], [10.9, -0.4]]].forEach(function (w) {
@@ -519,9 +563,9 @@
       items.push({ d: t[0] + t[1], svg: isoTree(P, t[0], t[1], 1.6) });
     });
     // Three benches, and two circles of people talking.
-    items.push({ d: -0.6, svg: box(P, 2.6, -3.7, 1.3, 0.4, 0.18, brown) });
-    items.push({ d: -4.9, svg: box(P, -2.6, -3.7, 1.3, 0.4, 0.18, brown) });
-    items.push({ d: 11.2, svg: box(P, 9.3, 1.2, 1.3, 0.4, 0.18, brown) });
+    items.push({ d: -0.6, svg: benchAt(2.6, -3.7) });
+    items.push({ d: -4.9, svg: benchAt(-2.6, -3.7) });
+    items.push({ d: 11.2, svg: benchAt(9.3, 1.2) });
     var three = "";
     [[-0.5, -0.3], [0.5, -0.3], [0, 0.55]].forEach(function (o, n) { three += stand(4.6 + o[0], 5.6 + o[1], 0, [2, 5, 1][n], n === 2 ? 12 : 0); });
     var q3 = P(4.1, 5.3);
@@ -567,14 +611,17 @@
     J(4, [[14, 2.0], [9.95, 2.0], [9.95, 1.45], [9.95, 2.0], [14, 2.0]], 0.9, { 2: 18 }, [], -33, 0, [2], 64);
     // The parking area: a car comes in now and then; someone gets out and walks to the
     // academic building; later someone walks to it from the dormitory, and it leaves.
-    var lane = [[10.9, -13.5], [10.9, -4.4]], CAR = 0.9 * P.s, inT = walkTime(P, lane, CAR), wait = 46, PER = 150;
+    var lane = [[10.9, -13.5], [10.9, -4.9], [12.25, -4.9]], CAR = 0.9 * P.s, inT = walkTime(P, lane, CAR), wait = 46, PER = 150;
     items.push({ d: 6, svg: carTrip(P, K.sea, lane, CAR, wait, 0, PER) });
-    J(6, [[10.45, -4.4], [10.45, -0.9], [5.05, -0.9], [5.05, -6.5]], 1, {}, [], (inT + 1.5).toFixed(2), 0, [], PER, BEHIND);
-    var toCar = [[-7.45, 0.05], [-7.45, 0.9], [10.45, 0.9], [10.45, -4.4]];
+    J(6, [[11.6, -4.4], [10.45, -4.4], [10.45, -0.9], [5.05, -0.9], [5.05, -6.5]], 1, {}, [], (inT + 1.5).toFixed(2), 0, [], PER, BEHIND);
+    var toCar = [[-7.45, 0.05], [-7.45, 0.9], [10.9, 0.9], [10.9, -4.4], [11.6, -4.4]];
     J(0, toCar, 1, {}, [], (inT + wait - 1 - walkTime(P, toCar, V)).toFixed(2), 0, [], PER, BEHIND);
     // Someone walks to a parked car and gets in; someone gets out of one and walks off.
     J(9, [[-4.45, 7.05], [-4.45, 7.6], [-1.5, 7.6], [-1.5, 1.4], [10.9, 1.4], [10.9, -2.2], [10.9, -6.9], [11.45, -6.9]], 1, {}, [], -40, 0, [], 95, BEHIND);
     J(3, [[10.15, -5.9], [10.9, -5.9], [10.9, -0.9], [0.4, -0.9], [0.4, -14]], 1, {}, [], -58, 0, [], 110, BEHIND);
+    // Cyclists ride the middle of the walks, between the people walking on either side.
+    late += journey(P, 4, k, [[14, 0], [0, 0], [0, 14]], V * 2.6, {}, [], -5, 22, [], 0, true);
+    late += journey(P, 8, k, [[0, -14], [0, 0], [14, 0]], V * 2.4, {}, [], -37, 31, [], 0, true);
     items.sort(function (x, y) { return x.d - y.d; });
     var places = items.map(function (x) { return x.svg; }).join("") + late;
     return { ground: ground, places: places };
