@@ -332,15 +332,15 @@
       total += Math.sqrt(dx * dx + dy * dy); lens.push(total);
     }
     // Events: [time, fraction of the path, moving?]
-    var t = 0.6, ev = [[0, 0, false], [0.6, 0, false]], moving = [], waits = [];
+    var t = 0, ev = [[0, 0]], moving = [], waits = [];
     for (m = 1; m < pts_.length; m++) {
       var dur = (lens[m] - lens[m - 1]) / speed;
       moving.push([t, t + dur]); t += dur; ev.push([t, lens[m] / total]);
       var w = stops[m] || 0;
       if (w) { waits.push([m, t, t + w]); t += w; ev.push([t, lens[m] / total]); }
     }
-    var end = t + 0.6, D = end + gap;
-    ev.push([end, 1]); ev.push([D, 1]);
+    var end = t, D = end + gap, FADE = Math.min(0.9, end / 4);
+    ev.push([D, 1]);
     var kt = ev.map(function (e) { return (e[0] / D).toFixed(4); }).join(";"), kp = ev.map(function (e) { return e[1].toFixed(4); }).join(";");
     var path = "M" + pts_.map(function (q) { return f(q[0]) + "," + f(q[1]); }).join(" L");
     var STEP = 0.28, vals = [], times = [];
@@ -353,7 +353,7 @@
       return '<animateTransform attributeName="transform" type="rotate" dur="' + f(D) + 's" begin="' + begin + 's" repeatCount="indefinite" calcMode="linear" keyTimes="' +
         times.map(function (x) { return x.toFixed(4); }).join(";") + '" values="' + vals.map(function (v) { return (v * side * 22) + " " + (side > 0 ? -2.4 : 2.4) + " -11"; }).join(";") + '"/>';
     };
-    var fade = '<animate attributeName="opacity" dur="' + f(D) + 's" begin="' + begin + 's" repeatCount="indefinite" keyTimes="0;' + (0.6 / D).toFixed(4) + ";" + ((end - 0.6) / D).toFixed(4) + ";" + (end / D).toFixed(4) + ';1" values="0;1;1;0;0"/>';
+    var fade = '<animate attributeName="opacity" dur="' + f(D) + 's" begin="' + begin + 's" repeatCount="indefinite" keyTimes="0;' + (FADE / D).toFixed(4) + ";" + ((end - FADE) / D).toFixed(4) + ";" + (end / D).toFixed(4) + ';1" values="0;1;1;0;0"/>';
     var out = '<g class="walk" opacity="0">' + fade + isoChar(0, 0, n, k, legs) +
       '<animateMotion dur="' + f(D) + 's" begin="' + begin + 's" repeatCount="indefinite" path="' + path + '" keyPoints="' + kp + '" keyTimes="' + kt + '" calcMode="linear"/></g>';
     waits.forEach(function (wt) {
@@ -379,6 +379,10 @@
       out += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(bb[0]) + '" y2="' + f(bb[1]) + '" stroke="#7E8A80" stroke-width="1.6"/>';
     }
     return out;
+  }
+  /* A doorway onto a balcony, on the front face (j + d) at height z. */
+  function balconyDoor(P, i0, jFront, z) {
+    return poly([P(i0, jFront + 0.01, z), P(i0 + 0.4, jFront + 0.01, z), P(i0 + 0.4, jFront + 0.01, z + 0.7), P(i0, jFront + 0.01, z + 0.7)], "#5C4A3A");
   }
   /* A door on the front face (j + d) of a box. */
   function door(P, i0, jFront, w, h, fill) {
@@ -407,23 +411,49 @@
     var k = S * 0.92, items = [];
     var stand = function (i, j, z, n, phoneEvery) { var q = P(i, j, z || 0); return isoChar(q[0], q[1], n, k, null, phoneEvery); };
     var road = function (i0, j0, i1, j1, z) { var a = P(i0, j0, z || 0), b = P(i1, j1, z || 0); return "M" + f(a[0]) + "," + f(a[1]) + " L" + f(b[0]) + "," + f(b[1]); };
-    // Buildings, each with a door, some with balconies and people on them; depth sorts the scene.
+    var V = 1.15 * P.s;
+    // Buildings, each with a door, balconies with a doorway onto them; depth sorts the scene.
     var acadB = bldg(P, 2.5, -9, 5, 2.4, 3.0, acad, 2) +
       balcony(P, 2.75, 1.5, -6.6, 1.0) + stand(3.5, -6.35, 1.0, 9, 11) + railing(P, 2.75, 1.5, -6.6, 1.0) +
-      balcony(P, 5.75, 1.5, -6.6, 2.0) + walker(road(5.95, -6.35, 7.05, -6.35, 2.0), 7, k, 3, 4, -2) + railing(P, 5.75, 1.5, -6.6, 2.0);
+      balcony(P, 5.75, 1.5, -6.6, 2.0) + balconyDoor(P, 6.8, -6.6, 2.0) +
+      journey(P, 7, k, [[7.0, -6.58, 2.0], [7.0, -6.35, 2.0], [6.0, -6.35, 2.0], [7.0, -6.35, 2.0], [7.0, -6.58, 2.0]], V * 0.5, { 2: 7 }, [], -2, 6) +
+      railing(P, 5.75, 1.5, -6.6, 2.0);
     items.push({ d: 7.5 - 6.6, svg: place("building", P(5, -7.8, 4.4)[0], P(5, -7.8, 4.4)[1], acadB) });
     var dormB = bldg(P, -9, -4, 4, 1.6, 2.4, dorm) + bldg(P, -9, -1.6, 4, 1.6, 2.4, dorm, 1) +
       balcony(P, -8.75, 0.9, 0, 1.2) + stand(-8.3, 0.25, 1.2, 8, 14) + railing(P, -8.75, 0.9, 0, 1.2) +
-      balcony(P, -6.75, 1.6, 0, 1.2) + walker(road(-6.55, 0.25, -5.45, 0.25, 1.2), 3, k, 3, 5, -1) + railing(P, -6.75, 1.6, 0, 1.2);
+      balcony(P, -6.75, 1.6, 0, 1.2) + balconyDoor(P, -5.6, 0, 1.2) +
+      journey(P, 3, k, [[-5.4, 0.02, 1.2], [-5.4, 0.25, 1.2], [-6.5, 0.25, 1.2], [-5.4, 0.25, 1.2], [-5.4, 0.02, 1.2]], V * 0.5, { 2: 9 }, [], -5, 4) +
+      railing(P, -6.75, 1.6, 0, 1.2);
     items.push({ d: -5 + 0, svg: place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, dormB) });
     items.push({ d: -3.4 + 7, svg: place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, bldg(P, -6, 5, 2.6, 2, 1.9, org, 1)) });
     items.push({ d: 7.7 + 5.4, svg: place("offices", P(6.6, 6.4)[0], P(6.6, 6.4)[1] + 10, bldg(P, 4.5, 3.2, 3.2, 2.2, 1.8, office, 1)) });
-    [[-3.5, -6], [-2, -7.5], [9, -3], [9.5, 1], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-2.5, 8.6], [8.6, 7.4], [-6, -8], [-11.5, -1], [10, 4.5]].forEach(function (t) {
+    // A building nobody opens yet, its path, and a parking area with cars.
+    items.push({ d: -8.6 + 9.5, svg: bldg(P, -11, 7.5, 2.4, 2, 1.6, ["#E3EBD6", "#BFD0B0", "#A9BD98", "#5B7F8F"], 1) });
+    var lot = poly([P(9, -6.8), P(12.6, -6.8), P(12.6, -3.4), P(9, -3.4)], "#C9CCC4");
+    [-6.1, -5.2, -4.3].forEach(function (jj) { lot += '<line x1="' + f(P(9.2, jj)[0]) + '" y1="' + f(P(9.2, jj)[1]) + '" x2="' + f(P(10.6, jj)[0]) + '" y2="' + f(P(10.6, jj)[1]) + '" stroke="#FFFFFF" stroke-width="2"/>'; });
+    ground += lot;
+    [[-6.5, K.red], [-5.6, K.sea2], [-3.9, K.gold2]].forEach(function (cr, n) {
+      var car = box(P, 9.4, cr[0], 1.1, 0.6, 0.28, [cr[1], cr[1], cr[1]]) + box(P, 9.6, cr[0] + 0.05, 0.6, 0.5, 0.2, ["#DDE8EE", "#AFC6D0", "#94AFBB"], 0.28);
+      items.push({ d: 10.5 + cr[0], svg: car });
+    });
+    [[[-9.47, 9.5], [-9.47, 10.4], [-0.4, 10.4]], [[10.5, -3.4], [10.5, -0.4]]].forEach(function (w) {
+      ground += '<polyline points="' + pts(w.map(function (q) { return P(q[0], q[1]); })) + '" fill="none" stroke="' + K.sand + '" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>';
+    });
+    [[-3.5, -6], [-2, -7.5], [8, -1.6], [11, 2.8], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-2.5, 8.6], [8.6, 7.4], [-6, -8], [-11.5, -1], [10, 4.5],
+      [-12, 4], [-12.5, -4], [-13, 0.5], [2, -12.5], [8, -11], [6, -12], [-4, 12], [5, 11], [11, 6], [-7.5, 11.5], [12.8, -8.5]].forEach(function (t) {
       items.push({ d: t[0] + t[1], svg: isoTree(P, t[0], t[1], 1.6) });
     });
     // On a bench, with a phone; four in a circle, talking.
     var bp = P(3.25, -3.5);
+    var bench = function (i0, j0, n, every) { var q = P(i0 + 0.65, j0 + 0.2); return box(P, i0, j0, 1.3, 0.4, 0.18, [K.brown, "#5C4529", "#4A3820"]) + isoChar(q[0], q[1] - 5 * S, n, k, null, every); };
     items.push({ d: -0.2, svg: box(P, 2.6, -3.7, 1.3, 0.4, 0.18, [K.brown, "#5C4529", "#4A3820"]) + isoChar(bp[0], bp[1] - 5 * S, 5, k) });
+    items.push({ d: -4.5, svg: bench(-2.6, -3.7, 6, 13) });
+    items.push({ d: 9.6, svg: bench(8, 1.2, 0, 10) });
+    var three = "";
+    [[-0.5, -0.3], [0.5, -0.3], [0, 0.55]].forEach(function (o, n) { three += stand(3.5 + o[0], 2.5 + o[1], 0, [2, 5, 1][n], n === 2 ? 12 : 0); });
+    var q3 = P(3.0, 2.2);
+    three += '<g class="chat c1"><rect x="' + f(q3[0] - 4) + '" y="' + f(q3[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/><circle cx="' + f(q3[0] + 2.5 * S) + '" cy="' + f(q3[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q3[0] + 7 * S) + '" cy="' + f(q3[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q3[0] + 11.5 * S) + '" cy="' + f(q3[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
+    items.push({ d: 6, svg: three });
     var circle = "";
     [[-0.6, -0.4], [0.5, -0.5], [0.6, 0.5], [-0.5, 0.6]].forEach(function (o, n) { circle += stand(-2.8 + o[0], 3.4 + o[1], 0, [7, 3, 8, 9][n]); });
     [0, 1, 2].forEach(function (n) {
@@ -436,16 +466,18 @@
     items.push({ d: -3, svg: live ? obj("student", sp[0], sp[1] - 40, st) : st });
     items.sort(function (x, y) { return x.d - y.d; });
     var places = items.map(function (x) { return x.svg; }).join("");
-    // People come and go: in from the edge of campus or out of a door, and out again.
-    // Two meet, talk a while, and walk on together; one stops to check a phone.
-    var V = 1.15 * P.s / 26 * 26;
+    // People come and go: in from the edge of campus or out of a door, and out again,
+    // fading as they reach the edge or step through a door. Two meet, talk, and walk on together.
     places += journey(P, 0, k, [[0.4, -14], [0.4, -1.4], [0.4, 14]], V, { 1: 6 }, [1], 0, 6);
-    places += journey(P, 6, k, [[-0.4, 14], [-0.4, -1.0], [-0.4, 14]], V, { 1: 6 }, [], -2, 4.4);
-    places += journey(P, 2, k, [[14, 0.4], [-3.4, 0.4], [-4.75, 7.4]], V * 0.9, { 1: 5 }, [], -11, 9);
-    places += journey(P, 4, k, [[-7.45, 0.3], [-7.45, 0.9], [14, 0.9]], V, { 1: 0, 2: 0 }, [], -23, 14);
-    places += journey(P, 5, k, [[-0.4, 14], [-0.4, 7.2], [6.05, 7.2], [6.05, 5.6]], V * 0.85, { 1: 3 }, [], -7, 11);
-    places += journey(P, 8, k, [[4.75, -6.4], [4.75, -2.9], [0.4, -2.9], [0.4, -14]], V, { 2: 4 }, [], -30, 8);
+    places += journey(P, 6, k, [[-0.4, 14], [-0.4, -1.0], [-0.4, 14]], V, { 1: 6 }, [], -2.6, 3.7);
+    places += journey(P, 2, k, [[14, 0.4], [-2.9, 0.4], [-2.9, 7.6], [-4.45, 7.6], [-4.45, 7.05]], V * 0.9, { 1: 4 }, [], -11, 9);
+    places += journey(P, 4, k, [[-7.45, 0.05], [-7.45, 0.9], [-0.4, 0.9], [-0.4, -6.0], [5.05, -6.0], [5.05, -6.5]], V, {}, [], -23, 10);
+    places += journey(P, 9, k, [[5.05, -6.5], [5.05, -5.6], [0.4, -5.6], [0.4, -14]], V * 1.05, { 2: 3 }, [], -31, 13);
+    places += journey(P, 5, k, [[-0.4, 14], [-0.4, 7.2], [6.05, 7.2], [6.05, 5.5]], V * 0.85, { 1: 3 }, [], -7, 11);
+    places += journey(P, 8, k, [[6.05, 5.5], [6.05, 6.6], [0.4, 6.6], [0.4, 14]], V, {}, [], -19, 16);
+    places += journey(P, 3, k, [[-9.47, 9.55], [-9.47, 10.4], [-0.4, 10.4], [-0.4, 0.9], [14, 0.9]], V, { 3: 5 }, [], -14, 8);
     places += journey(P, 1, k, [[14, -0.4], [3.6, -0.4], [14, -0.4]], V * 1.1, { 1: 9 }, [], -17, 12);
+    places += journey(P, 7, k, [[0.4, -14], [0.4, -0.9], [10.5, -0.9], [10.5, -3.4]], V * 0.95, {}, [], -26, 9);
     return { ground: ground, places: places };
   }
   function hills() {
