@@ -277,30 +277,43 @@
     { skin: 0, hair: "#1B1B22", style: "bun", top: K.gold, low: "#2F3B5E", skirt: true, item: "phone" }
   ];
   /* One of the cast, feet at (x, y), at scale k. */
-  function isoChar(x, y, n, k, legs, phoneEvery) {
+  /* opts: talk = [seconds, delay] for gestures while talking (an arm and a nod);
+     look = -1 or 1 to look left or right; flip = true to turn to face left. */
+  function isoChar(x, y, n, k, legs, phoneEvery, opts) {
+    opts = opts || {};
     var c = CAST[n % CAST.length], sk = SKIN[c.skin], h = c.hair, out = "";
     var swing = function (side) { return legs ? legs(side) : ""; };
+    var anim = function (dur, delay, kt, vals) { return '<animateTransform attributeName="transform" type="rotate" dur="' + dur + 's" begin="' + (delay || 0) + 's" repeatCount="indefinite" keyTimes="' + kt + '" values="' + vals + '"/>'; };
     out += '<ellipse cy="1.5" rx="7" ry="2.6" fill="#1F2A22" opacity=".13"/>';
     if (c.item === "bag") out += '<rect x="-8.5" y="-21" width="5" height="10" rx="2" fill="#5B4A3A"/>';
     if (c.style === "long") out += '<rect x="-6" y="-28" width="12" height="13" rx="4" fill="' + h + '"/>';
     if (c.skirt) out += '<rect x="-3.4" y="-8" width="2.6" height="8" rx="1.2" fill="' + sk + '">' + swing(1) + '</rect><rect x="0.8" y="-8" width="2.6" height="8" rx="1.2" fill="' + sk + '">' + swing(-1) + '</rect><path d="M-5 -12H5L6 -6H-6Z" fill="' + c.low + '"/>';
     else out += '<rect x="-4.2" y="-11" width="3.6" height="11" rx="1.5" fill="' + c.low + '">' + swing(1) + '</rect><rect x="0.6" y="-11" width="3.6" height="11" rx="1.5" fill="' + c.low + '">' + swing(-1) + '</rect>';
     out += '<rect x="-5" y="-21" width="10" height="11" rx="4" fill="' + c.top + '"/>';
-    out += '<rect x="-7" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/><rect x="4.4" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/>';
-    out += '<circle cx="-5.7" cy="-10.5" r="1.6" fill="' + sk + '"/><circle cx="5.7" cy="-10.5" r="1.6" fill="' + sk + '"/>';
-    out += '<circle cy="-26" r="5.6" fill="' + sk + '"/><path d="M-5.7 -26.5a5.7 5.7 0 0 1 11.4 0c-3-2-8.4-2-11.4 0Z" fill="' + h + '"/>' +
-      '<circle cx="-2" cy="-25" r=".75" fill="' + K.ink + '"/><circle cx="2" cy="-25" r=".75" fill="' + K.ink + '"/>';
-    // Seen from behind, walking away: the hair covers the face.
-    if (legs && legs.back) out += '<circle cy="-26" r="5.8" fill="' + h + '" opacity="0">' + legs.back + "</circle>";
-    if (c.style === "pony") out += '<ellipse cx="-6" cy="-25" rx="2.2" ry="3.6" fill="' + h + '"/>';
-    if (c.style === "bun") out += '<circle cy="-32.5" r="2.6" fill="' + h + '"/>';
+    out += '<rect x="-7" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/><circle cx="-5.7" cy="-10.5" r="1.6" fill="' + sk + '"/>';
+    // The right arm: still, or gesturing while talking, or raised to hold a phone.
+    var arm = '<rect x="4.4" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/><circle cx="5.7" cy="-10.5" r="1.6" fill="' + sk + '"/>';
+    if (opts.talk) arm = '<g>' + anim(opts.talk[0], opts.talk[1], "0;0.2;0.35;0.5;0.65;1", "0 5.7 -19;-55 5.7 -19;-30 5.7 -19;-60 5.7 -19;0 5.7 -19;0 5.7 -19") + arm + "</g>";
+    else if (phoneEvery) arm = '<g>' + anim(phoneEvery, 0, "0;0.28;0.34;0.8;0.86;1", "0 5.7 -19;0 5.7 -19;-70 5.7 -19;-70 5.7 -19;0 5.7 -19;0 5.7 -19") + arm + "</g>";
+    out += arm;
+    // The head: nods while talking, tips down to look at a phone.
+    var eyeX = opts.look ? opts.look * 1.3 : 0;
+    var head = '<circle cy="-26" r="5.6" fill="' + sk + '"/><path d="M-5.7 -26.5a5.7 5.7 0 0 1 11.4 0c-3-2-8.4-2-11.4 0Z" fill="' + h + '"/>' +
+      '<circle cx="' + f(-2 + eyeX) + '" cy="-25" r=".75" fill="' + K.ink + '"/><circle cx="' + f(2 + eyeX) + '" cy="-25" r=".75" fill="' + K.ink + '"/>';
+    if (legs && legs.back) head += '<circle cy="-26" r="5.8" fill="' + h + '" opacity="0">' + legs.back + "</circle>";
+    if (c.style === "pony") head += '<ellipse cx="-6" cy="-25" rx="2.2" ry="3.6" fill="' + h + '"/>';
+    if (c.style === "bun") head += '<circle cy="-32.5" r="2.6" fill="' + h + '"/>';
+    if (opts.talk) head = '<g>' + anim(opts.talk[0] * 0.7, opts.talk[1], "0;0.25;0.5;0.75;1", "0 0 -21;-6 0 -21;3 0 -21;-4 0 -21;0 0 -21") + head + "</g>";
+    else if (phoneEvery) head = '<g>' + anim(phoneEvery, 0, "0;0.3;0.36;0.8;0.86;1", "0 0 -21;0 0 -21;12 0 -21;12 0 -21;0 0 -21;0 0 -21") + head + "</g>";
+    out += head;
     if (c.item === "book") out += '<rect x="5" y="-15" width="4.5" height="6" rx="0.8" fill="' + K.red + '"/>';
-    // Standing still, now and then: the phone comes out and lights up, then goes away.
-    if (phoneEvery) out += '<g opacity="0"><animate attributeName="opacity" dur="' + phoneEvery + 's" repeatCount="indefinite" keyTimes="0;0.3;0.34;0.8;0.84;1" values="0;0;1;1;0;0"/>' +
-      '<rect x="3.8" y="-19" width="4" height="6.5" rx="1" fill="' + K.ink + '"/><rect x="4.6" y="-18.2" width="2.4" height="4.6" fill="' + K.gold3 + '"/></g>';
+    // Standing still, now and then: the phone comes up in front of the face and lights it.
+    if (phoneEvery) out += '<g opacity="0"><animate attributeName="opacity" dur="' + phoneEvery + 's" repeatCount="indefinite" keyTimes="0;0.32;0.36;0.8;0.84;1" values="0;0;1;1;0;0"/>' +
+      '<rect x="3.2" y="-23" width="4.4" height="7" rx="1" fill="' + K.ink + '"/><rect x="4" y="-22.2" width="2.8" height="5" fill="' + K.gold3 + '"/></g>';
     else if (c.item === "phone") out += '<rect x="3.8" y="-17" width="4" height="6.5" rx="1" fill="' + K.ink + '"/><rect class="glow-phone" x="4.6" y="-16.2" width="2.4" height="4.6" fill="' + K.gold3 + '"/>';
     if (c.item === "laptop") out += '<rect x="5" y="-12" width="9" height="2.4" rx="0.8" fill="#8C9286"/>';
     if (c.item === "umbrella") out += '<path d="M6 -10V-36" stroke="' + K.ink2 + '" stroke-width="1.2"/><path d="M-6 -35a12 7 0 0 1 24 0Z" fill="' + K.sea2 + '"/>';
+    if (opts.flip) return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(-k) + " " + f(k) + ')">' + out + "</g>";
     return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k) + ')">' + out + "</g>";
   }
   /* One of the cast sitting, hips at (x, y): legs bent forward. */
@@ -310,7 +323,7 @@
     out += '<rect x="-4" y="-7" width="10" height="3.4" rx="1.5" fill="' + (c.skirt ? sk : c.low) + '"/><rect x="4" y="-7" width="3" height="8" rx="1.4" fill="' + (c.skirt ? sk : c.low) + '"/>';
     if (c.skirt) out += '<path d="M-5 -9H5L6 -4H-6Z" fill="' + c.low + '"/>';
     out += '<rect x="-5" y="-17" width="10" height="11" rx="4" fill="' + c.top + '"/><rect x="-7" y="-16" width="2.6" height="8" rx="1.3" fill="' + c.top + '"/><rect x="4.4" y="-16" width="2.6" height="8" rx="1.3" fill="' + c.top + '"/>';
-    out += '<circle cy="-22" r="5.6" fill="' + sk + '"/><path d="M-5.7 -22.5a5.7 5.7 0 0 1 11.4 0c-3-2-8.4-2-11.4 0Z" fill="' + h + '"/><circle cx="-2" cy="-21" r=".75" fill="' + K.ink + '"/><circle cx="2" cy="-21" r=".75" fill="' + K.ink + '"/>';
+    out += '<g transform="rotate(' + (hands === "bars" ? 0 : 10) + ' 0 -17)"><circle cy="-22" r="5.6" fill="' + sk + '"/><path d="M-5.7 -22.5a5.7 5.7 0 0 1 11.4 0c-3-2-8.4-2-11.4 0Z" fill="' + h + '"/><circle cx="-2" cy="-21" r=".75" fill="' + K.ink + '"/><circle cx="2" cy="-21" r=".75" fill="' + K.ink + '"/></g>';
     if (c.style === "pony") out += '<ellipse cx="-6" cy="-21" rx="2.2" ry="3.6" fill="' + h + '"/>';
     if (c.style === "bun") out += '<circle cy="-28.5" r="2.6" fill="' + h + '"/>';
     if (hands === "bars") out += '<rect x="4.4" y="-13" width="6" height="2.4" rx="1.2" fill="' + c.top + '"/><circle cx="10.5" cy="-11.8" r="1.6" fill="' + sk + '"/>';
@@ -440,6 +453,23 @@
       line(L(-0.28, 0, 0.13), L(0.04, 0, 0.13)) + line(L(0.04, 0, 0.13), L(-0.08, 0, 0.4)) + line(L(0.2, 0, 0.4), L(0.22, 0, 0.5)) +
       sitChar(seat[0], seat[1] + 4 * k, n, k, "bars");
   }
+  /* A motorcycle's trip: ridden in along the lane into a space, left there a while,
+     then ridden out by someone else. riderIn and riderOut are cast numbers. */
+  function motoTrip(P, color, way, speed, wait, begin, period, riderIn, riderOut, k) {
+    var L = Iso(0, 0, P.s), Lj = function (i, j, z) { return L(j, i, z); };
+    Lj.s = L.s;
+    var pts_ = way.map(function (q) { return P(q[0], q[1]); }), path = "M" + pts_.map(function (q) { return f(q[0]) + "," + f(q[1]); }).join(" L");
+    var t1 = walkTime(P, way.slice(0, 2), speed), t2 = walkTime(P, way.slice(1), speed), go = t1 + t2, D = period, p1 = t1 / go;
+    var B = ' dur="' + D + 's" begin="' + begin + 's" repeatCount="indefinite"', T = function (x) { return (x / D).toFixed(4); }, end = 2 * go + wait;
+    var show = function (vals) { return '<animate attributeName="opacity"' + B + ' calcMode="discrete" keyTimes="0;' + T(t1) + ";" + T(go) + ";" + T(go + wait) + ";" + T(go + wait + t2) + '" values="' + vals + '"/>'; };
+    var seatJ = Lj(-0.08, 0, 0.33), seatI = L(-0.08, 0, 0.33);
+    var inJ = '<g>' + show("1;0;0;0;1") + motorcycle(Lj, color) + "</g>";
+    var inI = '<g opacity="0">' + show("0;1;1;1;0") + motorcycle(L, color) + "</g>";
+    var rideA = '<g>' + show("1;1;0;0;0") + sitChar(seatJ[0], seatJ[1] + 3 * k, riderIn, k, "bars") + "</g>";
+    var rideB = '<g opacity="0">' + show("0;0;0;1;1") + sitChar(seatI[0], seatI[1] + 3 * k, riderOut, k, "bars") + "</g>";
+    return '<g opacity="0"><animate attributeName="opacity"' + B + ' keyTimes="0;' + T(0.8) + ";" + T(end - 0.8) + ";" + T(end) + ';1" values="0;1;1;0;0"/>' + inJ + inI + rideA + rideB +
+      '<animateMotion' + B + ' path="' + path + '" keyPoints="0;' + p1.toFixed(4) + ';1;1;' + p1.toFixed(4) + ';0;0" keyTimes="0;' + T(t1) + ";" + T(go) + ";" + T(go + wait) + ";" + T(go + wait + t2) + ";" + T(end) + ';1" calcMode="linear"/></g>';
+  }
   /* A car's trip: in along the lane from the edge, into a space, a long stop, and out again. */
   function carTrip(P, color, way, speed, wait, begin, period) {
     var pts_ = way.map(function (q) { return P(q[0], q[1]); }), path = "M" + pts_.map(function (q) { return f(q[0]) + "," + f(q[1]); }).join(" L");
@@ -472,8 +502,8 @@
     return "#" + ((1 << 24) + (m(r) << 16) + (m(g) << 8) + m(b)).toString(16).slice(1);
   }
   /* An open doorway onto a balcony, as wide as the balcony: the room inside shows a little lighter. */
-  function balconyDoor(P, i0, w, jFront, z, wall) {
-    var a = i0 + 0.08, b = i0 + w - 0.08, top = z + 0.72;
+  function balconyDoor(P, i0, w, jFront, z, wall, tall) {
+    var a = i0 + 0.08, b = i0 + w - 0.08, top = z + (tall || 0.72);
     return poly([P(a, jFront + 0.01, z), P(b, jFront + 0.01, z), P(b, jFront + 0.01, top), P(a, jFront + 0.01, top)], lighten(wall, 0.38)) +
       poly([P(a, jFront + 0.01, top), P(b, jFront + 0.01, top), P(b, jFront + 0.01, top - 0.05), P(a, jFront + 0.01, top - 0.05)], lighten(wall, 0.15));
   }
@@ -502,7 +532,7 @@
       office = [K.paper, "#CFD7CC", "#B3BFAF", "#5B7F8F"], org = ["#F3DCC8", "#D9A47C", "#C68B5E", "#5B7F8F"];
     var place = function (id, lx, ly, body) { return live ? obj(id, lx, ly, body) : body; };
     var k = S * 0.92, items = [];
-    var stand = function (i, j, z, n, phoneEvery) { var q = P(i, j, z || 0); return isoChar(q[0], q[1], n, k, null, phoneEvery); };
+    var stand = function (i, j, z, n, phoneEvery, opts) { var q = P(i, j, z || 0); return isoChar(q[0], q[1], n, k, null, phoneEvery, opts); };
     var road = function (i0, j0, i1, j1, z) { var a = P(i0, j0, z || 0), b = P(i1, j1, z || 0); return "M" + f(a[0]) + "," + f(a[1]) + " L" + f(b[0]) + "," + f(b[1]); };
     var V = 1.15 * P.s;
     var brown = [K.brown, "#5C4529", "#4A3820"];
@@ -515,9 +545,9 @@
       return out;
     };
     // A balcony with a doorway: someone steps out, stays a while, and goes back in.
-    var balc = function (i0, w, jf, z, n, stay, begin, gap, wall) {
+    var balc = function (i0, w, jf, z, n, stay, begin, gap, wall, tall) {
       var dI = i0 + 0.12, mid = i0 + w * 0.6;
-      return balconyDoor(P, i0, w, jf, z, wall) + balcony(P, i0, w, jf, z) +
+      return balconyDoor(P, i0, w, jf, z, wall, tall) + balcony(P, i0, w, jf, z) +
         journey(P, n, k, [[dI + 0.2, jf + 0.02, z], [dI + 0.2, jf + 0.25, z], [mid, jf + 0.25, z], [dI + 0.2, jf + 0.25, z], [dI + 0.2, jf + 0.02, z]], V * 0.45, { 2: stay }, [], begin, gap) +
         railing(P, i0, w, jf, z);
     };
@@ -525,13 +555,13 @@
     var acadB = bldg(P, 2.5, -9, 5, 2.4, 3.0, acad, 2, ["1:0", "1:1", "2:3", "2:4"]) + balc(2.6, 1.6, -6.6, 1.0, 9, 8, -3, 9, acad[1]) + balc(5.6, 1.6, -6.6, 2.0, 7, 6, -9, 12, acad[1]);
     items.push({ d: 7.5 - 6.6, svg: place("building", P(5, -7.8, 4.4)[0], P(5, -7.8, 4.4)[1], acadB) });
     var dormB = bldg(P, -9, -4, 4, 1.6, 2.4, dorm) + bldg(P, -9, -1.6, 4, 1.6, 2.4, dorm, 1, ["1:0", "1:2", "1:3"]) +
-      balc(-8.95, 1.1, 0, 1.2, 8, 10, -6, 7, dorm[1]) + balc(-6.85, 1.7, 0, 1.2, 3, 7, -1, 10, dorm[1]);
+      balc(-8.95, 1.1, 0, 1.2, 8, 10, -6, 7, dorm[1], 0.6) + balc(-6.85, 1.7, 0, 1.2, 3, 7, -1, 10, dorm[1], 0.6);
     items.push({ d: -5 + 0, svg: place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, dormB) });
     items.push({ d: -3.4 + 7, svg: place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, bldg(P, -6, 5, 2.6, 2, 1.9, org, 1)) });
     items.push({ d: 8.7 + 4.0, svg: place("offices", P(7.6, 4.4)[0], P(7.6, 4.4)[1] + 10, bldg(P, 5.5, 1.8, 3.2, 2.2, 1.8, office, 1)) });
     // A building nobody opens yet, with two people talking by it, and its path.
     items.push({ d: -8.6 + 9.5, svg: bldg(P, -11, 7.5, 2.4, 2, 1.6, ["#E3EBD6", "#BFD0B0", "#A9BD98", "#5B7F8F"], 1) });
-    var pair = stand(-11.9, 10.7, 0, 6, 15) + stand(-11.3, 11.0, 0, 2, 0);
+    var pair = stand(-11.9, 10.7, 0, 6, 0, { talk: [6.5, 0], look: 1 }) + stand(-11.3, 11.0, 0, 2, 0, { talk: [7.5, 3.2], look: 1, flip: true });
     [[-11.9, 10.7, "c0"], [-11.3, 11.0, "c2"]].forEach(function (pp) {
       var qp = P(pp[0], pp[1]);
       pair += '<g class="chat ' + pp[2] + '"><rect x="' + f(qp[0] - 4) + '" y="' + f(qp[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/><circle cx="' + f(qp[0] + 2.5 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(qp[0] + 7 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(qp[0] + 11.5 * S) + '" cy="' + f(qp[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
@@ -567,12 +597,12 @@
     items.push({ d: -4.9, svg: benchAt(-2.6, -3.7) });
     items.push({ d: 11.2, svg: benchAt(9.3, 1.2) });
     var three = "";
-    [[-0.5, -0.3], [0.5, -0.3], [0, 0.55]].forEach(function (o, n) { three += stand(4.6 + o[0], 5.6 + o[1], 0, [2, 5, 1][n], n === 2 ? 12 : 0); });
+    [[-0.5, -0.3], [0.5, -0.3], [0, 0.55]].forEach(function (o, n) { three += stand(4.6 + o[0], 5.6 + o[1], 0, [2, 5, 1][n], n === 2 ? 12 : 0, n === 2 ? null : { talk: [6 + n, n * 2.5], look: n === 0 ? 1 : -1, flip: n === 1 }); });
     var q3 = P(4.1, 5.3);
     three += '<g class="chat c1"><rect x="' + f(q3[0] - 4) + '" y="' + f(q3[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/><circle cx="' + f(q3[0] + 2.5 * S) + '" cy="' + f(q3[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q3[0] + 7 * S) + '" cy="' + f(q3[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q3[0] + 11.5 * S) + '" cy="' + f(q3[1] - 47 * S) + '" r="' + f(1.7 * S) + '" fill="' + K.ink3 + '"/></g>';
     items.push({ d: 10.2, svg: three });
     var circle = "";
-    [[-0.6, -0.4], [0.5, -0.5], [0.6, 0.5], [-0.5, 0.6]].forEach(function (o, n) { circle += stand(-2.8 + o[0], 3.4 + o[1], 0, [7, 3, 8, 9][n], n === 1 ? 10 : 0); });
+    [[-0.6, -0.4], [0.5, -0.5], [0.6, 0.5], [-0.5, 0.6]].forEach(function (o, n) { circle += stand(-2.8 + o[0], 3.4 + o[1], 0, [7, 3, 8, 9][n], n === 1 ? 10 : 0, n === 1 ? null : { talk: [5.5 + n, n * 2.2], look: o[0] < 0 ? 1 : -1, flip: o[0] > 0 }); });
     [0, 1, 2].forEach(function (n) {
       var q = P(-2.8 + [-0.6, 0.5, 0.6][n], 3.4 + [-0.4, -0.5, 0.5][n]);
       circle += '<g class="chat c' + n + '"><rect x="' + f(q[0] - 4) + '" y="' + f(q[1] - 54 * S) + '" width="' + f(22 * S) + '" height="' + f(14 * S) + '" rx="' + f(5 * S) + '" fill="#FFFFFF" filter="url(#soft)"/>' +
@@ -613,12 +643,26 @@
     // academic building; later someone walks to it from the dormitory, and it leaves.
     var lane = [[10.9, -13.5], [10.9, -4.9], [12.25, -4.9]], CAR = 0.9 * P.s, inT = walkTime(P, lane, CAR), wait = 46, PER = 150;
     items.push({ d: 6, svg: carTrip(P, K.sea, lane, CAR, wait, 0, PER) });
-    J(6, [[11.6, -4.4], [10.45, -4.4], [10.45, -0.9], [5.05, -0.9], [5.05, -6.5]], 1, {}, [], (inT + 1.5).toFixed(2), 0, [], PER, BEHIND);
-    var toCar = [[-7.45, 0.05], [-7.45, 0.9], [10.9, 0.9], [10.9, -4.4], [11.6, -4.4]];
+    J(6, [[11.05, -4.3], [10.45, -4.3], [10.45, -0.9], [5.05, -0.9], [5.05, -6.5]], 1, {}, [], (inT + 1.5).toFixed(2), 0, [], PER, BEHIND);
+    var toCar = [[-7.45, 0.05], [-7.45, 0.9], [10.9, 0.9], [10.9, -4.3], [11.05, -4.3]];
     J(0, toCar, 1, {}, [], (inT + wait - 1 - walkTime(P, toCar, V)).toFixed(2), 0, [], PER, BEHIND);
     // Someone walks to a parked car and gets in; someone gets out of one and walks off.
     J(9, [[-4.45, 7.05], [-4.45, 7.6], [-1.5, 7.6], [-1.5, 1.4], [10.9, 1.4], [10.9, -2.2], [10.9, -6.9], [11.45, -6.9]], 1, {}, [], -40, 0, [], 95, BEHIND);
-    J(3, [[10.15, -5.9], [10.9, -5.9], [10.9, -0.9], [0.4, -0.9], [0.4, -14]], 1, {}, [], -58, 0, [], 110, BEHIND);
+    J(3, [[10.15, -5.9], [10.9, -5.9], [10.9, 0.9], [-7.45, 0.9], [-7.45, 0.05]], 1, {}, [], -58, 0, [], 110, BEHIND);
+    // Motorcycles ridden in and out: the rider gets off and walks into a building; later
+    // someone walks out of another building, gets on, and rides off.
+    var MOTO = 1.1 * P.s;
+    [
+      { slot: [9.55, -6.9], color: K.red, per: 96, wait: 50, at: 0, inN: 2, outN: 5,
+        off: [[10.9, -6.9], [10.9, -0.9], [5.05, -0.9], [5.05, -6.5]], on: [[-4.45, 7.05], [-4.45, 7.6], [-1.5, 7.6], [-1.5, 0.9], [10.9, 0.9], [10.9, -6.9], [10.1, -6.9]] },
+      { slot: [12.25, -5.9], color: K.green2, per: 124, wait: 64, at: -40, inN: 9, outN: 0, front: true,
+        off: [[11.6, -5.9], [10.9, -5.9], [10.9, -0.4], [11.6, -0.4], [11.6, 6.6], [7.05, 6.6], [7.05, 4.1]], on: [[5.05, -6.5], [5.05, -5.6], [10.9, -5.6], [10.9, -5.9], [11.6, -5.9]] }
+    ].forEach(function (m) {
+      var lane2 = [[10.9, -13.5], [10.9, m.slot[1]], m.slot], tIn = walkTime(P, lane2, MOTO);
+      items.push({ d: 6.5, svg: motoTrip(P, m.color, lane2, MOTO, m.wait, m.at, m.per, m.inN, m.outN, k) });
+      J(m.inN, m.off, 1, {}, [], (m.at + tIn + 0.6).toFixed(2), 0, [], m.per, m.front ? null : BEHIND);
+      J(m.outN, m.on, 1, {}, [], (m.at + tIn + m.wait - 0.4 - walkTime(P, m.on, V)).toFixed(2), 0, [], m.per, BEHIND);
+    });
     // Cyclists ride the middle of the walks, between the people walking on either side.
     late += journey(P, 4, k, [[14, 0], [0, 0], [0, 14]], V * 2.6, {}, [], -5, 22, [], 0, true);
     late += journey(P, 8, k, [[0, -14], [0, 0], [14, 0]], V * 2.4, {}, [], -37, 31, [], 0, true);
