@@ -238,9 +238,54 @@
       "</g>";
   }
   /* Someone walking a path, back and forth, for dur seconds each way and back. */
-  function walker(path, n, k, dur, begin, phone) {
-    return '<g class="walk">' + personAt(0, 0, n, k, phone) +
+  /* The campus cast: invented people, women and men, with their own skin, hair,
+     clothes, and what they carry (D-146). All drawn at one size. */
+  var CAST = [
+    { skin: 1, hair: "#1B1B22", style: "long", top: K.red, low: "#2F3B5E", skirt: false, item: "bag" },
+    { skin: 0, hair: "#24201C", style: "short", top: K.sea, low: "#3B3B44", skirt: false, item: "laptop" },
+    { skin: 3, hair: "#3B2A20", style: "pony", top: K.gold2, low: "#2F3B5E", skirt: true, item: "book" },
+    { skin: 2, hair: "#1B1B22", style: "short", top: K.green2, low: "#4A4A52", skirt: false, item: "phone" },
+    { skin: 1, hair: "#5A3A26", style: "bun", top: "#6A5A8C", low: "#E8E2D0", skirt: true, item: "umbrella" },
+    { skin: 0, hair: "#1B1B22", style: "long", top: K.sea2, low: "#2F3B5E", skirt: false, item: "phone" },
+    { skin: 2, hair: "#24201C", style: "short", top: "#B9974F", low: "#3B3B44", skirt: false, item: "bag" },
+    { skin: 3, hair: "#1B1B22", style: "pony", top: K.green3, low: "#2F3B5E", skirt: true, item: "bag" },
+    { skin: 1, hair: "#3B2A20", style: "short", top: K.red, low: "#4A4A52", skirt: false, item: "book" },
+    { skin: 0, hair: "#1B1B22", style: "bun", top: K.gold, low: "#2F3B5E", skirt: true, item: "phone" }
+  ];
+  /* One of the cast, feet at (x, y), at scale k. */
+  function isoChar(x, y, n, k) {
+    var c = CAST[n % CAST.length], sk = SKIN[c.skin], h = c.hair, out = "";
+    out += '<ellipse cy="1.5" rx="7" ry="2.6" fill="#1F2A22" opacity=".13"/>';
+    if (c.item === "bag") out += '<rect x="-8.5" y="-21" width="5" height="10" rx="2" fill="#5B4A3A"/>';
+    if (c.style === "long") out += '<rect x="-6" y="-28" width="12" height="13" rx="4" fill="' + h + '"/>';
+    if (c.skirt) out += '<rect x="-3.4" y="-8" width="2.6" height="8" rx="1.2" fill="' + sk + '"/><rect x="0.8" y="-8" width="2.6" height="8" rx="1.2" fill="' + sk + '"/><path d="M-5 -12H5L6 -6H-6Z" fill="' + c.low + '"/>';
+    else out += '<rect x="-4.2" y="-11" width="3.6" height="11" rx="1.5" fill="' + c.low + '"/><rect x="0.6" y="-11" width="3.6" height="11" rx="1.5" fill="' + c.low + '"/>';
+    out += '<rect x="-5" y="-21" width="10" height="11" rx="4" fill="' + c.top + '"/>';
+    out += '<rect x="-7" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/><rect x="4.4" y="-20" width="2.6" height="9" rx="1.3" fill="' + c.top + '"/>';
+    out += '<circle cx="-5.7" cy="-10.5" r="1.6" fill="' + sk + '"/><circle cx="5.7" cy="-10.5" r="1.6" fill="' + sk + '"/>';
+    out += '<circle cy="-26" r="5.6" fill="' + sk + '"/><path d="M-5.7 -26.5a5.7 5.7 0 0 1 11.4 0c-3-2-8.4-2-11.4 0Z" fill="' + h + '"/>';
+    if (c.style === "pony") out += '<ellipse cx="-6" cy="-25" rx="2.2" ry="3.6" fill="' + h + '"/>';
+    if (c.style === "bun") out += '<circle cy="-32.5" r="2.6" fill="' + h + '"/>';
+    if (c.item === "book") out += '<rect x="5" y="-15" width="4.5" height="6" rx="0.8" fill="' + K.red + '"/>';
+    if (c.item === "phone") out += '<rect x="3.8" y="-17" width="4" height="6.5" rx="1" fill="' + K.ink + '"/><rect class="glow-phone" x="4.6" y="-16.2" width="2.4" height="4.6" fill="' + K.gold3 + '"/>';
+    if (c.item === "laptop") out += '<rect x="5" y="-12" width="9" height="2.4" rx="0.8" fill="#8C9286"/>';
+    if (c.item === "umbrella") out += '<path d="M6 -10V-36" stroke="' + K.ink2 + '" stroke-width="1.2"/><path d="M-6 -35a12 7 0 0 1 24 0Z" fill="' + K.sea2 + '"/>';
+    return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k) + ')">' + out + "</g>";
+  }
+  /* One of the cast walking a path, there and back, for dur seconds. */
+  function walker(path, n, k, dur, begin) {
+    return '<g class="walk"><g class="step">' + isoChar(0, 0, n, k) + '</g>' +
       '<animateMotion dur="' + dur + 's" begin="' + (begin || 0) + 's" repeatCount="indefinite" path="' + path + '" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear"/></g>';
+  }
+  /* A rooftop terrace: a railing around the top of a box. */
+  function terrace(P, i, j, w, d, z) {
+    var t = z + 0.32, rail = [P(i, j, t), P(i + w, j, t), P(i + w, j + d, t), P(i, j + d, t)];
+    var out = '<polygon points="' + pts(rail) + '" fill="none" stroke="#8C9286" stroke-width="2"/>';
+    [[i, j], [i + w, j], [i + w, j + d], [i, j + d], [i + w / 2, j + d], [i + w, j + d / 2]].forEach(function (q) {
+      var a = P(q[0], q[1], z), b = P(q[0], q[1], t);
+      out += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="#8C9286" stroke-width="2"/>';
+    });
+    return out;
   }
 
   /* ============================================================
@@ -248,9 +293,9 @@
      campus: ground, walks, buildings by kind, trees, and its people.
      With live = true its places are objects a visitor can open.
      ============================================================ */
-  var WORLD = Iso(800, 590, 32);
+  var WORLD = Iso(800, 600, 37);
   // Where each kind of place stands, and the top of its roof (i, j, z).
-  var SPOT = { building: [4.25, -7.9, 2.0], dorms: [-7, -2, 2.4], orgs: [-4.7, 6, 1.1], offices: [6.1, 4.3, 1.8] };
+  var SPOT = { building: [4.25, -7.9, 2.0], dorms: [-7, -2, 2.4], orgs: [-4.7, 6, 1.9], offices: [6.1, 4.3, 1.8] };
   function world(live) {
     var P = WORLD, S = P.s / 26, c = P(0, 0);
     var ground = '<ellipse cx="' + c[0] + '" cy="' + f(c[1] + 40 * S) + '" rx="' + f(640 * S) + '" ry="' + f(250 * S) + '" fill="#1F2A22" opacity=".06" filter="url(#blur)"/>' +
@@ -260,37 +305,47 @@
       var a = P(w[0], w[1]), b = P(w[2], w[3]);
       ground += '<line x1="' + f(a[0]) + '" y1="' + f(a[1]) + '" x2="' + f(b[0]) + '" y2="' + f(b[1]) + '" stroke="' + K.sand + '" stroke-width="12" stroke-linecap="round"/>';
     });
-    var dorm = [K.cream, "#D9C48A", "#C7AE6E", "#5B7F8F"], acad = [K.paper2, "#C9D3C4", "#AEBBAA", "#5B7F8F"],
-      office = [K.paper, "#CFD7CC", "#B3BFAF", "#5B7F8F"], org = [K.gold3, K.gold, "#C9961A"];
+    var dorm = [K.cream, "#D9C48A", "#C7AE6E", "#5B7F8F"], acad = ["#DCE8EE", "#AFC6D0", "#94AFBB", "#3E5D69"],
+      office = [K.paper, "#CFD7CC", "#B3BFAF", "#5B7F8F"], org = ["#F3DCC8", "#D9A47C", "#C68B5E", "#5B7F8F"];
     var place = function (id, lx, ly, body) { return live ? obj(id, lx, ly, body) : body; };
     var places = "";
     places += place("building", P(4.4, -7.8, 3.6)[0], P(4.4, -7.8, 3.6)[1], box(P, 2.5, -9, 3.5, 2.2, 2.0, acad) + box(P, 6.5, -8.5, 2.2, 2.2, 1.6, acad));
     places += place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, box(P, -9, -4, 4, 1.6, 2.4, dorm) + box(P, -9, -1.6, 4, 1.6, 2.4, dorm));
-    [[-3.5, -6], [-2, -7.5], [9, -3], [9.5, 1], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-3, 8], [8, 6.5], [-6, -8], [-11.5, -1], [10, 4.5]].forEach(function (t) { places += isoTree(P, t[0], t[1], 1.6); });
-    places += place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, box(P, -6, 5, 2.6, 2, 1.1, org));
+    [[-3.5, -6], [-2, -7.5], [9, -3], [9.5, 1], [-9.5, 3], [1.5, 7.5], [3, 8.5], [-1.5, 9.8], [8, 6.5], [-6, -8], [-11.5, -1], [10, 4.5]].forEach(function (t) { places += isoTree(P, t[0], t[1], 1.6); });
+    places += place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, box(P, -6, 5, 2.6, 2, 1.9, org));
     places += place("offices", P(6.6, 6.4)[0], P(6.6, 6.4)[1] + 10, box(P, 4.5, 3.2, 3.2, 2.2, 1.8, office));
 
     // People: walking to class along the walks, one on a bench with a phone,
     // four standing in a circle talking, and the student a visitor can follow.
-    var k = S * 1.15, life = "";
-    var road = function (i0, j0, i1, j1) { var a = P(i0, j0), b = P(i1, j1); return "M" + f(a[0]) + "," + f(a[1]) + " L" + f(b[0]) + "," + f(b[1]); };
+    var k = S * 1.1, life = "";
+    var road = function (i0, j0, i1, j1, z) { var a = P(i0, j0, z || 0), b = P(i1, j1, z || 0); return "M" + f(a[0]) + "," + f(a[1]) + " L" + f(b[0]) + "," + f(b[1]); };
+    // Walking to class along the walks.
     life += walker(road(-7.5, 0.4, 7.5, 0.4), 0, k, 34, 0);
-    life += walker(road(7.2, -0.4, -7.2, -0.4), 3, k, 30, -9, true);
-    life += walker(road(0.4, 7.5, 0.4, -7.5), 4, k, 28, -4);
-    life += walker(road(-0.4, -7.2, -0.4, 7.2), 1, k, 36, -20);
-    var bp = P(3.2, -3.4);
-    life += box(P, 2.6, -3.7, 1.3, 0.4, 0.18, [K.brown, "#5C4529", "#4A3820"]) + personAt(bp[0], bp[1] - 6, 5, k, true);
+    life += walker(road(7.2, -0.4, -7.2, -0.4), 1, k, 30, -9);
+    life += walker(road(0.4, 7.5, 0.4, -7.5), 2, k, 28, -4);
+    life += walker(road(-0.4, -7.2, -0.4, 7.2), 4, k, 36, -20);
+    life += walker(road(-6, 0.9, 5, 0.9), 6, k, 40, -14);
+    // On a bench, with a phone.
+    var bp = P(3.25, -3.5);
+    life += box(P, 2.6, -3.7, 1.3, 0.4, 0.18, [K.brown, "#5C4529", "#4A3820"]) + isoChar(bp[0], bp[1] - 5 * S, 5, k);
+    // Four in a circle, talking.
     [[-0.6, -0.4], [0.5, -0.5], [0.6, 0.5], [-0.5, 0.6]].forEach(function (o, n) {
       var q = P(-2.8 + o[0], 3.4 + o[1]);
-      life += personAt(q[0], q[1], n + 1, k, false);
+      life += isoChar(q[0], q[1], [7, 3, 8, 9][n], k);
     });
     [0, 1, 2].forEach(function (n) {
       var q = P(-2.8 + [-0.6, 0.5, 0.6][n], 3.4 + [-0.4, -0.5, 0.5][n]);
-      life += '<g class="chat c' + n + '"><rect x="' + f(q[0] - 4) + '" y="' + f(q[1] - 66 * S) + '" width="' + f(26 * S) + '" height="' + f(17 * S) + '" rx="' + f(6 * S) + '" fill="#FFFFFF" filter="url(#soft)"/>' +
-        '<circle cx="' + f(q[0] + 4 * S) + '" cy="' + f(q[1] - 57.5 * S) + '" r="' + f(2 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 9 * S) + '" cy="' + f(q[1] - 57.5 * S) + '" r="' + f(2 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 14 * S) + '" cy="' + f(q[1] - 57.5 * S) + '" r="' + f(2 * S) + '" fill="' + K.ink3 + '"/></g>';
+      life += '<g class="chat c' + n + '"><rect x="' + f(q[0] - 4) + '" y="' + f(q[1] - 62 * S) + '" width="' + f(24 * S) + '" height="' + f(15 * S) + '" rx="' + f(6 * S) + '" fill="#FFFFFF" filter="url(#soft)"/>' +
+        '<circle cx="' + f(q[0] + 3 * S) + '" cy="' + f(q[1] - 54.5 * S) + '" r="' + f(1.8 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 8 * S) + '" cy="' + f(q[1] - 54.5 * S) + '" r="' + f(1.8 * S) + '" fill="' + K.ink3 + '"/><circle cx="' + f(q[0] + 13 * S) + '" cy="' + f(q[1] - 54.5 * S) + '" r="' + f(1.8 * S) + '" fill="' + K.ink3 + '"/></g>';
     });
     places += life;
-    var sp = P(2.2, -5.2), st = '<g class="walker">' + personAt(sp[0], sp[1], 1, k * 1.15, true) + "</g>";
+    // Terraces on the dormitory and the academic building, with people on them.
+    var roof = terrace(P, -9, -1.6, 4, 1.6, 2.4) + isoChar(P(-7.6, -0.9, 2.4)[0], P(-7.6, -0.9, 2.4)[1], 8, k) +
+      walker(road(-8.6, -0.5, -5.5, -0.5, 2.4), 3, k, 18, -6);
+    roof += terrace(P, 2.5, -9, 3.5, 2.2, 2.0) + isoChar(P(3.4, -8.2, 2.0)[0], P(3.4, -8.2, 2.0)[1], 9, k) +
+      walker(road(3, -7.4, 5.5, -7.4, 2.0), 7, k, 22, -3);
+    places += roof;
+    var sp = P(2.2, -5.2), st = '<g class="walker">' + isoChar(sp[0], sp[1], 1, k) + "</g>";
     places += live ? obj("student", sp[0], sp[1] - 40, st) : st;
     return { ground: ground, places: places };
   }

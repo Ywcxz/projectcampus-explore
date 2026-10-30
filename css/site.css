@@ -184,7 +184,7 @@ body.moving .labels { opacity: 0; }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 .walker { animation: bob 1s ease-in-out infinite; }
 /* Campus life: the walkers' steps, a phone's glow, a conversation, a feed that hovers. */
-.walk > g { animation: bob .55s ease-in-out infinite; }
+.walk > .step { animation: bob .55s ease-in-out infinite; }
 @keyframes glow-phone { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
 .glow-phone { animation: glow-phone 2.2s ease-in-out infinite; }
 @keyframes chat { 0%, 4% { opacity: 0; transform: translateY(3px); } 8%, 30% { opacity: 1; transform: none; } 34%, 100% { opacity: 0; } }
