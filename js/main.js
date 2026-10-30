@@ -119,6 +119,18 @@
     }
 
     /* ---------- a card unfolds in place ---------- */
+    /* A pop-up fades out: a copy of it, with no ids or controls, fades where it was. */
+    function fadeOut(el) {
+      if (!el || el.hidden || reduced() || !el.parentNode) return;
+      var ghost = el.cloneNode(true);
+      ghost.removeAttribute("id");
+      each(ghost.querySelectorAll("[id]"), function (n) { n.removeAttribute("id"); });
+      ghost.setAttribute("aria-hidden", "true");
+      ghost.classList.add("leaving");
+      el.parentNode.insertBefore(ghost, el.nextSibling);
+      win.setTimeout(function () { if (ghost.parentNode) ghost.parentNode.removeChild(ghost); }, 200);
+    }
+
     /* ---------- about this scene: title, summary, sources, as a pop-up ---------- */
     function openAbout() {
       if (!about) return;
@@ -130,6 +142,7 @@
     }
     function closeAbout() {
       if (!about || about.hidden) return false;
+      fadeOut(about);
       about.hidden = true;
       if (aboutBtn) aboutBtn.setAttribute("aria-expanded", "false");
       return true;
@@ -161,6 +174,7 @@
       if (!state.card) return;
       var from = state.card.from;
       state.card = null;
+      fadeOut(card);
       card.hidden = true;
       if (from && from.focus) from.focus();
     }
@@ -512,7 +526,6 @@
       if (k === "l" || k === "L") { setWords(!state.words); e.preventDefault(); }
       else if (k === "s" || k === "S") { nextState(); e.preventDefault(); }
       else if (k === "Escape") { minimal(); }
-      else if (k === "Backspace") { if (state.card) closeCard(); else if (!closeAbout()) upOne(); e.preventDefault(); }
       else if (k === "i" || k === "I") { if (about && about.hidden) openAbout(); else closeAbout(); }
       else if (k === "ArrowRight" || k === "PageDown" || k === " ") { step(1); e.preventDefault(); }
       else if (k === "ArrowLeft" || k === "PageUp") { step(-1); e.preventDefault(); }

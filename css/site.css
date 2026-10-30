@@ -121,11 +121,16 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
   border-radius: var(--radius); box-shadow: 0 10px 30px rgba(31, 42, 34, .14);
 }
 .pop[hidden] { display: none; }
+/* Pop-ups fade in and out in a fifth of a second. */
+@keyframes pop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop-out { from { opacity: 1; } to { opacity: 0; } }
+.pop:not([hidden]) { animation: pop-in .18s ease both; }
+.pop.leaving { animation: pop-out .18s ease both; pointer-events: none; }
 .pop:focus { outline: none; }
 /* "About this scene" rises from its button. */
 .about { border-left: 5px solid var(--green); top: auto; right: auto; left: 16px; bottom: 66px; max-height: calc(100% - 82px); transform-origin: 20px 100%; }
 @keyframes rise { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
-.about:not([hidden]) { animation: rise .26s cubic-bezier(.2, .8, .2, 1); }
+.about:not([hidden]):not(.leaving) { animation: rise .2s cubic-bezier(.2, .8, .2, 1) both; }
 .about .scene-title { position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; margin: 0 0 6px; padding-right: 70px; font: 600 22px/1.2 var(--font-display); }
 .scene-summary { margin: 0 0 10px; font-size: 16px; line-height: 1.5; color: var(--ink-2); }
 

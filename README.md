@@ -58,7 +58,6 @@ The scene fills the screen. Navigation (the trail, Back, Labels) waits above the
 | --- | --- |
 | Tab, then Enter | open the focused object |
 | Esc | close any pop-up and the navigation, leaving only the scene |
-| Backspace | back up one scene |
 | → Space PageDown | next state, then next scene on the path |
 | ← PageUp | previous state, then previous scene on the path |
 | Home | back to the campus |

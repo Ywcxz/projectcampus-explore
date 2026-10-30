@@ -266,8 +266,8 @@ section("zoom, cards, words, keys", () => {
   check(app.state.scene.id === "lab", "zoom: Enter on a focused object opens it");
   key(win, "Escape");
   check(app.state.scene.id === "lab", "Esc: stays in the scene");
-  key(win, "Backspace");
-  check(app.state.scene.id === "building", "back: Backspace goes up one scene");
+  doc.getElementById("back-btn").click();
+  check(app.state.scene.id === "building", "back: the Back button goes up one scene");
   doc.querySelector("#trail a").dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
   check(app.state.scene.id === data.start, "trail: a step in the trail goes back there");
 
@@ -332,7 +332,7 @@ section("states: today and with CAMPUS", () => {
   check(app.state.scene.id === "a-place", "states: an object of a state opens its scene");
   const trail = [...doc.querySelectorAll("#trail a")].map((a) => a.textContent);
   check(trail[1] === later.title && /state=campus/.test(doc.querySelectorAll("#trail a")[1].getAttribute("href")), "trail: a scene opened from a state shows that state");
-  key(win, "Backspace");
+  doc.getElementById("back-btn").click();
   check(app.state.scene.id === "elsewhere" && app.state.view === "campus", "back: going up returns to the state it was opened from");
   key(win, "ArrowLeft");
   check(app.state.view === "today", "path: back steps through the states too");
