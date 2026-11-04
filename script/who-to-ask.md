@@ -1,6 +1,6 @@
 # Who do I ask? (`who-to-ask`)
 
-*Extracted. Not on Chapter 3.4's eleven steps; reached from `told-us` and `three-jobs` (README, question 4). Chapters 3, 3.1, 3.2, 3.3, 4, 10.*
+*Extracted. Not on Chapter 2.4's eleven steps; reached from `told-us` and `three-jobs` (README, question 4). Chapters 2, 2.1, 2.2, 2.3, 3, 10.*
 
 ## Place and access
 
@@ -19,7 +19,7 @@
 
 ## Today / with CAMPUS
 
-- **Today** [Unresolved]: a first-year student, the first in her family at college, needs an office. She asks around, goes to one door, is sent to another. What students lack, by the author's account, is a way to learn which office handles a question before the first visit (Ch 3).
+- **Today** [Unresolved]: a first-year student, the first in her family at college, needs an office. She asks around, goes to one door, is sent to another. What students lack, by the author's account, is a way to learn which office handles a question before the first visit (Ch 2).
 - **With CAMPUS** [Proposed]: before her question posts, the network shows answers that already exist; then it reaches a few members who chose the topic, and the office responsible; the confirmed answer stays (D-071). The network hands her into VSU's own systems, the helpdesk or document tracker, rather than tracking requests itself (D-064; Ch 10).
 
 What the site must not say: that VSU's offices are hard to deal with. CAMPUS does not claim that VSU's systems are inadequate (D-016; Ch 8).
@@ -28,10 +28,10 @@ What the site must not say: that VSU's offices are hard to deal with. CAMPUS doe
 
 | Card | How CAMPUS differs | VSU need | Source |
 | --- | --- | --- | --- |
-| VSU's helpdesk and document tracker | The network helps people find the right office or system and hands them in; tracking stays with VSU's tools | Learning which office handles a question before the first visit | E-004; Ch 3.1; Ch 10 |
-| VSU's Citizen's Charter 2026 | The network and the twin's office guide would cite it, never restate it as their own authority | Services, steps, and times, findable from a question | Ch 3.1; Ch 4 |
+| VSU's helpdesk and document tracker | The network helps people find the right office or system and hands them in; tracking stays with VSU's tools | Learning which office handles a question before the first visit | E-004; Ch 2.1; Ch 10 |
+| VSU's Citizen's Charter 2026 | The network and the twin's office guide would cite it, never restate it as their own authority | Services, steps, and times, findable from a question | Ch 2.1; Ch 3 |
 | EVSU's apps portal | A neighboring state university invests in administrative portals while questions still go to Facebook pages | A community side the official portals don't cover | Ch 10 |
-| 311 apps and help desks | Routing to people who chose a topic, not only to a queue | Peers and offices both able to answer | Ch 3.1; Ch 10 |
+| 311 apps and help desks | Routing to people who chose a topic, not only to a queue | Peers and offices both able to answer | Ch 2.1; Ch 10 |
 
 ## Objects
 
@@ -54,7 +54,7 @@ What the site must not say: that VSU's offices are hard to deal with. CAMPUS doe
 | --- | --- | --- | --- |
 | Today | Does reaching the right office take several visits before a conversation even starts? Not yet known. | Unresolved | P-02 |
 | Today | Of 2,604 first-year students at the Main Campus in 2026, 1,248 (47.9%) are first-generation college students. | Established | E-020 |
-| Today | VSU publishes a Citizen's Charter and runs a helpdesk and a document request tracker. | Established | E-004; Ch 3 |
+| Today | VSU publishes a Citizen's Charter and runs a helpdesk and a document request tracker. | Established | E-004; Ch 2 |
 | With CAMPUS | Questions are routed, not broadcast: existing answers first, then members who opted in to the topic, then the office responsible. | Established | D-071 |
 | With CAMPUS | The network hands off rather than duplicates: service and document requests stay in VSU's systems. | Established | D-064 |
 

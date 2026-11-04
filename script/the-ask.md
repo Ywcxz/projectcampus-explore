@@ -1,14 +1,14 @@
 # The ask (`the-ask`)
 
-*Extracted. Step 10 of the offices path (Ch 3.4). Chapters 3.4, 12.*
+*Extracted. Step 10 of the offices path (Ch 2.4). Chapters 2.4, 12.*
 
 ## Place and access
 
 - **Place:** the edge of the map: a path of steps leading up from the campus gate, proposed.
 - **Parent:** `campus`.
-- **Opens:** each step (a card per ask, Ch 3.4); the milestone ladder (a card, Ch 12); what we are not asking (a card).
+- **Opens:** each step (a card per ask, Ch 2.4); the milestone ladder (a card, Ch 12); what we are not asking (a card).
 
-Chapter 3.4: "One office's commitment, then one semester." The first meeting's two asks come before both and stay separate (D-083).
+Chapter 2.4: "One office's commitment, then one semester." The first meeting's two asks come before both and stay separate (D-083).
 
 ## Problem
 
@@ -50,10 +50,10 @@ None.
 | Claim | Tag | Source |
 | --- | --- | --- |
 | The first approach asks two separate things: permission to run the survey and the interviews, and interest in CAMPUS. | Established | D-083 |
-| Permission to do research never depends on interest in the proposal. | Established | Ch 3.4 |
+| Permission to do research never depends on interest in the proposal. | Established | Ch 2.4 |
 | Office responsiveness comes before software. | Established | D-068 |
 | As of October 2026, no VSU office has reached any stage of the milestone ladder. | Established | Ch 12 (D-029; D-090) |
-| No gain should be promised in money or hours until a pilot measures it. | Established | Ch 3.4 |
+| No gain should be promised in money or hours until a pilot measures it. | Established | Ch 2.4 |
 
 The ladder claim is dated. Recheck it against Chapter 12 each time the site is presented.
 

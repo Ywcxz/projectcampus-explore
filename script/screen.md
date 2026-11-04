@@ -1,6 +1,6 @@
 # The network, on a computer (`screen`)
 
-*Built. A labeled mock-up on made-up data (D-102, D-108). Chapter 3.2.*
+*Built. A labeled mock-up on made-up data (D-102, D-108). Chapter 2.2.*
 
 ## Place and access
 
@@ -18,7 +18,7 @@ No states; the whole scene is the proposal.
 
 ## Related work
 
-Stack Exchange's accepted answers and Piazza's instructor-endorsed answers are the pattern for a confirmed answer (Ch 3.2, Ch 10). The difference: an office confirms, and the answer is dated and kept for the next batch; the VSU need is answers that carry an owner (P-03).
+Stack Exchange's accepted answers and Piazza's instructor-endorsed answers are the pattern for a confirmed answer (Ch 2.2, Ch 10). The difference: an office confirms, and the answer is dated and kept for the next batch; the VSU need is answers that carry an owner (P-03).
 
 ## Objects
 

@@ -1,6 +1,6 @@
 # Marketplace, a later module (`marketplace`)
 
-*Extracted. A labeled mock-up only: a later module of the network, not part of its first version (D-098, D-102). Chapter 3.5.*
+*Extracted. A labeled mock-up only: a later module of the network, not part of its first version (D-098, D-102). Chapter 2.5.*
 
 ## Place and access
 
@@ -17,11 +17,11 @@
 ## Today / with CAMPUS
 
 - **Today** [Unresolved]: a buy-and-sell group open to anyone.
-- **With CAMPUS, a later module** [Proposed]: a graduating student lists a lab gown for verified members, suggests a busy public place on campus to meet, and marks it sold after both sides confirm (Ch 3.2, scene 8; Ch 3.5).
+- **With CAMPUS, a later module** [Proposed]: a graduating student lists a lab gown for verified members, suggests a busy public place on campus to meet, and marks it sold after both sides confirm (Ch 2.2, scene 8; Ch 2.5).
 
 ## Related work
 
-Facebook Marketplace and Carousell: listings only between verified VSU members, with meeting points on campus; the VSU need is a buyer knowing the seller is from VSU, if the survey shows scams are common (Ch 3.1; Ch 3.5).
+Facebook Marketplace and Carousell: listings only between verified VSU members, with meeting points on campus; the VSU need is a buyer knowing the seller is from VSU, if the survey shows scams are common (Ch 2.1; Ch 2.5).
 
 ## Objects
 
@@ -41,7 +41,7 @@ Facebook Marketplace and Carousell: listings only between verified VSU members, 
 | --- | --- | --- |
 | The marketplace is a later module of the network, not part of its first version. | Established | D-098 |
 | A later module may be shown as a mock-up on made-up data, labeled as a later module, and is not built until taken up. | Established | D-102 |
-| Nothing at VSU does this. | Established | Ch 3.3 |
+| Nothing at VSU does this. | Established | Ch 2.3 |
 | Are VSU buyers unable to tell whether a seller is from VSU? Not yet known. | Unresolved | P-21 |
 
 ## Animation beats

@@ -1,6 +1,6 @@
 # Places and the office guide (`twin`)
 
-*Extracted. The digital twin's first step. Chapters 4, 10, 3.1.*
+*Extracted. The digital twin's first step. Chapters 3, 10, 2.1.*
 
 ## Place and access
 
@@ -16,8 +16,8 @@
 
 ## Today / with CAMPUS
 
-- **Today** [Unresolved]: new students, parents, and visitors can't easily find buildings and offices, or know which office handles a request (Ch 4).
-- **With CAMPUS** [Proposed]: a person starts from a question, such as replacing a lost ID, and gets the office, its room and the way there, its hours, what to bring, and the official system to use, each citing the Citizen's Charter or the office, dated (Ch 4).
+- **Today** [Unresolved]: new students, parents, and visitors can't easily find buildings and offices, or know which office handles a request (Ch 3).
+- **With CAMPUS** [Proposed]: a person starts from a question, such as replacing a lost ID, and gets the office, its room and the way there, its hours, what to bring, and the official system to use, each citing the Citizen's Charter or the office, dated (Ch 3).
 
 ## Related work
 
@@ -44,10 +44,10 @@
 
 | Claim | Tag | Source |
 | --- | --- | --- |
-| The twin's first step is finding places and knowing which office handles what. | Proposed | Ch 4 (D-079) |
-| A full twin is outside any first build. | Established | Ch 4 (v0.1 D-008) |
+| The twin's first step is finding places and knowing which office handles what. | Proposed | Ch 3 (D-079) |
+| A full twin is outside any first build. | Established | Ch 3 (v0.1 D-008) |
 | The spatial interface stays research only, behind the first step. | Established | D-093 |
-| The twin maps places and offices, not people. | Proposed | Ch 4 |
+| The twin maps places and offices, not people. | Proposed | Ch 3 |
 | Whether VSU runs or plans a map or directions service of its own has not been confirmed. | Unresolved | Q-54 |
 
 ## Animation beats

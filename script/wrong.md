@@ -1,6 +1,6 @@
 # How we'd know we're wrong (`wrong`)
 
-*Extracted. Off the offices path; for free reading, VSU ICT, and reviewers (README, question 5). Chapters 8, 11, 3.*
+*Extracted. Off the offices path; for free reading, VSU ICT, and reviewers (README, question 5). Chapters 8, 11, 2.*
 
 ## Place and access
 
@@ -18,7 +18,7 @@ No states.
 
 ## Related work
 
-None. The precedents that failed (Facebook Campus, community@brighton, USC AppDate) could be cards here, each as a way the network could fail (Ch 3.3).
+None. The precedents that failed (Facebook Campus, community@brighton, USC AppDate) could be cards here, each as a way the network could fail (Ch 2.3).
 
 ## Objects
 

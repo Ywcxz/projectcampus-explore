@@ -1,6 +1,6 @@
 # Every batch starts over (`batch`)
 
-*Extracted. Step 4 of the offices path (Ch 3.4; D-175). Chapters 3, 3.2, 8.1, 8.*
+*Extracted. Step 4 of the offices path (Ch 2.4; D-175). Chapters 2, 2.2, 8.1, 8.*
 
 ## Place and access
 
@@ -19,16 +19,16 @@ D-175: it stays on the path, shown as a question with how we'd find out until it
 
 ## Today / with CAMPUS
 
-- **Today** [Unresolved]: answers about scholarships, enrollment, dormitories, and subjects are given in batch group chats, buried within days, and given again; each new batch starts its own chat; seniors who answered year after year stop. Organizations' records live on Facebook pages and officers' personal accounts. All by the author's observation (Ch 3).
-- **With CAMPUS** [Proposed]: before a first-year's question posts, the network shows a guide a student wrote two years earlier, confirmed by the office for this academic year, with a note of what changed. She doesn't post. The author, now graduated, sees privately that it keeps helping (Ch 3.2, scene 3). The organization's officers hand on its place; nothing depended on a graduating student's account (Ch 3.2, scene 5).
+- **Today** [Unresolved]: answers about scholarships, enrollment, dormitories, and subjects are given in batch group chats, buried within days, and given again; each new batch starts its own chat; seniors who answered year after year stop. Organizations' records live on Facebook pages and officers' personal accounts. All by the author's observation (Ch 2).
+- **With CAMPUS** [Proposed]: before a first-year's question posts, the network shows a guide a student wrote two years earlier, confirmed by the office for this academic year, with a note of what changed. She doesn't post. The author, now graduated, sees privately that it keeps helping (Ch 2.2, scene 3). The organization's officers hand on its place; nothing depended on a graduating student's account (Ch 2.2, scene 5).
 
 ## Related work
 
 | Card | How CAMPUS differs | VSU need | Source |
 | --- | --- | --- | --- |
-| Messenger group chats | Kept answers and notices that link into chats | Answers lost and asked again each batch, by the author's observation | Ch 3; D-074 |
+| Messenger group chats | Kept answers and notices that link into chats | Answers lost and asked again each batch, by the author's observation | Ch 2; D-074 |
 | Stack Overflow's duplicate links | Existing answers shown before a question posts | Seniors spared answering the same question every year | E-039; D-071 |
-| Organization platforms | Organizations inside a wider campus network, on open components | 57 accredited organizations whose records turn over with their officers | Ch 3; E-027 |
+| Organization platforms | Organizations inside a wider campus network, on open components | 57 accredited organizations whose records turn over with their officers | Ch 2; E-027 |
 
 ## Objects
 
@@ -54,7 +54,7 @@ D-175: it stays on the path, shown as a question with how we'd find out until it
 | With CAMPUS | The network keeps knowledge and lets conversation fade. | Established | D-070 |
 | With CAMPUS | Answers that already exist are shown before a new question posts. | Established | D-071 |
 | With CAMPUS | Stewards look after a place for a term, then hand it on. | Established | D-144 |
-| With CAMPUS | Because every kept answer makes the next question easier, the network's value compounds over years. | Proposed | Ch 3 |
+| With CAMPUS | Because every kept answer makes the next question easier, the network's value compounds over years. | Proposed | Ch 2 |
 
 ## Animation beats
 

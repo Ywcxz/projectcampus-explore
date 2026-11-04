@@ -1,6 +1,6 @@
 # A lecture hall at class time (`hall`)
 
-*Extracted. The intranet's everyday scene. Chapters 2, 2.2, 8.*
+*Extracted. The intranet's everyday scene. Chapters 4, 4.2, 8.*
 
 ## Place and access
 
@@ -21,8 +21,8 @@ P-16 rests on VSU ICT's figures and has no survey problem question.
 
 ## Today / with CAMPUS
 
-- **Today** [Unresolved]: a full hall at class time; phones on mobile data; a file from one student to the next goes out through a provider and comes back, though they sit side by side (Ch 2).
-- **With CAMPUS** [Proposed]: the campus network puts university and academic services first and carries everything else on a fair share, never blocked (D-059); access points sized for the room's busiest hour (Ch 2.2); campus-made data lives on campus (Ch 2).
+- **Today** [Unresolved]: a full hall at class time; phones on mobile data; a file from one student to the next goes out through a provider and comes back, though they sit side by side (Ch 4).
+- **With CAMPUS** [Proposed]: the campus network puts university and academic services first and carries everything else on a fair share, never blocked (D-059); access points sized for the room's busiest hour (Ch 4.2); campus-made data lives on campus (Ch 4).
 
 **What cuts the other way, on the scene itself:** by May 2023, close to 98% of the Main Campus had VSU Wi-Fi (E-010), so any gap P-19 describes would be one of capacity or quality, not coverage [Proposed] (Ch 8). Nationally, only about 5% of Filipino smartphone users rely on mobile data alone (E-014).
 
@@ -30,9 +30,9 @@ P-16 rests on VSU ICT's figures and has no survey problem question.
 
 | Card | How CAMPUS differs | VSU need | Source |
 | --- | --- | --- | --- |
-| Truman State and Purdue's traffic tiers | Priority by destination and place, published tiers, slowed never blocked; dormitories generous | VSU's own 2023 aim: free Wi-Fi distributed equitably, mainly for academic purposes | Ch 2.2; E-017 |
-| DepEd's zero-rated learning platform, 2020 | Carriers could let students reach VSU's services without spending data | A cost to students, if the survey shows one | Ch 2 |
-| VSU's own network | It is built: fiber, Wi-Fi, a data center on solar backup. CAMPUS adds a rule about where things live, not a new network | — | Ch 2; E-009; E-043 |
+| Truman State and Purdue's traffic tiers | Priority by destination and place, published tiers, slowed never blocked; dormitories generous | VSU's own 2023 aim: free Wi-Fi distributed equitably, mainly for academic purposes | Ch 4.2; E-017 |
+| DepEd's zero-rated learning platform, 2020 | Carriers could let students reach VSU's services without spending data | A cost to students, if the survey shows one | Ch 4 |
+| VSU's own network | It is built: fiber, Wi-Fi, a data center on solar backup. CAMPUS adds a rule about where things live, not a new network | — | Ch 4; E-009; E-043 |
 
 ## Objects
 
@@ -56,7 +56,7 @@ P-16 rests on VSU ICT's figures and has no survey problem question.
 | Today | Does campus Wi-Fi serve dormitory residents far better than students in academic buildings at class time? Not yet known. | Unresolved | P-19 |
 | Today | Do students spend a meaningful share of their money on mobile data for academics? Not yet known: the survey will ask. | Unresolved | P-18 |
 | With CAMPUS | University and academic services first; all other traffic on a fair share, not blocked. | Established | D-059 |
-| With CAMPUS | Each ring keeps working when every ring outside it fails. | Proposed | Ch 2 |
+| With CAMPUS | Each ring keeps working when every ring outside it fails. | Proposed | Ch 4 |
 | With CAMPUS | The campus intranet is a direction for VSU ICT and DIGITS, not an ask. | Established | D-022 |
 
 D-059 is the owner's direction for the design, so Established describes the decision, not the result. Say "the design would" in the words.
@@ -78,4 +78,4 @@ Reuse: `accessPoint`, `ring`, `backPerson`, `sitChar`. New: tiered seating front
 
 ## Questions
 
-- Numbers: only E-010 and E-014 are in the register. Chapter 2's ₱100 a week is the author's experience, [Unresolved], not an E- row, so it stays off the site.
+- Numbers: only E-010 and E-014 are in the register. Chapter 4's ₱100 a week is the author's experience, [Unresolved], not an E- row, so it stays off the site.
