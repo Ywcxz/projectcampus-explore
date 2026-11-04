@@ -1,6 +1,6 @@
 # How it would be governed (`governed`)
 
-*Extracted. Step 8 of the offices path (Ch 3.4). Chapters 3, 3.2, 9, 10.*
+*Extracted. Step 8 of the offices path (Ch 2.4). Chapters 2, 2.2, 9, 10.*
 
 ## Place and access
 
@@ -8,7 +8,7 @@
 - **Parent:** `campus`.
 - **Opens:** three jobs kept apart (a card on D-066); the two keys (a card on D-065); the speech standard (a card on Malabanan v. Ramento); the layers (a card); stewards → `a-place`; with today's state, the 2025 group (a card on E-023).
 
-Chapter 3.4: "With the community, by VSU's own principles, with due process, and with moderation kept apart from VSU's responses." D-175: "Who runs the room?" is not a card of its own; governance stays a scene.
+Chapter 2.4: "With the community, by VSU's own principles, with due process, and with moderation kept apart from VSU's responses." D-175: "Who runs the room?" is not a card of its own; governance stays a scene.
 
 ## Problem
 
@@ -55,8 +55,8 @@ Chapter 3.4: "With the community, by VSU's own principles, with due process, and
 | Moderation, institutional response, and running the platform are different jobs, done by different people. | Established | D-066 |
 | The rules start from the campus speech standard of Malabanan v. Ramento. | Established | D-066 |
 | The link between a pseudonym and a member is never opened for criticizing the university; who holds it is agreed with VSU's data protection officer and the student council before a pilot. | Established | D-065 |
-| One key held by the student council and one by the data protection officer, so both must agree. | Proposed | Ch 3.2 |
-| Rules published with examples, notice naming the rule, appeal to someone not involved, regular reports. | Established | Ch 3.2 (Santa Clara Principles) |
+| One key held by the student council and one by the data protection officer, so both must agree. | Proposed | Ch 2.2 |
+| Rules published with examples, notice naming the rule, appeal to someone not involved, regular reports. | Established | Ch 2.2 (Santa Clara Principles) |
 | Do spaces VSU cannot govern leave harmed students with little recourse? Not yet known: the interviews will ask. | Unresolved | P-12 |
 
 Check in step 3: the Santa Clara claim is Established as a description of the principles; the network adopting them is Proposed. Word the card that way.

@@ -1,6 +1,6 @@
 # Typhoon day (`typhoon`)
 
-*Extracted. The intranet's own scene (scenes brief, 29 October). Chapters 2, 2.1.*
+*Extracted. The intranet's own scene (scenes brief, 29 October). Chapters 4, 4.1.*
 
 ## Place and access
 
@@ -15,7 +15,7 @@ This also answers the handoff's open item: the rings card and the typhoon scene 
 | P- | Hypothesis (Ch 8) | Shown as | How we'd find out |
 | --- | --- | --- | --- |
 | P-17 | Campus services stop or slow when the internet link fails | A question | VSU ICT's figures (Ch 8) |
-| P-20 | In emergencies, people on campus lack official information, contact, and a way to tell fact from rumor | A question | Interviews alone, including students who lived through Agaton on campus (Ch 2.1; Q-31) |
+| P-20 | In emergencies, people on campus lack official information, contact, and a way to tell fact from rumor | A question | Interviews alone, including students who lived through Agaton on campus (Ch 4.1; Q-31) |
 | P-16 | Campus-made information travels through outside platforms and the internet link even between people on campus | A question | VSU ICT's figures |
 
 None has a survey problem question (README, what the master doc needs, 2).
@@ -23,7 +23,7 @@ None has a survey problem question (README, what the master doc needs, 2).
 ## Today / with CAMPUS
 
 - **Today** [Established, for the three storms]: Haiyan destroyed VSU's internet leased line and about 90% of its fiber backbone in 2013 (E-009); five days after Odette in December 2021, power and internet were only partly restored (E-042); during Agaton in April 2022, students were trapped on campus and floodwater entered dormitories and academic buildings (E-015).
-- **With CAMPUS** [Proposed]: the outer ring goes dark and the inner rings stay lit. Emergency mode: power first, a network open to everyone sheltering, services that live on campus and on phones, charging, and a way out (Ch 2.1; D-060).
+- **With CAMPUS** [Proposed]: the outer ring goes dark and the inner rings stay lit. Emergency mode: power first, a network open to everyone sheltering, services that live on campus and on phones, charging, and a way out (Ch 4.1; D-060).
 
 **What cuts the other way:** after Odette, VSU restored partial power and internet within five days and opened free Wi-Fi and charging, with no campus-first system in place (E-042); VSU is already extending solar backup across its network (E-043). The case is to plan and power in advance what VSU's staff already do under pressure, not that VSU is unprepared (Ch 8). Say this on the scene.
 
@@ -31,9 +31,9 @@ None has a survey problem question (README, what the master doc needs, 2).
 
 | Card | How CAMPUS differs | VSU need | Source |
 | --- | --- | --- | --- |
-| Japan's 00000JAPAN | An open network at shelters, switched on by VSU's Crisis Management Committee | Evacuees sheltering in academic buildings, as in Agaton | Ch 2.1; E-015 |
-| National alerts from carriers | Campus-specific instructions | Where to go on campus, who is safe | Ch 2.1 |
-| WAIS | A copy on campus keeps advisories flowing if the outside link fails, if WAIS is hosted off campus, which is not known | Advisories during an outage | Ch 2.1; E-026 |
+| Japan's 00000JAPAN | An open network at shelters, switched on by VSU's Crisis Management Committee | Evacuees sheltering in academic buildings, as in Agaton | Ch 4.1; E-015 |
+| National alerts from carriers | Campus-specific instructions | Where to go on campus, who is safe | Ch 4.1 |
+| WAIS | A copy on campus keeps advisories flowing if the outside link fails, if WAIS is hosted off campus, which is not known | Advisories during an outage | Ch 4.1; E-026 |
 
 ## Objects
 
@@ -59,11 +59,11 @@ None has a survey problem question (README, what the master doc needs, 2).
 | Today | During Agaton, students were trapped on campus, and floodwater entered dormitories and academic buildings. | Established | E-015 |
 | Today | VSU's solar backup powers the data center and the administration building and can keep internet services running up to four hours. | Established | E-043 |
 | With CAMPUS | The campus ring is designed to keep working as a local system in emergencies, as long as backup power keeps it running. | Established | D-060 |
-| With CAMPUS | Each ring keeps working when every ring outside it fails. | Proposed | Ch 2 |
-| With CAMPUS | Emergency mode would be the Crisis Management Committee's tool, switched on and off by it. | Proposed | Ch 2.1 |
+| With CAMPUS | Each ring keeps working when every ring outside it fails. | Proposed | Ch 4 |
+| With CAMPUS | Emergency mode would be the Crisis Management Committee's tool, switched on and off by it. | Proposed | Ch 4.1 |
 | With CAMPUS | Nothing in emergency mode locates people from network data. | Established | D-089 |
 
-Check: "three times in thirteen years" is Chapter 2.1's own phrase, 2013 to 2026. Keep it only if the scene is dated.
+Check: "three times in thirteen years" is Chapter 4.1's own phrase, 2013 to 2026. Keep it only if the scene is dated.
 
 ## Animation beats
 

@@ -1,6 +1,6 @@
 # Main Campus (`campus`)
 
-*Built. The start and the home (D-174). Chapters 1, 2, 3.*
+*Built. The start and the home (D-174). Chapters 1, 4, 2.*
 
 ## Place and access
 
@@ -49,7 +49,7 @@ None on the home.
 | The network is VSU's own online space for its academic community: students, faculty, staff, and offices. | Established | D-101 |
 | No VSU office has reviewed, endorsed, approved, funded, or adopted CAMPUS. | Established | D-016; Ch 12 |
 
-The last two are proposed additions from Chapters 0 and 3; the first two are live.
+The last two are proposed additions from Chapters 0 and 2; the first two are live.
 
 ## Animation beats
 

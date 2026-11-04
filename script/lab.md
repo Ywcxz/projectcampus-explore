@@ -1,6 +1,6 @@
 # A computer lab (`lab`)
 
-*Built. Chapter 3.*
+*Built. Chapter 2.*
 
 ## Place and access
 
@@ -18,7 +18,7 @@ No states; the screen shows the proposal as a labeled mock-up.
 
 ## Related work
 
-A card on VSUEE belongs here: the network is not a learning system, and course work stays in VSUEE (D-064). It differs because it holds what outlasts a semester, outside courses; the VSU need is a place for subjects and questions beyond one section (Ch 3.2).
+A card on VSUEE belongs here: the network is not a learning system, and course work stays in VSUEE (D-064). It differs because it holds what outlasts a semester, outside courses; the VSU need is a place for subjects and questions beyond one section (Ch 2.2).
 
 ## Objects
 

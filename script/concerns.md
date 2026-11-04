@@ -1,6 +1,6 @@
 # Where concerns go (`concerns`)
 
-*Extracted. Step 5 of the offices path (Ch 3.4; D-175). Chapters 3.2, 3.1, 3, 8.*
+*Extracted. Step 5 of the offices path (Ch 2.4; D-175). Chapters 2.2, 2.1, 2, 8.*
 
 ## Place and access
 
@@ -14,22 +14,22 @@
 | --- | --- | --- | --- |
 | P-23 | Concerns students raise don't add up: each is raised and answered from zero, and students can't see what became of it the last time | A question | Survey: "Hearing back" (no, I never heard back), "A concern", "Why you kept it", "What you'd want back"; interviews; Q-63 |
 
-P-23 comes from the owner's reading of two vox pops by VSU's student media; only two of the eleven students quoted speak to it, and the publication chose them, so the vox pops prompt the hypothesis but don't show how common it is (Ch 8; E-055; E-056). Chapter 3.2 says "the owner's reading of student interviews"; that needs fixing in the master doc (README, what the master doc needs, 1).
+P-23 comes from the owner's reading of two vox pops by VSU's student media; only two of the eleven students quoted speak to it, and the publication chose them, so the vox pops prompt the hypothesis but don't show how common it is (Ch 8; E-055; E-056). Chapter 2.2 says "the owner's reading of student interviews"; that needs fixing in the master doc (README, what the master doc needs, 1).
 
 ## Today / with CAMPUS
 
 - **Today** [Unresolved]: a concern, a dormitory without water for three days, is raised, acknowledged, and raised again by the next student, who gets the same reply and starts from zero.
-- **With CAMPUS** [Proposed]: in the concerns place, stewarded by the student council and OVPSAS, the concern has one record that stays. Others mark that it affects them; a repeat links to it. The council forwards it to the office responsible; it shows a dated status: received, acknowledged, answered, fixed, or closed with a reason. Only the office's account posts the office's answer (Ch 3.2; D-118; D-066). The water scene is Chapter 3.2's scene 6.
+- **With CAMPUS** [Proposed]: in the concerns place, stewarded by the student council and OVPSAS, the concern has one record that stays. Others mark that it affects them; a repeat links to it. The council forwards it to the office responsible; it shows a dated status: received, acknowledged, answered, fixed, or closed with a reason. Only the office's account posts the office's answer (Ch 2.2; D-118; D-066). The water scene is Chapter 2.2's scene 6.
 
-What the site must not say: that this is a complaints platform. It is where questions are answered and knowledge kept; concerns are one part (Ch 3.4, how to frame it).
+What the site must not say: that this is a complaints platform. It is where questions are answered and knowledge kept; concerns are one part (Ch 2.4, how to frame it).
 
 ## Related work
 
 | Card | How CAMPUS differs | VSU need | Source |
 | --- | --- | --- | --- |
 | USC AppDate, De La Salle Araneta University | Office commitment comes before any concerns channel | A channel for concerns dies when people see no response | Ch 10; D-068 |
-| FixMyStreet and 311 apps | A collective concern with support and status, not a private ticket; personal requests still go to VSU's helpdesk | Seeing what became of a concern raised before | Ch 3.1; Ch 3.2 |
-| VSU's planned listening sessions | The concerns place would feed them, not compete with them | A standing, answerable channel between sessions | Ch 10; Ch 3 |
+| FixMyStreet and 311 apps | A collective concern with support and status, not a private ticket; personal requests still go to VSU's helpdesk | Seeing what became of a concern raised before | Ch 2.1; Ch 2.2 |
+| VSU's planned listening sessions | The concerns place would feed them, not compete with them | A standing, answerable channel between sessions | Ch 10; Ch 2 |
 
 ## Objects
 
@@ -50,11 +50,11 @@ What the site must not say: that this is a complaints platform. It is where ques
 | State | Claim | Tag | Source |
 | --- | --- | --- | --- |
 | Today | Do concerns students raise start from zero each time, with no way to see what became of them? Not yet known. | Unresolved | P-23 |
-| Today | Whether VSU has a channel for collective concerns, and how the council carries concerns to offices today, is not recorded. | Unresolved | Ch 3.2 |
+| Today | Whether VSU has a channel for collective concerns, and how the council carries concerns to offices today, is not recorded. | Unresolved | Ch 2.2 |
 | With CAMPUS | Each concern has one record that stays, with a dated status; repeats add to its support. | Established | D-118 |
 | With CAMPUS | Moderators never answer for an office; offices answer concerns and never moderate. | Established | D-066 |
-| With CAMPUS | Offices see what is posted and how many marked it, never who marked it, and never who stands behind a pseudonym. | Proposed | Ch 3.2 |
-| With CAMPUS | Personal cases, such as a missing grade, go to the office or the helpdesk, not to the concerns place. | Proposed | Ch 3.2; D-064 |
+| With CAMPUS | Offices see what is posted and how many marked it, never who marked it, and never who stands behind a pseudonym. | Proposed | Ch 2.2 |
+| With CAMPUS | Personal cases, such as a missing grade, go to the office or the helpdesk, not to the concerns place. | Proposed | Ch 2.2; D-064 |
 
 ## Animation beats
 

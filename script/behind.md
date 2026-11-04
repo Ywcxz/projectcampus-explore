@@ -1,6 +1,6 @@
 # Who is behind it (`behind`)
 
-*Extracted. Step 11 of the offices path, the last (Ch 3.4). Chapters 0, 3.4, 12.*
+*Extracted. Step 11 of the offices path, the last (Ch 2.4). Chapters 0, 2.4, 12.*
 
 ## Place and access
 
@@ -8,7 +8,7 @@
 - **Parent:** `campus`.
 - **Opens:** the master doc (a card linking it); the decision register (a card); the survey site (a card, no link to the survey while it is closed); the network prototype (a card, saying it is not built yet); the author (a card).
 
-Chapter 3.4: "The network prototype's working software (D-099), the field research, and the decision register."
+Chapter 2.4: "The network prototype's working software (D-099), the field research, and the decision register."
 
 ## Problem
 

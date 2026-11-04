@@ -1,6 +1,6 @@
 # Housing, a later module (`housing`)
 
-*Extracted. A labeled mock-up only (D-098, D-102). Chapter 3.6.*
+*Extracted. A labeled mock-up only (D-098, D-102). Chapter 2.6.*
 
 ## Place and access
 
@@ -19,11 +19,11 @@ Chapter 8's worked example uses made-up numbers for this problem; the site must 
 ## Today / with CAMPUS
 
 - **Today** [Unresolved]: word of mouth and group posts, with stale listings.
-- **With CAMPUS, a later module** [Proposed]: listings that describe the property, never who lives there; vacancy confirmed by the landlord at a set interval, so old listings expire; reviews from verified members after their stay (Ch 3.6).
+- **With CAMPUS, a later module** [Proposed]: listings that describe the property, never who lives there; vacancy confirmed by the landlord at a set interval, so old listings expire; reviews from verified members after their stay (Ch 2.6).
 
 ## Related work
 
-Rental listing sites, and students' own boarding-house tools, by the author's account (Ch 3.6; Ch 10). The network links to a working tool rather than rebuilding it (D-064). Whether VSU or Baybay City accredits boarding houses is open (Q-50).
+Rental listing sites, and students' own boarding-house tools, by the author's account (Ch 2.6; Ch 10). The network links to a working tool rather than rebuilding it (D-064). Whether VSU or Baybay City accredits boarding houses is open (Q-50).
 
 ## Objects
 
@@ -43,7 +43,7 @@ Rental listing sites, and students' own boarding-house tools, by the author's ac
 | --- | --- | --- |
 | Housing is a later module, for boarding houses and rentals near campus; university dormitories stay with VSU's own housing information. | Established | D-098 |
 | VSU's 25 dormitories and cottages had 1,772 resident students in 2023. | Established | E-010 |
-| How many VSU students live off campus is not known here. | Unresolved | Ch 3.6 |
+| How many VSU students live off campus is not known here. | Unresolved | Ch 2.6 |
 | Is finding housing near campus hard? Not yet known. | Unresolved | P-22 |
 
 ## Animation beats

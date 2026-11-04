@@ -1,6 +1,6 @@
 # What students told us (`told-us`)
 
-*Extracted. Step 2 of the offices path (Ch 3.4). Chapters 8, 3.1, 3.4.*
+*Extracted. Step 2 of the offices path (Ch 2.4). Chapters 8, 2.1, 2.4.*
 
 ## Place and access
 
@@ -12,7 +12,7 @@
 
 Every P- row, P-01 to P-23, as Chapter 8 lists them, each [Unresolved] today. The board groups them by the scene that carries them (README).
 
-Chapter 3.4: "Problems that clear the D-038 bars, shown as Established, each with an interview quote, a survey number, and a real example; before field research, the hypotheses, tagged as such." (D-151)
+Chapter 2.4: "Problems that clear the D-038 bars, shown as Established, each with an interview quote, a survey number, and a real example; before field research, the hypotheses, tagged as such." (D-151)
 
 ## Today / with CAMPUS
 
@@ -23,7 +23,7 @@ Not today and with CAMPUS, but before and after field research.
 
 ## Related work
 
-None. A card on the use-case inventory: 29 candidate problems, each a hypothesis (Ch 3.1).
+None. A card on the use-case inventory: 29 candidate problems, each a hypothesis (Ch 2.1).
 
 ## Objects
 
@@ -54,7 +54,7 @@ None. A card on the use-case inventory: 29 candidate problems, each a hypothesis
 
 ## Findings slot
 
-The whole board. Per problem: the survey's share among all respondents, the share among those asked, by year, and whether the interview bar was met (Ch 8). Chapter 3.1 asks for an interview quote, a survey number, and a real example for each Established problem; quotes need the interviewee's consent and no name (D-086).
+The whole board. Per problem: the survey's share among all respondents, the share among those asked, by year, and whether the interview bar was met (Ch 8). Chapter 2.1 asks for an interview quote, a survey number, and a real example for each Established problem; quotes need the interviewee's consent and no name (D-086).
 
 ## Kit pieces
 

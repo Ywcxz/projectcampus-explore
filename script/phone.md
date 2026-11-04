@@ -1,6 +1,6 @@
 # The same network, on a phone (`phone`)
 
-*Built. A labeled mock-up on made-up data (D-102, D-108). Chapters 3.2, 2.*
+*Built. A labeled mock-up on made-up data (D-102, D-108). Chapters 2.2, 4.*
 
 ## Place and access
 
@@ -36,7 +36,7 @@ None.
 | Claim | Tag | Source |
 | --- | --- | --- |
 | The first build is a small prototype of the network on made-up data. | Established | D-099 |
-| A phone out of coverage still shows the notices it last synced. | Proposed | Ch 2 |
+| A phone out of coverage still shows the notices it last synced. | Proposed | Ch 4 |
 
 ## Animation beats
 

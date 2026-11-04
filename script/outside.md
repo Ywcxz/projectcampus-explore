@@ -1,6 +1,6 @@
 # Between classes (`outside`)
 
-*Built. Chapter 2.*
+*Built. Chapter 4.*
 
 ## Place and access
 
@@ -10,7 +10,7 @@
 
 ## Problem
 
-None of its own. Weak mobile signal in parts of the campus is the author's report, [Unresolved] (Ch 2), and belongs to `hall` if it is shown.
+None of its own. Weak mobile signal in parts of the campus is the author's report, [Unresolved] (Ch 4), and belongs to `hall` if it is shown.
 
 ## Today / with CAMPUS
 
@@ -34,9 +34,9 @@ None.
 
 | Claim | Tag | Source |
 | --- | --- | --- |
-| Outdoor access points where people gather, and wireless bridges where fiber cannot reach. | Proposed | Ch 2 |
+| Outdoor access points where people gather, and wireless bridges where fiber cannot reach. | Proposed | Ch 4 |
 
-The claim's wording is in Chapter 2.2's table of options rather than Chapter 2. Point the source at Ch 2.2 in step 3.
+The claim's wording is in Chapter 4.2's table of options rather than Chapter 4. Point the source at Ch 4.2 in step 3.
 
 ## Animation beats
 

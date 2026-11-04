@@ -21,7 +21,7 @@ Each file is one scene, named by its scene ID in `data/scenes.json`.
 - **Kit pieces:** reused from `js/art.js`, and new.
 - **Questions:** anything the sheet can't settle, for Leo.
 
-Sources are written as `scenes.json` writes them: a register ID such as (D-070) or (E-025), or a chapter such as (Ch 3.2). A claim keeps the tag the master doc gives it, and is no stronger than its source.
+Sources are written as `scenes.json` writes them: a register ID such as (D-070) or (E-025), or a chapter such as (Ch 2.2). A claim keeps the tag the master doc gives it, and is no stronger than its source.
 
 ## Every scene
 
@@ -89,9 +89,9 @@ How a visitor reaches an edge scene with no navigation bar is open (questions, b
 
 ## The offices path
 
-Chapter 3.4's sequence, which the site's paths follow (D-175). The path starts at Main Campus, the home.
+Chapter 2.4's sequence, which the site's paths follow (D-175). The path starts at Main Campus, the home.
 
-| Step | Chapter 3.4 | Scene |
+| Step | Chapter 2.4 | Scene |
 | --- | --- | --- |
 | — | The home | `campus` |
 | 1 | A morning at VSU | `morning` |
@@ -113,14 +113,14 @@ The other paths named in D-152 (VSU ICT, faculty and staff, students after the s
 1. **No organizations place.** The campus draws dormitories, services offices, faculty offices, the academic building, and one building nothing opens yet. "Every batch starts over" needs a place. Should the unopened building become organizations (D-153 names organizations among the kinds of place), or should the scene sit at the dormitories, where batch group chats live?
 2. **Two scenes at the services offices.** `who-to-ask` and `concerns` both sit there. The sheets make `who-to-ask` the services offices scene and `concerns` its child. The alternative is a services offices scene with both as children, which adds a level.
 3. **Edge scenes with no bar.** D-174 makes the scenes the navigation, entered by clicking their places. Edge scenes have no place. The sheets propose objects on Main Campus for each: a board by the main walk (`told-us`), the sky (`typhoon`), the gate (`the-ask`, `behind`), and so on. Or the start could carry an edge ring of small signs.
-4. **"Who do I ask?" on the path.** It is not one of Chapter 3.4's eleven steps. The sheets reach it from step 2's board and from step 7. Should it be on the offices path?
+4. **"Who do I ask?" on the path.** It is not one of Chapter 2.4's eleven steps. The sheets reach it from step 2's board and from step 7. Should it be on the offices path?
 5. **"How we'd know we're wrong"** sits beside "The test". Keep both, or fold the bars into `told-us` and the stop conditions into `test`?
 
 ## What the master doc needs
 
 Found while extracting. None is fixed here; each needs a chapter edit or a row in projectcampus-docs first.
 
-1. **A source mismatch for P-23.** Chapter 3.2's "Concerns" section opens "The owner's reading of student interviews is that concerns do get raised and acknowledged…" Chapter 8 says P-23 comes from the owner's reading of two vox pops (E-055, E-056), and that no interviews have been gathered. Chapter 3.2 should say vox pops; if it was written from something else, the source should be named. A C- row if it is an error.
+1. **A source mismatch for P-23.** Chapter 2.2's "Concerns" section opens "The owner's reading of student interviews is that concerns do get raised and acknowledged…" Chapter 8 says P-23 comes from the owner's reading of two vox pops (E-055, E-056), and that no interviews have been gathered. Chapter 2.2 should say vox pops; if it was written from something else, the source should be named. A C- row if it is an error.
 2. **Problems with no survey item can't clear the bars.** Chapter 8 shows a problem as Established only if it clears both the survey's bar and the interviews' (D-038, D-132). P-08, P-09, P-12, and P-20 rest on the interviews alone, P-16 and P-17 on VSU ICT's figures, and P-13 waits for the map's rework. As written, those scenes stay questions after field research. A Q- row could ask how such a problem is judged.
 3. **The spatial interface.** The site's own campus is a way of browsing by place, which D-093 keeps as research only for the network. The handoff's open item stands: revise D-093, or say on `twin` that browsing the site by place is not the network's interface.
 4. **The script-first rule** has no row yet (handoff, still open).

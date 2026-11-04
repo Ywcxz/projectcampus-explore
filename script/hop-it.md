@@ -1,6 +1,6 @@
 # Hop-It, a later module (`hop-it`)
 
-*Extracted. A labeled mock-up only (D-098, D-102). Chapter 3.7; the Alpha PRD and Functional Specification control (D-027).*
+*Extracted. A labeled mock-up only (D-098, D-102). Chapter 2.7; the Alpha PRD and Functional Specification control (D-027).*
 
 ## Place and access
 
@@ -16,8 +16,8 @@
 
 ## Today / with CAMPUS
 
-- **Today** [Unresolved]: each order a separate trip. The upper and lower campus distances are the author's observations, not measurements (Ch 3.7).
-- **With CAMPUS, a later module** [Proposed]: customers accept a scheduled window, so orders can be pooled into one rider's run (Ch 3.7).
+- **Today** [Unresolved]: each order a separate trip. The upper and lower campus distances are the author's observations, not measurements (Ch 2.7).
+- **With CAMPUS, a later module** [Proposed]: customers accept a scheduled window, so orders can be pooled into one rider's run (Ch 2.7).
 
 ## Related work
 
@@ -43,8 +43,8 @@
 | Claim | Tag | Source |
 | --- | --- | --- |
 | Hop-It is a later module of the network; its specification is kept for when it is taken up. | Established | D-098; D-027 |
-| Scheduled bundled delivery would reduce effort per order without breaking guardrails on lateness, cancellations, failures, or acceptability. | Proposed | Ch 3.7 |
-| A disproved hypothesis is a valid Alpha result. | Established | Ch 3.7 (PRD §20) |
+| Scheduled bundled delivery would reduce effort per order without breaking guardrails on lateness, cancellations, failures, or acceptability. | Proposed | Ch 2.7 |
+| A disproved hypothesis is a valid Alpha result. | Established | Ch 2.7 (PRD §20) |
 | Hop-It is not run as a business in its Alpha. | Established | D-097 |
 
 ## Animation beats

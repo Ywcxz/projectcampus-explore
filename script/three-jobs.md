@@ -1,6 +1,6 @@
 # Three jobs, kept by memory (`three-jobs`)
 
-*Extracted. Step 7 of the offices path (Ch 3.4). Chapters 3, 3.2.*
+*Extracted. Step 7 of the offices path (Ch 2.4). Chapters 2, 2.2.*
 
 ## Place and access
 
@@ -20,8 +20,8 @@ The proposal only, [Proposed].
 
 | Card | How CAMPUS differs | VSU need | Source |
 | --- | --- | --- | --- |
-| Facebook and Messenger | Built to move knowledge and keep it, not to hold attention | Questions that reach someone who can answer, and answers that stay | Ch 3; E-031; D-061 |
-| Everytime and Dcard | Offices take part, and VSU and its students govern it | Students need offices to answer (Q-17) | Ch 3; Ch 10 |
+| Facebook and Messenger | Built to move knowledge and keep it, not to hold attention | Questions that reach someone who can answer, and answers that stay | Ch 2; E-031; D-061 |
+| Everytime and Dcard | Offices take part, and VSU and its students govern it | Students need offices to answer (Q-17) | Ch 2; Ch 10 |
 | Brainly's points | No points, no price on asking | First-generation students must be able to ask freely | E-038; D-072; E-020 |
 
 ## Objects
@@ -42,14 +42,14 @@ The proposal only, [Proposed].
 
 | Claim | Tag | Source |
 | --- | --- | --- |
-| The network is built for three jobs: routing, memory, and trust. | Proposed | Ch 3 |
-| Reaching the people who know: a question reaches the office or person who can answer it. | Proposed | Ch 3; D-071 |
-| Answers people can trust: office replies are marked official, others carry a name and role, and an office can confirm the right one. | Proposed | Ch 3; D-063 |
-| Talking across roles: students, faculty, and staff reach each other in one place, under rules suited to each role. | Proposed | Ch 3 |
+| The network is built for three jobs: routing, memory, and trust. | Proposed | Ch 2 |
+| Reaching the people who know: a question reaches the office or person who can answer it. | Proposed | Ch 2; D-071 |
+| Answers people can trust: office replies are marked official, others carry a name and role, and an office can confirm the right one. | Proposed | Ch 2; D-063 |
+| Talking across roles: students, faculty, and staff reach each other in one place, under rules suited to each role. | Proposed | Ch 2 |
 | No ads, reels, stories, or autoplay. | Established | D-035 |
 | No engagement ranking, no public like counts, no hidden scores; a home that ends. | Established | D-061 |
 | No public reputation scores, levels, or rankings, and never a price on asking. | Established | D-072 |
-| It would not replace VSUEE, the portal, the helpdesk, or the document tracker, and it would not speak for VSU. | Established | Ch 3 (D-064, D-065, D-072) |
+| It would not replace VSUEE, the portal, the helpdesk, or the document tracker, and it would not speak for VSU. | Established | Ch 2 (D-064, D-065, D-072) |
 
 ## Animation beats
 

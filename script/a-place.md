@@ -1,6 +1,6 @@
 # Stewards, not owners (`a-place`)
 
-*Built. On the offices path after `governed` (step 8). Chapter 3.2.*
+*Built. On the offices path after `governed` (step 8). Chapter 2.2.*
 
 ## Place and access
 
@@ -11,7 +11,7 @@
 
 ## Problem
 
-None of its own. It answers the lost-and-found group of 2025, which belonged to whoever controlled it (E-023; Ch 3.2), and P-08's handover.
+None of its own. It answers the lost-and-found group of 2025, which belonged to whoever controlled it (E-023; Ch 2.2), and P-08's handover.
 
 ## Today / with CAMPUS
 
@@ -19,7 +19,7 @@ No states; the proposal only.
 
 ## Related work
 
-Organization platforms (CampusGroups, Anthology Engage, Presence): organizations sit inside a wider campus network on open components; the VSU need is 57 accredited organizations whose records turn over with their officers (Ch 3; E-027).
+Organization platforms (CampusGroups, Anthology Engage, Presence): organizations sit inside a wider campus network on open components; the VSU need is 57 accredited organizations whose records turn over with their officers (Ch 2; E-027).
 
 ## Objects
 

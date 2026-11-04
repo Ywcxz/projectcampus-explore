@@ -1,6 +1,6 @@
 # Inside an academic building (`building`)
 
-*Built. Chapters 2, 2.2.*
+*Built. Chapters 4, 4.2.*
 
 ## Place and access
 
@@ -19,7 +19,7 @@ No states. The access points and switch are drawn as "in the campus-first design
 
 ## Related work
 
-None yet. A card on VSU's own physical layer (fiber, Wi-Fi, data center) belongs in `vsu-has` or here: VSU has already built most of it (Ch 2).
+None yet. A card on VSU's own physical layer (fiber, Wi-Fi, data center) belongs in `vsu-has` or here: VSU has already built most of it (Ch 4).
 
 ## Objects
 
@@ -38,7 +38,7 @@ None yet. A card on VSU's own physical layer (fiber, Wi-Fi, data center) belongs
 | Claim | Tag | Source |
 | --- | --- | --- |
 | VSU finished a new fiber backbone in 2017, after Typhoon Haiyan destroyed most of the old one in 2013. | Established | E-009 |
-| Access points on each building's switches, joined by fiber to the campus core. | Proposed | Ch 2 |
+| Access points on each building's switches, joined by fiber to the campus core. | Proposed | Ch 4 |
 
 ## Animation beats
 
@@ -46,7 +46,7 @@ As built. Step 3 may add: a pulse along the fiber from the switch toward the cam
 
 ## Findings slot
 
-VSU ICT's figures, if shared as totals: clients per access point at peak (Ch 2.2). Nothing else.
+VSU ICT's figures, if shared as totals: clients per access point at peak (Ch 4.2). Nothing else.
 
 ## Kit pieces
 

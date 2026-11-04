@@ -1,6 +1,6 @@
 # A morning at VSU (`morning`)
 
-*Extracted. Step 1 of the offices path (Ch 3.4). Chapters 3, 3.2, 2.1, 8. A step 2 candidate for the model scene.*
+*Extracted. Step 1 of the offices path (Ch 2.4). Chapters 2, 2.2, 4.1, 8. A step 2 candidate for the model scene.*
 
 ## Place and access
 
@@ -8,7 +8,7 @@
 - **Parent:** `campus`, from the dormitories (now the card `to-come`).
 - **Opens:** the notice as it reached her (a card on how a notice travels); the window's storm → `typhoon`; with CAMPUS, the notice's own page (card `labels`) and the card it leaves in a group chat (a card on share cards); her question → `who-to-ask` or `batch`.
 
-Chapter 3.4 tells it "from the student's side": the 4:30 a.m. suspension and the first-year student's question.
+Chapter 2.4 tells it "from the student's side": the 4:30 a.m. suspension and the first-year student's question.
 
 ## Problem
 
@@ -23,7 +23,7 @@ P-20 has no survey problem question, so it can't clear the survey bar as Chapter
 ## Today / with CAMPUS
 
 - **Today** [Unresolved]: a typhoon signal is raised overnight. A suspension may reach her as a share or a screenshot, with nothing to show whether it is still current, and then a post saying it is extended. She can't tell which is official.
-- **With CAMPUS** [Proposed]: the authorized office posts the suspension once, in the university's official place, as an urgent notification, the only kind that passes quiet hours. Its page shows it is current. Shared into her group chat, it arrives as a card linking back. The extension updates the same page; a post claiming the following week stays labeled unverified until the office speaks (Ch 3.2, scene 1).
+- **With CAMPUS** [Proposed]: the authorized office posts the suspension once, in the university's official place, as an urgent notification, the only kind that passes quiet hours. Its page shows it is current. Shared into her group chat, it arrives as a card linking back. The extension updates the same page; a post claiming the following week stays labeled unverified until the office speaks (Ch 2.2, scene 1).
 
 What the site must not say: that notices do change as they travel at VSU. That is H1 of the Facebook study, not yet run.
 
@@ -31,8 +31,8 @@ What the site must not say: that notices do change as they travel at VSU. That i
 
 | Card | How CAMPUS differs | VSU need | Source |
 | --- | --- | --- | --- |
-| WAIS, VSU's own advisory system | The network would carry WAIS advisories in official places with the source shown, never issue its own | Advisories reaching the places people already open, if VSU's disaster risk management office agrees (Q-40) | E-026; Ch 3.3; D-064 |
-| National alerts from mobile carriers | Instructions specific to the campus, which national alerts cannot give | Campus-specific notices | Ch 2.1 (Republic Act No. 10639, 2014) |
+| WAIS, VSU's own advisory system | The network would carry WAIS advisories in official places with the source shown, never issue its own | Advisories reaching the places people already open, if VSU's disaster risk management office agrees (Q-40) | E-026; Ch 2.3; D-064 |
+| National alerts from mobile carriers | Instructions specific to the campus, which national alerts cannot give | Campus-specific notices | Ch 4.1 (Republic Act No. 10639, 2014) |
 | Messenger group chats | The network links into chats with share cards rather than replacing them | A notice passed on in a chat carries the way to check it | D-074 |
 
 ## Objects
@@ -55,13 +55,13 @@ What the site must not say: that notices do change as they travel at VSU. That i
 | State | Claim | Tag | Source |
 | --- | --- | --- | --- |
 | Today | VSU's guidelines call for typhoon suspensions to be announced through radio, television, SMS, the website, and other social media, no later than 4:30 a.m. | Established | E-025 |
-| Today | Together, those channels mean a notice may reach many students as a share or a screenshot, with nothing to show whether it is still current. | Proposed | Ch 3 |
+| Today | Together, those channels mean a notice may reach many students as a share or a screenshot, with nothing to show whether it is still current. | Proposed | Ch 2 |
 | Today | Do official notices and rumor look alike where campus talk happens? Not yet known: the survey and the Facebook study will ask. | Unresolved | P-06 |
 | Today | Does outdated information keep circulating, with nothing to mark it? Not yet known. | Unresolved | P-11 |
 | With CAMPUS | Every post carries an information type, only office accounts post as official, and each official notice has a permanent page that shows whether it is current. | Established | D-063 |
-| With CAMPUS | Urgent notices pass through quiet hours, because typhoon suspensions must be announced by 4:30 a.m. | Proposed | Ch 3.2 |
+| With CAMPUS | Urgent notices pass through quiet hours, because typhoon suspensions must be announced by 4:30 a.m. | Proposed | Ch 2.2 |
 | With CAMPUS | Every notice can be shared into a chat as a card linking back to its current version. | Established | D-074 |
-| With CAMPUS | A correction updates the same page with its history visible. | Proposed | Ch 3.2 |
+| With CAMPUS | A correction updates the same page with its history visible. | Proposed | Ch 2.2 |
 
 The today summary's "the survey will ask" holds for P-06. P-11 rests on the survey's guides question and the interviews, and P-20 on the interviews alone; the cards should say so.
 

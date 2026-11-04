@@ -42,7 +42,7 @@ projectcampus-explore/
 - **Scenes** have an `id`, the `art` that draws them, a `parent` (the scene they zoom out to, or `null` for the start), a `title`, a `summary` of 40 words or fewer, `madeUp` (`null`, `layout`, `illustration`, `mockup`, `sample`, `composite`, or `later-module`), their `claims`, the `chapters` they summarize, and their `objects`.
 - **Objects** have an `id` matching a `data-object` group in the drawing, a short `label`, and `opens`: a child `scene`, or a `card`.
 - **Cards** have a `title`, a short `text`, `claims`, and a `chapter`.
-- **Claims** have `text`, a `tag` (Established, Proposed, or Unresolved), and a `source`: a register ID (`{ "ref": "E-009" }`), a master doc chapter (`{ "chapter": "intranet", "label": "Ch 2" }`), or an official page (`{ "href": "https://…", "label": "…" }`).
+- **Claims** have `text`, a `tag` (Established, Proposed, or Unresolved), and a `source`: a register ID (`{ "ref": "E-009" }`), a master doc chapter (`{ "chapter": "intranet", "label": "Ch 4" }`), or an official page (`{ "href": "https://…", "label": "…" }`).
 - **States**, on a scene that has them, show the same picture as it is today and as it would be with CAMPUS ([D-172](https://docs.projectcampus.org/decisions.html#d-172)). The first state uses the scene's own words; a later one has its own `title`, `summary`, `madeUp`, and `claims`. An object with a `state` belongs to that state only.
 - **Paths** list scenes in order, for a presenter's clicker, which steps through a scene's states before moving on.
 
