@@ -4,7 +4,7 @@ The script is the interactive site written before it is drawn: the scenes, how e
 
 A claim enters the script only once the master doc has it. If writing a scene refines an idea, the change goes into the master doc first, as a [Proposed] row or a chapter edit by pull request, and the sheet then cites it.
 
-**Status:** step 2, the model scene, 16 November 2026. `morning` is directed in full and drawn, and awaits the owner's yes on the style. Step 1, extraction (30 October), drew every scene out of the master doc into one sheet; the other sheets are still raw, their words drafts and their beats rough. Step 3 scripts the rest after the model and runs campus-review on the whole script; step 4 draws.
+**Status:** step 2, the model scene, 16 November 2026. `morning` is directed in full and drawn, and is the model. `three-jobs` is the second sample, directed in a shorter, lean form and drawn, and awaits the owner's yes on that form. Step 1, extraction (30 October), drew every scene out of the master doc into one sheet; the other sheets are still raw, their words drafts and their beats rough. Step 3 scripts the rest after the model and runs campus-review on the whole script; step 4 draws.
 
 ## The scene sheet
 
@@ -47,7 +47,7 @@ Built means drawn and in `scenes.json`; extracted means a sheet only.
 | Talking across roles | `across-roles.md` | Faculty offices | P-04, P-05 | 2, 2.1, 2.2 | Extracted |
 | A lecture hall at class time | `hall.md` | Academic building | P-15, P-16, P-18, P-19 | 4, 4.2, 8 | Extracted |
 | What VSU already has | `vsu-has.md` | Edge | — | 2.3, 7, 10 | Extracted |
-| Three jobs, kept by memory | `three-jobs.md` | The campus, above it | — | 2, 2.2 | Extracted |
+| Where a question goes | `three-jobs.md` | The campus, above it | P-01, P-02, P-03, P-06, P-10 | 2, 2.2, 8 | Built: the second sample |
 | How it would be governed | `governed.md` | Edge | P-12 | 2, 2.2, 9 | Extracted |
 | Typhoon day | `typhoon.md` | Edge, over the whole campus | P-16, P-17, P-20 | 4, 4.1 | Extracted |
 | The test | `test.md` | Edge | — | 2, 2.4, 11 | Extracted |

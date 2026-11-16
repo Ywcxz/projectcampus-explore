@@ -255,6 +255,35 @@
         { "text": "Which roles a place has beyond steward, moderator, peer guide, and member, what each may do, and how and for how long each is given, is open.", "tag": "Unresolved", "source": { "ref": "Q-69" } }
       ],
       "chapter": { "chapter": "network-design", "label": "Chapter 2.2" }
+    },
+    {
+      "id": "buried",
+      "title": "Is the answer buried?",
+      "text": "In a group chat, we think a good answer is buried within days, so the next batch asks again. That is a hypothesis. The survey asks whether students could find an old answer.",
+      "claims": [
+        { "text": "Are the same questions asked again in each batch, because answers in group chats can't be found later? Not yet known: the survey asks whether students found an old answer or asked again.", "tag": "Unresolved", "source": { "ref": "P-10" } },
+        { "text": "In a chat, a good answer is buried within days and the next batch asks again.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } }
+      ],
+      "chapter": { "chapter": "evidence", "label": "Chapter 8" }
+    },
+    {
+      "id": "look-alike",
+      "title": "Which answer is right?",
+      "text": "We think students take office questions to community groups, where peers answer and a wrong answer looks like a right one. Not yet known: the survey asks, and the Facebook study counts who answered.",
+      "claims": [
+        { "text": "Do students take institutional questions to unofficial groups, where a wrong answer carries no consequence? Not yet known: the survey asks whether answers were right, and the Facebook study counts who answered.", "tag": "Unresolved", "source": { "ref": "P-03" } },
+        { "text": "Do official notices and rumor look alike where campus talk happens? Not yet known: the survey and the Facebook study will ask.", "tag": "Unresolved", "source": { "ref": "P-06" } }
+      ],
+      "chapter": { "chapter": "facebook-study", "label": "Chapter 8.1" }
+    },
+    {
+      "id": "several-visits",
+      "title": "How many visits?",
+      "text": "We think reaching the right office can take several visits before a conversation even starts. Not yet known: the survey asks how many tries a task took.",
+      "claims": [
+        { "text": "Does reaching the right office or person take several visits? Not yet known: the survey asks how many tries a task took, and what students did first at an office new to them.", "tag": "Unresolved", "source": { "ref": "P-02" } }
+      ],
+      "chapter": { "chapter": "evidence", "label": "Chapter 8" }
     }
   ],
   "scenes": [
@@ -273,7 +302,7 @@
       "objects": [
         { "id": "building", "label": "Academic building", "opens": { "scene": "building" } },
         { "id": "student", "label": "A student between classes", "opens": { "scene": "outside" } },
-        { "id": "route", "label": "A question finds its answer", "opens": { "card": "route" } },
+        { "id": "route", "label": "A question finds its answer", "opens": { "scene": "three-jobs" } },
         { "id": "dorms", "label": "Dormitories, before dawn", "opens": { "scene": "morning" } },
         { "id": "offices", "label": "Faculty offices", "opens": { "card": "to-come" } },
         { "id": "orgs", "label": "Services offices", "opens": { "card": "to-come" } }
@@ -404,6 +433,48 @@
         { "id": "wais", "label": "The weather advisory, attached", "state": "campus", "opens": { "card": "wais" } },
         { "id": "share-card", "label": "A card in the group chat", "state": "campus", "opens": { "card": "share-cards" } },
         { "id": "phone-network", "label": "It would reach her at 4:30", "state": "campus", "opens": { "card": "urgent" } }
+      ]
+    },
+    {
+      "id": "three-jobs",
+      "art": "threeJobs",
+      "parent": "campus",
+      "title": "Where a question goes",
+      "summary": "Where does a student's question go today? Into a group chat, a Facebook group, or a walk to an office. We think answers get buried, repeated, and hard to check. We haven't measured it.",
+      "madeUp": "illustration",
+      "claims": [
+        { "text": "Are the same questions asked again in each batch, because answers in group chats can't be found later? Not yet known: the survey asks whether students found an old answer or asked again.", "tag": "Unresolved", "source": { "ref": "P-10" } },
+        { "text": "Do students take institutional questions to unofficial groups, where a wrong answer carries no consequence? Not yet known: the survey asks whether answers were right, and the Facebook study counts who answered.", "tag": "Unresolved", "source": { "ref": "P-03" } },
+        { "text": "Does reaching the right office or person take several visits? Not yet known: the survey asks how many tries a task took, and what students did first at an office new to them.", "tag": "Unresolved", "source": { "ref": "P-02" } },
+        { "text": "Is the information people need scattered across offices, websites, documents, group chats, and word of mouth? Not yet known: the survey and the Facebook study will ask.", "tag": "Unresolved", "source": { "ref": "P-01" } }
+      ],
+      "states": [
+        { "id": "today", "label": "Today" },
+        {
+          "id": "campus",
+          "label": "With CAMPUS",
+          "title": "Three jobs: routing, memory, trust",
+          "summary": "The network is built for three jobs: getting a question to who can answer, keeping the answer for the next batch, and showing who stands behind it and when.",
+          "madeUp": "illustration",
+          "claims": [
+            { "text": "The network is built for three jobs: routing, memory, and trust.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } },
+            { "text": "In the network's design, questions are routed, not broadcast, and move to the office responsible when only an office can settle them.", "tag": "Established", "source": { "ref": "D-071" } },
+            { "text": "On the network, each answer, guide, and notice would stay findable, dated, and marked when it goes out of date.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } },
+            { "text": "Office replies would be marked official, other answers would carry a name and a role, and an office could confirm the right one.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } },
+            { "text": "The network complements group chats rather than replacing them: answers can be shared into a chat as a card that links back to its current version.", "tag": "Established", "source": { "ref": "D-074" } },
+            { "text": "The front door points to what people on campus already wrote. It writes no answers of its own.", "tag": "Established", "source": { "ref": "D-181" } }
+          ]
+        }
+      ],
+      "chapters": [{ "chapter": "social-network", "label": "Chapter 2" }, { "chapter": "network-design", "label": "Chapter 2.2" }, { "chapter": "evidence", "label": "Chapter 8" }],
+      "objects": [
+        { "id": "chat", "label": "Buried under newer messages?", "state": "today", "opens": { "card": "buried" } },
+        { "id": "group", "label": "Three answers that look alike", "state": "today", "opens": { "card": "look-alike" } },
+        { "id": "walk", "label": "Two doors before the right one", "state": "today", "opens": { "card": "several-visits" } },
+        { "id": "routing", "label": "One route, by the front desk", "state": "campus", "opens": { "card": "route" } },
+        { "id": "trust", "label": "Label, source, and date", "state": "campus", "opens": { "card": "labels" } },
+        { "id": "memory", "label": "Kept for the next batch", "state": "campus", "opens": { "card": "kept" } },
+        { "id": "chat-card", "label": "A card into the group chat", "state": "campus", "opens": { "card": "share-cards" } }
       ]
     },
     {
