@@ -111,6 +111,73 @@
       "chapter": { "chapter": "social-network", "label": "Chapter 2" }
     },
     {
+      "id": "suspension-rule",
+      "title": "Announced by 4:30 a.m.",
+      "text": "VSU's guidelines call for typhoon suspensions to be announced no later than 4:30 a.m., through radio, television, SMS, the website, and other social media. So one announcement leaves by several channels at once.",
+      "claims": [
+        { "text": "VSU's guidelines call for typhoon suspensions to be announced through radio, television, SMS, the website, and other social media, no later than 4:30 a.m.", "tag": "Established", "source": { "ref": "E-025" } },
+        { "text": "The guidelines are on VSU's website, as a resolution of its Board of Regents.", "tag": "Established", "source": { "href": "https://www.vsu.edu.ph/university-policies-2/2862-proposed-guidelines-on-cancellation-suspension-of-classes-work-in-the-visayas-state-university-due-to-typhoon-flooding-other-weather-disturbances-and-calamities-bor-resolution-no-162-s-2024", "label": "BOR Resolution No. 162, s. 2024" } },
+        { "text": "Each channel is reasonable on its own. Together they mean a notice may reach many students as a share or a screenshot, with nothing to show whether it is still current.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } }
+      ],
+      "chapter": { "chapter": "social-network", "label": "Chapter 2" }
+    },
+    {
+      "id": "copies",
+      "title": "A copy loses its marks",
+      "text": "A share keeps the notice whole. A screenshot can lose who posted it, and a retelling can lose the date too. We think this happens to VSU's notices, and a study will count how often. We haven't measured it.",
+      "claims": [
+        { "text": "A verified page's authority is lost once a post is copied or screenshotted.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } },
+        { "text": "The Facebook study's first hypothesis counts how often official announcements reappear altered or contradicted, against cut-offs fixed before any data is read.", "tag": "Established", "source": { "ref": "D-053" } },
+        { "text": "What is drawn here is a composite: the study's examples are paraphrased, never quotes, screenshots, or links.", "tag": "Established", "source": { "ref": "D-044" } }
+      ],
+      "chapter": { "chapter": "facebook-study", "label": "Chapter 8.1" }
+    },
+    {
+      "id": "which-official",
+      "title": "Which one is official?",
+      "text": "Three versions of one notice on one phone. Nothing on them says which is the original, or whether it still holds. Does this happen at VSU, and how often? Not yet known.",
+      "claims": [
+        { "text": "Do official notices and rumor look alike where campus talk happens? Not yet known: the survey asks whether students could tell and how they checked, and the Facebook study counts altered notices.", "tag": "Unresolved", "source": { "ref": "P-06" } },
+        { "text": "Does outdated information keep circulating, with nothing to mark it as out of date? Not yet known: the survey's question on guides and the interviews will ask.", "tag": "Unresolved", "source": { "ref": "P-11" } },
+        { "text": "In emergencies, do people on campus lack official information and a way to tell fact from rumor? Not yet known: the interviews will ask.", "tag": "Unresolved", "source": { "ref": "P-20" } },
+        { "text": "A problem is shown as Established only once it clears bars fixed before any data is read.", "tag": "Established", "source": { "ref": "D-151" } }
+      ],
+      "chapter": { "chapter": "evidence", "label": "Chapter 8" }
+    },
+    {
+      "id": "share-cards",
+      "title": "A card, not a screenshot",
+      "text": "Students would carry the notice into their group chats themselves, as a card that prints its short link. A copy passed around anywhere could still be checked against the notice's page. No bot posts for them.",
+      "claims": [
+        { "text": "In the network's design, every notice, answer, guide, and event can be shared into a chat as a card that links back to its current version.", "tag": "Established", "source": { "ref": "D-074" } },
+        { "text": "Each official notice would have a share card that prints its short link, so a screenshot passed around anywhere can still be checked.", "tag": "Proposed", "source": { "chapter": "network-design", "label": "Ch 2.2" } },
+        { "text": "Into Facebook groups and Messenger group chats, the bridge is people, not bots: students and stewards share by hand.", "tag": "Established", "source": { "ref": "D-182" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 2.2" }
+    },
+    {
+      "id": "urgent",
+      "title": "The only kind that passes quiet hours",
+      "text": "Quiet hours, overnight by default, would protect rest. A suspension would go out as an urgent notice, the only kind that passes through them. Each office would get a small, published allowance, so urgent keeps its meaning.",
+      "claims": [
+        { "text": "Urgent notices from authorized offices, such as suspensions, would be delivered at once, even during quiet hours.", "tag": "Proposed", "source": { "chapter": "network-design", "label": "Ch 2.2" } },
+        { "text": "VSU's guidelines call for typhoon suspensions to be announced no later than 4:30 a.m.", "tag": "Established", "source": { "ref": "E-025" } },
+        { "text": "Each office would get a small, published allowance of urgent notices each semester.", "tag": "Proposed", "source": { "chapter": "network-design", "label": "Ch 2.2" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 2.2" }
+    },
+    {
+      "id": "wais",
+      "title": "The weather advisory, attached",
+      "text": "VSU already issues campus weather advisories through its own system, WAIS. The network would carry them in official places with the source shown, and never issue its own. Whether it may is a question for VSU.",
+      "claims": [
+        { "text": "VSU issues campus weather advisories through its Weather Advisory and Information System, open to VSU account holders, with a mobile app and push notifications planned.", "tag": "Established", "source": { "ref": "E-026" } },
+        { "text": "The network hands off rather than duplicates: advisories stay in VSU's systems, and the network carries their notices with the source shown.", "tag": "Established", "source": { "ref": "D-064" } },
+        { "text": "May the network carry VSU's website feeds and WAIS advisories, and how would offices post official notices? Still open.", "tag": "Unresolved", "source": { "ref": "Q-40" } }
+      ],
+      "chapter": { "chapter": "network-fit", "label": "Chapter 2.3" }
+    },
+    {
       "id": "feed-study",
       "title": "What a study will count",
       "text": "A manual study would observe public VSU pages and groups by hand: where notices first appear and whether they change, and whether questions get answered, and by whom. Nothing is counted yet, and no group is named.",
@@ -207,7 +274,7 @@
         { "id": "building", "label": "Academic building", "opens": { "scene": "building" } },
         { "id": "student", "label": "A student between classes", "opens": { "scene": "outside" } },
         { "id": "route", "label": "A question finds its answer", "opens": { "card": "route" } },
-        { "id": "dorms", "label": "Dormitories", "opens": { "card": "to-come" } },
+        { "id": "dorms", "label": "Dormitories, before dawn", "opens": { "scene": "morning" } },
         { "id": "offices", "label": "Faculty offices", "opens": { "card": "to-come" } },
         { "id": "orgs", "label": "Services offices", "opens": { "card": "to-come" } }
       ]
@@ -296,6 +363,47 @@
         { "id": "notice", "label": "An office notice", "opens": { "card": "labels" } },
         { "id": "answer", "label": "A confirmed answer", "opens": { "card": "kept" } },
         { "id": "saved", "label": "Saved on this phone", "opens": { "card": "device" } }
+      ]
+    },
+    {
+      "id": "morning",
+      "art": "morning",
+      "parent": "campus",
+      "title": "4:30 a.m.",
+      "summary": "A typhoon signal goes up overnight. Under VSU's guidelines, suspensions are announced by 4:30 a.m. One announcement goes out. Every share after that is a copy. Which copy is still true by noon? We haven't measured it.",
+      "madeUp": "composite",
+      "claims": [
+        { "text": "VSU's guidelines call for typhoon suspensions to be announced through radio, television, SMS, the website, and other social media, no later than 4:30 a.m.", "tag": "Established", "source": { "ref": "E-025" } },
+        { "text": "Together, those channels mean a notice may reach many students as a share or a screenshot, with nothing to show whether it is still current.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } },
+        { "text": "Do official notices and rumor look alike where campus talk happens? Not yet known: the survey and the Facebook study will ask.", "tag": "Unresolved", "source": { "ref": "P-06" } },
+        { "text": "Does outdated information keep circulating, with nothing to mark it as out of date? Not yet known: the survey and the interviews will ask.", "tag": "Unresolved", "source": { "ref": "P-11" } }
+      ],
+      "states": [
+        { "id": "today", "label": "Today" },
+        {
+          "id": "campus",
+          "label": "With CAMPUS",
+          "title": "Still checkable at noon",
+          "summary": "With the network, the authorized office would post the suspension once, labeled official. Shared into a group chat, it would arrive as a card linking back to the one page that shows whether it's still current.",
+          "madeUp": "illustration",
+          "claims": [
+            { "text": "In the network's design, only office accounts in official spaces post as official, and each official notice has a permanent page that shows whether it is current.", "tag": "Established", "source": { "ref": "D-063" } },
+            { "text": "The authorized office would post the suspension once, in the university's official place, as an urgent notification, the only kind that passes through quiet hours.", "tag": "Proposed", "source": { "chapter": "network-design", "label": "Ch 2.2" } },
+            { "text": "In the network's design, every notice can be shared into a chat as a card that links back to its current version.", "tag": "Established", "source": { "ref": "D-074" } },
+            { "text": "A correction would update the same page with its history visible, instead of starting a new post that competes with the old one.", "tag": "Proposed", "source": { "chapter": "network-design", "label": "Ch 2.2" } },
+            { "text": "Office responsiveness comes before software: no network pilot starts without one office's commitment to answer students within an agreed time.", "tag": "Established", "source": { "ref": "D-068" } }
+          ]
+        }
+      ],
+      "chapters": [{ "chapter": "social-network", "label": "Chapter 2" }, { "chapter": "network-design", "label": "Chapter 2.2" }, { "chapter": "evidence", "label": "Chapter 8" }],
+      "objects": [
+        { "id": "notice", "label": "One announcement, by 4:30 a.m.", "state": "today", "opens": { "card": "suspension-rule" } },
+        { "id": "copies", "label": "Copies, and copies of copies", "state": "today", "opens": { "card": "copies" } },
+        { "id": "phone-today", "label": "Which one is official?", "state": "today", "opens": { "card": "which-official" } },
+        { "id": "page", "label": "The notice's own page", "state": "campus", "opens": { "card": "labels" } },
+        { "id": "wais", "label": "The weather advisory, attached", "state": "campus", "opens": { "card": "wais" } },
+        { "id": "share-card", "label": "A card in the group chat", "state": "campus", "opens": { "card": "share-cards" } },
+        { "id": "phone-network", "label": "It would reach her at 4:30", "state": "campus", "opens": { "card": "urgent" } }
       ]
     },
     {
