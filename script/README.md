@@ -4,7 +4,7 @@ The script is the interactive site written before it is drawn: the scenes, how e
 
 A claim enters the script only once the master doc has it. If writing a scene refines an idea, the change goes into the master doc first, as a [Proposed] row or a chapter edit by pull request, and the sheet then cites it.
 
-**Status:** step 1, extraction, 30 October 2026. Every scene is drawn out of the master doc into one sheet. The sheets are raw: their words are drafts, and their beats are rough. Step 2 directs one scene in full as the model; step 3 scripts the rest and runs campus-review on the whole script; step 4 draws.
+**Status:** step 2, the model scene, 16 November 2026. `morning` is directed in full and drawn, and awaits the owner's yes on the style. Step 1, extraction (30 October), drew every scene out of the master doc into one sheet; the other sheets are still raw, their words drafts and their beats rough. Step 3 scripts the rest after the model and runs campus-review on the whole script; step 4 draws.
 
 ## The scene sheet
 
@@ -21,6 +21,8 @@ Each file is one scene, named by its scene ID in `data/scenes.json`.
 - **Kit pieces:** reused from `js/art.js`, and new.
 - **Questions:** anything the sheet can't settle, for Leo.
 
+A directed sheet, as `morning.md` is, adds what a drawing needs: every object with its state, its label, and what it opens; each card's words; the picture, layer by layer, and what its marks mean; beats with their timings; and the still picture shown to a visitor who asks for less motion.
+
 Sources are written as `scenes.json` writes them: a register ID such as (D-070) or (E-025), or a chapter such as (Ch 2.2). A claim keeps the tag the master doc gives it, and is no stronger than its source.
 
 ## Every scene
@@ -29,33 +31,33 @@ Built means drawn and in `scenes.json`; extracted means a sheet only.
 
 | Scene | File | Place | Problems | Chapters | Status |
 | --- | --- | --- | --- | --- | --- |
-| Main Campus | `campus.md` | The start | — | 1, 2, 3 | Built |
-| Inside an academic building | `building.md` | Academic building | — | 2, 2.2 | Built |
-| A computer lab | `lab.md` | Academic building | — | 3 | Built |
-| The network, on a computer | `screen.md` | Academic building | — | 3.2 | Built |
-| Between classes | `outside.md` | The walk | — | 2 | Built |
-| The same network, on a phone | `phone.md` | The walk | — | 3.2, 2 | Built |
-| One feed for everything | `elsewhere.md` | Off the map | P-03, P-06 | 3, 3.2, 8.1 | Built |
-| Stewards, not owners | `a-place.md` | Off the map | — | 3.2 | Built |
-| A morning at VSU | `morning.md` | Dormitories | P-06, P-11, P-20 | 3, 3.2, 2.1 | Extracted |
-| What students told us | `told-us.md` | Edge | All 23, as a board | 8, 3.1 | Extracted |
-| Every batch starts over | `batch.md` | Organizations (see questions) | P-08, P-10 | 3, 3.2, 8.1 | Extracted |
-| Who do I ask? | `who-to-ask.md` | Services offices | P-01, P-02, P-07, P-09 | 3, 3.1, 3.2, 4 | Extracted |
-| Where concerns go | `concerns.md` | Services offices | P-23 | 3.2, 3.1, 8 | Extracted |
-| Talking across roles | `across-roles.md` | Faculty offices | P-04, P-05 | 3, 3.1, 3.2 | Extracted |
-| A lecture hall at class time | `hall.md` | Academic building | P-15, P-16, P-18, P-19 | 2, 2.2, 8 | Extracted |
-| What VSU already has | `vsu-has.md` | Edge | — | 3.3, 7, 10 | Extracted |
-| Three jobs, kept by memory | `three-jobs.md` | The campus, above it | — | 3, 3.2 | Extracted |
-| How it would be governed | `governed.md` | Edge | P-12 | 3, 3.2, 9 | Extracted |
-| Typhoon day | `typhoon.md` | Edge, over the whole campus | P-16, P-17, P-20 | 2, 2.1 | Extracted |
-| The test | `test.md` | Edge | — | 3, 3.4, 11 | Extracted |
-| How we'd know we're wrong | `wrong.md` | Edge | — | 8, 11, 3 | Extracted |
-| The ask | `the-ask.md` | Edge | — | 3.4, 12 | Extracted |
-| Who is behind it | `behind.md` | Edge | — | 0, 3.4, 12 | Extracted |
-| Places and the office guide | `twin.md` | Edge | P-13 | 4, 10 | Extracted |
-| Marketplace, a later module | `marketplace.md` | Edge: later | P-21 | 3.5 | Extracted |
-| Housing, a later module | `housing.md` | Edge: later | P-22 | 3.6 | Extracted |
-| Hop-It, a later module | `hop-it.md` | Edge: later | P-14 | 3.7 | Extracted |
+| Main Campus | `campus.md` | The start | — | 1, 2, 4 | Built |
+| Inside an academic building | `building.md` | Academic building | — | 4, 4.2 | Built |
+| A computer lab | `lab.md` | Academic building | — | 2 | Built |
+| The network, on a computer | `screen.md` | Academic building | — | 2.2 | Built |
+| Between classes | `outside.md` | The walk | — | 4 | Built |
+| The same network, on a phone | `phone.md` | The walk | — | 2.2, 4 | Built |
+| One feed for everything | `elsewhere.md` | Off the map | P-03, P-06 | 2, 2.2, 8.1 | Built |
+| Stewards, not owners | `a-place.md` | Off the map | — | 2.2 | Built |
+| 4:30 a.m. | `morning.md` | Dormitories | P-06, P-11, P-20 | 2, 2.2, 8, 8.1 | Built: the model |
+| What students told us | `told-us.md` | Edge | All 23, as a board | 8, 2.1 | Extracted |
+| Every batch starts over | `batch.md` | Organizations (see questions) | P-08, P-10 | 2, 2.2, 8.1 | Extracted |
+| Who do I ask? | `who-to-ask.md` | Services offices | P-01, P-02, P-07, P-09 | 2, 2.1, 2.2, 3 | Extracted |
+| Where concerns go | `concerns.md` | Services offices | P-23 | 2.2, 2.1, 8 | Extracted |
+| Talking across roles | `across-roles.md` | Faculty offices | P-04, P-05 | 2, 2.1, 2.2 | Extracted |
+| A lecture hall at class time | `hall.md` | Academic building | P-15, P-16, P-18, P-19 | 4, 4.2, 8 | Extracted |
+| What VSU already has | `vsu-has.md` | Edge | — | 2.3, 7, 10 | Extracted |
+| Three jobs, kept by memory | `three-jobs.md` | The campus, above it | — | 2, 2.2 | Extracted |
+| How it would be governed | `governed.md` | Edge | P-12 | 2, 2.2, 9 | Extracted |
+| Typhoon day | `typhoon.md` | Edge, over the whole campus | P-16, P-17, P-20 | 4, 4.1 | Extracted |
+| The test | `test.md` | Edge | — | 2, 2.4, 11 | Extracted |
+| How we'd know we're wrong | `wrong.md` | Edge | — | 8, 11, 2 | Extracted |
+| The ask | `the-ask.md` | Edge | — | 2.4, 12 | Extracted |
+| Who is behind it | `behind.md` | Edge | — | 0, 2.4, 12 | Extracted |
+| Places and the office guide | `twin.md` | Edge | P-13 | 3, 10 | Extracted |
+| Marketplace, a later module | `marketplace.md` | Edge: later | P-21 | 2.5 | Extracted |
+| Housing, a later module | `housing.md` | Edge: later | P-22 | 2.6 | Extracted |
+| Hop-It, a later module | `hop-it.md` | Edge: later | P-14 | 2.7 | Extracted |
 
 Every P- row in Chapter 8 has a scene: P-01, P-02, P-07, and P-09 at the services offices; P-03 and P-06 in the feed; P-04 and P-05 at the faculty offices; P-06, P-11, and P-20 at the dormitories at dawn; P-08 and P-10 with the organizations; P-12 in governance; P-13 in the twin; P-14, P-21, and P-22 in the later modules; P-15, P-16, P-18, and P-19 in the lecture hall; P-16, P-17, and P-20 on typhoon day; P-23 at the services offices.
 
@@ -63,7 +65,7 @@ Every P- row in Chapter 8 has a scene: P-01, P-02, P-07, and P-09 at the service
 
 ```text
 Main Campus (campus)
-├── Dormitories ──────────── A morning at VSU (morning)
+├── Dormitories ──────────── 4:30 a.m. (morning), today and with CAMPUS
 │                              └── the storm outside ─► Typhoon day (typhoon)
 ├── Academic building ────── Inside an academic building (building)
 │                              ├── A computer lab (lab) ── The network, on a computer (screen)
@@ -94,7 +96,7 @@ Chapter 2.4's sequence, which the site's paths follow (D-175). The path starts a
 | Step | Chapter 2.4 | Scene |
 | --- | --- | --- |
 | — | The home | `campus` |
-| 1 | A morning at VSU | `morning` |
+| 1 | A morning at VSU | `morning`, both states |
 | 2 | What students told us | `told-us` |
 | 3 | Where VSU's conversation lives | `elsewhere`, both states |
 | 4 | Every batch starts over | `batch`, both states |
@@ -124,6 +126,7 @@ Found while extracting. None is fixed here; each needs a chapter edit or a row i
 2. **Problems with no survey item can't clear the bars.** Chapter 8 shows a problem as Established only if it clears both the survey's bar and the interviews' (D-038, D-132). P-08, P-09, P-12, and P-20 rest on the interviews alone, P-16 and P-17 on VSU ICT's figures, and P-13 waits for the map's rework. As written, those scenes stay questions after field research. A Q- row could ask how such a problem is judged.
 3. **The spatial interface.** The site's own campus is a way of browsing by place, which D-093 keeps as research only for the network. The handoff's open item stands: revise D-093, or say on `twin` that browsing the site by place is not the network's interface.
 4. **The script-first rule** has no row yet (handoff, still open).
+5. **E-025 could say who announces, and has a newer check.** Its source was opened again on 16 November 2026 while `morning` was directed, and still says what the row says. It also says the announcement is made by the local chief executive or the head of the institution, or their authorized representatives, which the row leaves out. The row's check date, and that detail if the owner wants it, are a small edit in projectcampus-docs.
 
 ## Smaller notes
 

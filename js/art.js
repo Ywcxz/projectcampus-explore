@@ -33,6 +33,9 @@
     '<radialGradient id="grass" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#E3EBD6"/><stop offset="1" stop-color="#CADDBB"/></radialGradient>' +
     '<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E3EEEF"/><stop offset="1" stop-color="#F3F4EE"/></linearGradient>' +
     '<linearGradient id="screen-glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9F4EC"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient>' +
+    '<linearGradient id="overcast" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C6D4D8"/><stop offset="1" stop-color="#E9EEEA"/></linearGradient>' +
+    // Rain: a tile of streaks, leaning with the wind. The .rain rect slides one tile along the lean, so it loops unseen.
+    '<pattern id="rain" width="120" height="160" patternUnits="userSpaceOnUse" patternTransform="rotate(12)"><path d="M20 8v44M72 66v52M102 18v30M44 112v34" stroke="#A9C6CE" stroke-width="2.6" stroke-linecap="round" opacity=".6"/></pattern>' +
     '</defs>';
 
   function svg(label, body, bg) {
@@ -1202,5 +1205,214 @@
     return svg("An organization's place, drawn as a board with notices, questions, guides, and events; in front, its steward with a key, a moderator, a peer guide, and members, one of them a faculty member wearing a faculty ID; the steward's term ends and the key passes to the next officer; two dashed outlines stand for roles still to be decided", out);
   }
 
-  root.CampusArt = { campus: campus, building: building, lab: lab, screen: screen, outside: outside, phone: phone, elsewhere: elsewhere, aPlace: aPlace };
+  /* ============================================================
+     Scene: a morning at VSU, 4:30 a.m. (script/morning.md)
+     From a first-year student's window: a dormitory across the
+     yard before dawn, in rain. One announcement goes out; windows
+     light one by one, each with the copy that reached it, and a
+     copy of a copy loses its marks: who posted it, and when.
+     A drawn composite: no real post (D-148). With CAMPUS, at
+     noon: one page, and the same notice in every window, each
+     tied back to it. The picture carries no words (D-171): a
+     notice's marks are an office (its source), a calendar (its
+     date), and, on the network, a shield (its label, D-063).
+     ============================================================ */
+  var AV = [K.sea2, K.gold2, K.green3, K.red, "#6A5A8C", "#B9974F"];
+  /* One mark of a notice, in a box about 24 across, centred on (x, y).
+     lost = true draws the empty place where the mark was. */
+  function mark(kind, x, y, k, lost) {
+    var g = '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k || 1) + ')">';
+    if (lost) return g + (kind === "date"
+      ? '<rect x="-11" y="-11" width="22" height="22" rx="5" fill="#0A2030" fill-opacity=".35" stroke="#FF9C8A" stroke-width="3.2" stroke-dasharray="5 4"/>'
+      : '<circle r="12" fill="#0A2030" fill-opacity=".35" stroke="#FF9C8A" stroke-width="3.2" stroke-dasharray="5 4"/>') + "</g>";
+    if (kind === "source") g += '<circle r="12" fill="' + K.sea2 + '"/><path d="M-6.5 6V-2L0 -7L6.5 -2V6Z" fill="#FFFFFF"/><rect x="-1.8" y="1" width="3.6" height="5" fill="' + K.sea2 + '"/>';
+    else if (kind === "date") g += '<rect x="-10" y="-10" width="20" height="20" rx="4" fill="' + K.white + '" stroke="#B9BFB3" stroke-width="1.6"/><path d="M-10 -5v-1a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v1Z" fill="' + K.gold + '"/><circle cx="3" cy="3" r="3" fill="' + K.red + '"/>';
+    else g += '<path d="M0 -12L10 -8V0C10 6 6 10 0 12C-6 10-10 6-10 0V-8Z" fill="' + K.green + '"/><path d="M-4.5 0l3.2 3.4L5 -3.6" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';
+    return g + "</g>";
+  }
+  /* A notice, 200 by 136, at (x, y): its source in the header, a storm for what it
+     says, and its date in the footer. label = true adds the network's label. */
+  function notice(x, y, label) {
+    return '<rect x="' + x + '" y="' + y + '" width="200" height="136" rx="14" fill="#FFFFFF" stroke="' + (label ? K.green : "#D6D2C2") + '" stroke-width="' + (label ? 4 : 2) + '"/>' +
+      mark("source", x + 26, y + 27, 1.15) + '<rect x="' + (x + 48) + '" y="' + (y + 21) + '" width="84" height="11" rx="5.5" fill="#B9BFB3"/>' +
+      (label ? mark("label", x + 174, y + 27, 1.15) : "") +
+      icon("storm", x + 40, y + 72, 0.62) +
+      '<rect x="' + (x + 78) + '" y="' + (y + 60) + '" width="100" height="9" rx="4.5" fill="#D9DCD2"/><rect x="' + (x + 78) + '" y="' + (y + 77) + '" width="74" height="9" rx="4.5" fill="#E4E6DE"/>' +
+      '<rect x="' + (x + 20) + '" y="' + (y + 108) + '" width="96" height="8" rx="4" fill="#E4E6DE"/>' + mark("date", x + 174, y + 110, 1);
+  }
+  /* A notice as it reaches someone, about 100 by 70, centred on (x, y), at scale k.
+     share: forwarded whole, by someone. shot: a screenshot with the header cut off,
+     so its source is gone. crop: cut again, so its date is gone too. told: retold
+     in a chat, with neither. kept: the network's own, whole, with its label. */
+  function copy(kind, x, y, n, tilt, k) {
+    var g = '<g transform="translate(' + f(x) + " " + f(y) + ")" + (tilt ? " rotate(" + tilt + ")" : "") + (k ? " scale(" + k + ")" : "") + '" filter="url(#soft)">';
+    var body = icon("storm", -28, 2, 0.4) + '<rect x="-8" y="-6" width="46" height="7" rx="3.5" fill="#D9DCD2"/><rect x="-8" y="6" width="34" height="7" rx="3.5" fill="#E4E6DE"/>';
+    var zig = "l10 6l10-6l10 6l10-6l10 6l10-6l10 6l10-6l10 6l10-6", zag = "l-10 6l-10-6l-10 6l-10-6l-10 6l-10-6l-10 6l-10-6l-10 6l-10-6";
+    if (kind === "share" || kind === "kept") {
+      g += '<rect x="-50" y="-35" width="100" height="70" rx="9" fill="#FFFFFF" stroke="' + (kind === "kept" ? K.green : "#D6D2C2") + '" stroke-width="' + (kind === "kept" ? 3 : 1.6) + '"/>' +
+        mark("source", -36, -21, 0.62) + '<rect x="-24" y="-24.5" width="34" height="6" rx="3" fill="#B9BFB3"/>' +
+        (kind === "kept" ? mark("label", 37, -21, 0.62) : "") +
+        '<g transform="translate(0 5)">' + body + "</g>" + mark("date", 37, 22, 0.6);
+      if (kind === "share") g += '<circle cx="-50" cy="-35" r="10" fill="' + AV[n % AV.length] + '" stroke="#FFFFFF" stroke-width="2"/>';
+    } else if (kind === "shot") {
+      g += '<path d="M-50 -20' + zig + 'V26a9 9 0 0 1-9 9H-41a9 9 0 0 1-9-9Z" fill="#FFFFFF" stroke="#D6D2C2" stroke-width="1.6"/>' +
+        '<g transform="translate(0 5)">' + body + "</g>" + mark("date", 37, 22, 0.6) + mark("source", -36, -34, 0.8, true);
+    } else if (kind === "crop") {
+      g += '<path d="M-50 -20' + zig + "V18" + zag + 'Z" fill="#F4F4EC" stroke="#D6D2C2" stroke-width="1.6"/>' +
+        body + mark("source", -36, -34, 0.8, true) + mark("date", 38, 36, 0.8, true);
+    } else {
+      g += '<path d="M-34 -26H34a16 16 0 0 1 16 16V6a16 16 0 0 1-16 16H-20l-16 14v-14a16 16 0 0 1-14-16V-10a16 16 0 0 1 16-16Z" fill="#E7ECEE" stroke="#C9D3D8" stroke-width="1.6"/>' +
+        '<rect x="-34" y="-13" width="64" height="7" rx="3.5" fill="#AEB9C0"/><rect x="-34" y="1" width="44" height="7" rx="3.5" fill="#C3CCD1"/>' +
+        mark("source", -36, -40, 0.8, true) + mark("date", 40, 36, 0.8, true);
+    }
+    return g + "</g>";
+  }
+  /* Someone at a window with a phone: head and shoulders, (x, y) the window's bottom centre. */
+  function bust(x, y, n, k) {
+    var c = CAST[n % CAST.length], sk = SKIN[c.skin];
+    return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + f(k || 1) + ')">' +
+      (c.style === "long" ? '<rect x="-15" y="-58" width="30" height="34" rx="10" fill="' + c.hair + '"/>' : "") +
+      '<path d="M-30 0C-30 -22-20 -30 0 -30S30 -22 30 0Z" fill="' + c.top + '"/>' +
+      '<rect x="-5" y="-36" width="10" height="9" fill="' + sk + '"/><circle cy="-46" r="14" fill="' + sk + '"/>' +
+      '<path d="M-14.2 -47a14.2 14.2 0 0 1 28.4 0c-8-6-20-6-28.4 0Z" fill="' + c.hair + '"/>' +
+      (c.style === "bun" ? '<circle cy="-62" r="6" fill="' + c.hair + '"/>' : "") + (c.style === "pony" ? '<ellipse cx="-15" cy="-42" rx="5" ry="9" fill="' + c.hair + '"/>' : "") +
+      '<circle cx="-5" cy="-43" r="1.7" fill="' + K.ink + '"/><circle cx="5" cy="-43" r="1.7" fill="' + K.ink + '"/>' +
+      '<rect x="12" y="-24" width="11" height="18" rx="2.5" fill="' + K.ink + '"/><rect class="glow-phone" x="13.5" y="-22" width="8" height="13" rx="1" fill="' + K.gold3 + '"/>' +
+      "</g>";
+  }
+  function morning() {
+    var out = "", WX = [592, 755, 918, 1081, 1244, 1407], WY = [304, 464, 624], FX = [78, 170, 262], FY = [440, 580];
+    var SRC = [350, 218];
+    // Who is awake, in the order their windows light: the window, the copy that reached
+    // it, and whose copy it was made from (-1: the announcement itself).
+    var AWAKE = [
+      { x: FX[1], y: FY[0], far: true, kind: "share", from: -1 },
+      { x: WX[0], y: WY[1], kind: "share", from: -1 },
+      { x: WX[1], y: WY[0], kind: "shot", from: 1 },
+      { x: WX[3], y: WY[0], kind: "share", from: -1 },
+      { x: FX[0], y: FY[1], far: true, kind: "told", from: 0 },
+      { x: WX[2], y: WY[1], kind: "crop", from: 2, tilt: -5 },
+      { x: WX[4], y: WY[1], kind: "told", from: 3 },
+      { x: WX[5], y: WY[0], kind: "shot", from: 3 },
+      { x: WX[1], y: WY[2], kind: "crop", from: 5, tilt: 6 },
+      { x: WX[4], y: WY[2], kind: "told", from: 6 }
+    ];
+    AWAKE.forEach(function (a) { a.w = a.far ? 62 : 100; a.h = a.far ? 58 : 92; a.k = a.far ? 0.82 : 1; a.at = [a.x + a.w - 4, a.y - 6]; });
+    var arc = function (a, b) {
+      var d = Math.sqrt(Math.pow(b[0] - a[0], 2) + Math.pow(b[1] - a[1], 2));
+      return "M" + f(a[0]) + "," + f(a[1]) + " Q" + f((a[0] + b[0]) / 2) + "," + f((a[1] + b[1]) / 2 - 24 - d * 0.16) + " " + f(b[0]) + "," + f(b[1]);
+    };
+    var pane = function (x, y, w, h, glass, bar) {
+      return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="5" fill="' + glass + '"/>' + bars_(x, y, w, h, bar);
+    };
+    var bars_ = function (x, y, w, h, bar) {
+      return '<path d="M' + (x + w / 2) + " " + y + "v" + h + "M" + x + " " + f(y + h * 0.36) + "h" + w + '" stroke="' + bar + '" stroke-width="' + (w > 80 ? 5 : 3.5) + '"/>';
+    };
+    var sill = function (x, y, w, h) { return '<rect x="' + (x - 6) + '" y="' + (y + h) + '" width="' + (w + 12) + '" height="' + (w > 80 ? 8 : 6) + '" rx="2" fill="#D9C48A"/>'; };
+
+    // Far: an overcast sky and the hills. Before dawn a veil (below) darkens all of it.
+    var cloud = function (x, y, k, c2) {
+      return '<g transform="translate(' + x + " " + y + ") scale(" + k + ')"><g class="cloud' + (c2 ? " c2" : "") + '"><path d="M0 60a34 34 0 0 1 58-22 44 44 0 0 1 80 10 28 28 0 0 1 8 54H6a24 24 0 0 1-6-42Z" fill="#F4F6F3" opacity=".78"/></g></g>';
+    };
+    out += lay(1, '<rect x="-1200" y="-1000" width="4000" height="1800" fill="url(#overcast)"/>' +
+      cloud(-520, 70, 2.4, true) + cloud(380, 20, 2.3) + cloud(900, -30, 3, true) + cloud(1350, 60, 2.1) + cloud(1960, 30, 2.6, true) +
+      '<path d="M-1200 520L0 520C240 440 420 480 640 440S1040 470 1260 430S1520 450 1600 440H2800V800H-1200Z" fill="#CFDDC3"/>' +
+      '<path d="M-1200 580L0 580C260 520 460 560 700 530S1100 550 1350 520S1560 540 1600 536H2800V800H-1200Z" fill="#BFD0B0"/>');
+
+    // The yard and the dormitories: a block across the yard, and another farther off.
+    var yard = '<rect x="-1200" y="744" width="4000" height="300" fill="#B9CFA9"/><path d="M924 750H1012L1110 905H820Z" fill="' + K.sand + '"/>' +
+      '<ellipse cx="700" cy="832" rx="78" ry="13" fill="#9CC3C7" opacity=".75"/><ellipse cx="1290" cy="806" rx="54" ry="9" fill="#9CC3C7" opacity=".75"/><ellipse cx="1004" cy="874" rx="40" ry="7" fill="#A9CCD0" opacity=".7"/>';
+    var far = '<rect x="56" y="400" width="292" height="350" fill="#E3DAB9"/><path d="M40 404H364L340 372H64Z" fill="#A9705C"/><rect x="56" y="556" width="292" height="7" fill="#CDBD8B"/>';
+    FY.forEach(function (y) { FX.forEach(function (x) { far += pane(x, y, 62, 58, "#5B7F8F", "#EFE7CB") + sill(x, y, 62, 58); }); });
+    var dorm = '<rect x="560" y="262" width="980" height="488" fill="' + K.cream + '"/>' +
+      '<path d="M530 266H1570L1506 196H594Z" fill="#B5664F"/><rect x="530" y="258" width="1040" height="12" rx="3" fill="#8F4D3B"/>' +
+      '<rect x="560" y="422" width="980" height="8" fill="#D9C48A"/><rect x="560" y="582" width="980" height="8" fill="#D9C48A"/><rect x="560" y="738" width="980" height="12" fill="#C7AE6E"/>';
+    WY.forEach(function (y, r) { WX.forEach(function (x, c) { if (r === 2 && c === 2) return; dorm += pane(x, y, 100, 92, "#5B7F8F", "#EFE7CB") + sill(x, y, 100, 92); }); });
+    dorm += '<rect x="924" y="634" width="88" height="116" rx="4" fill="#82654B"/><rect x="966" y="634" width="4" height="116" fill="#6B523C"/><path d="M900 630H1036L1020 606H916Z" fill="#8F4D3B"/><rect x="906" y="750" width="124" height="10" rx="3" fill="#CFC9B6"/>';
+    var shrubs = "";
+    [[628, 752, 22, 0], [676, 756, 15, 1], [1150, 752, 20, 1], [1192, 757, 14, 0], [1456, 752, 24, 0], [120, 754, 20, 1], [300, 756, 16, 0]].forEach(function (s) {
+      shrubs += '<circle cx="' + s[0] + '" cy="' + s[1] + '" r="' + s[2] + '" fill="' + (s[3] ? K.green4 : K.green3) + '"/>';
+    });
+    out += lay(2, yard + piece(far) + piece(dorm) + shrubs + '<g class="sway">' + frontTree(1496, 812, 1.05) + "</g>");
+
+    // Near: her room. Curtains, the sill, and a first-year student from behind, her phone raised.
+    var curtain = '<path d="M-1200 -1000H52C70 -400 30 200 58 560S40 800 62 905H-1200Z" fill="#B8705F"/>' +
+      '<path d="M-40 -1000C-20 -300-56 300-36 905M-150 -1000C-136 -200-170 400-150 905M-300 -1000C-290 -200-316 400-300 905M-520 -1000C-506 -200-540 400-520 905M-800 -1000C-790 -200-816 400-800 905" fill="none" stroke="#9F5D4E" stroke-width="8" opacity=".55"/>';
+    var room = curtain + '<g transform="translate(1600 0) scale(-1 1)">' + curtain + "</g>" +
+      '<rect x="-1200" y="905" width="4000" height="1200" fill="#CDBB98"/><rect x="-1200" y="897" width="4000" height="14" rx="4" fill="#E0D2B0"/>';
+    var inside = '<path d="M-1200 -1000H52C70 -400 30 200 58 560S40 800 62 905H-1200Z"/><path d="M2800 -1000H1548C1530 -400 1570 200 1542 560S1560 800 1538 905H2800Z"/>' +
+      '<rect x="-1200" y="897" width="4000" height="1300"/><rect x="179" y="684" width="102" height="138" rx="34"/><path d="M146 933C146 819 173 800 230 800S314 819 314 933Z"/>' +
+      '<rect x="350" y="560" width="170" height="288" rx="26" transform="rotate(-6 435 710)"/><path d="M300 912L386 864" stroke="#000" stroke-width="40" stroke-linecap="round"/><circle cx="398" cy="857" r="22"/>';
+    var mask = '<defs><mask id="outdoors" maskUnits="userSpaceOnUse" x="-1500" y="-1300" width="4600" height="3600"><rect x="-1500" y="-1300" width="4600" height="3600" fill="#FFFFFF"/><g fill="#000">' + inside + "</g></mask></defs>";
+    var her = backPerson(230, 800, 1, 1.9) +
+      '<rect x="181" y="700" width="98" height="120" rx="30" fill="' + HAIR[1] + '"/>' +
+      '<rect x="146" y="920" width="168" height="1200" fill="' + K.red + '"/>' +
+      '<g transform="rotate(-6 435 710)">' + piece('<rect x="350" y="560" width="170" height="288" rx="26" fill="' + K.ink + '"/>') + "</g>" +
+      '<path d="M300 912L386 864" stroke="' + K.red + '" stroke-width="40" stroke-linecap="round"/><circle cx="398" cy="857" r="22" fill="' + SKIN[1] + '"/>';
+    // Before dawn: a veil over everything so far. What gives light is drawn after it.
+    var veil = grp('data-show="today"', '<rect x="-1200" y="-1000" width="4000" height="3100" fill="#0A2030" opacity=".72"/>');
+    out += lay(3, mask + room + her + veil);
+
+    // Lights and marks. Before dawn: the lit windows, the announcement, its copies, the phone.
+    var lit = "", awake = "", arcs = "", copies = "", routes = "", kept = "";
+    AWAKE.forEach(function (a, n) {
+      var cx = a.x + a.w / 2, base = a.y + a.h, src = a.from < 0 ? SRC : AWAKE[a.from].at;
+      lit += '<g class="wake n' + (n + 1) + '"><rect x="' + (a.x - 6) + '" y="' + (a.y - 6) + '" width="' + (a.w + 12) + '" height="' + (a.h + 12) + '" rx="9" fill="' + K.gold3 + '" opacity=".4" filter="url(#blur)"/>' +
+        pane(a.x, a.y, a.w, a.h, "#F7E3A1", "#C9A659") + bust(cx, base, n + 2, a.w / 100) + "</g>";
+      awake += grp('data-show="campus"', bust(cx, base, n + 2, a.w / 100));
+      arcs += '<g class="wake n' + (n + 1) + '"><path class="flow" d="' + arc(src, a.at) + '" fill="none" stroke="' + K.gold3 + '" stroke-width="2.6" stroke-dasharray="4 12" stroke-linecap="round" opacity=".9"/></g>';
+      copies += '<g class="wake n' + (n + 1) + '">' + copy(a.kind, a.at[0], a.at[1], n, a.tilt, a.k) + "</g>";
+      routes += '<path d="' + arc(SRC, a.at) + '" fill="none" stroke="#9FC7A8" stroke-width="2.4"/><path class="flow" d="' + arc(SRC, a.at) + '" fill="none" stroke="' + K.green + '" stroke-width="2.6" stroke-dasharray="2 14" stroke-linecap="round"/>';
+      kept += grp('data-show="campus" data-delay="' + (150 + n * 70) + '"', copy("kept", a.at[0], a.at[1], n, 0, a.k));
+    });
+    var rain = '<g mask="url(#outdoors)" pointer-events="none"><rect class="rain" x="-1500" y="-1300" width="4600" height="3600" fill="url(#rain)"/></g>';
+    var halo = '<rect x="140" y="140" width="220" height="156" rx="22" fill="' + K.gold3 + '" opacity=".3" filter="url(#blur)" pointer-events="none"/>';
+    var asks = "";
+    [[538, 566, 1], [AWAKE[5].at[0] + 44, AWAKE[5].at[1] - 44, 0.8], [AWAKE[9].at[0] + 44, AWAKE[9].at[1] - 44, 0.8]].forEach(function (q, n) {
+      asks += '<g class="wake n' + [10, 6, 10][n] + '"><g class="ask a' + n + '">' + icon("ask", q[0], q[1], q[2]) + "</g></g>";
+    });
+    var minis = "";
+    [["share", 672], ["crop", 734], ["told", 796]].forEach(function (m, n) {
+      minis += '<g class="wake n' + [2, 6, 7][n] + '"><g transform="translate(435 ' + m[1] + ') scale(.78)">' + copy(m[0], 0, 0, n + 1) + "</g></g>";
+    });
+    var phoneToday = '<circle cx="435" cy="700" r="170" fill="' + K.gold3 + '" opacity=".16" filter="url(#blur)" pointer-events="none"/>' +
+      '<g transform="rotate(-6 435 710)"><rect x="360" y="572" width="150" height="256" rx="16" fill="#12222D"/>' +
+      '<text class="ui ui-t" x="435" y="622" text-anchor="middle" fill="#FFFFFF">4:30</text>' + minis + "</g>";
+
+    // With CAMPUS, at noon: one page; the same notice at every window, each tied back to it;
+    // a card in a group chat; the weather advisory attached; and on her phone, the one notice.
+    var page = '<rect x="141" y="141" width="218" height="154" rx="21" fill="none" stroke="' + K.green + '" stroke-width="5" opacity=".55" filter="url(#glow)" pointer-events="none"/>' + notice(150, 150, true);
+    var wais = '<path d="M176 266v18" stroke="' + K.sea2 + '" stroke-width="4" stroke-linecap="round"/>' +
+      '<rect x="160" y="278" width="76" height="46" rx="12" fill="#E3EEEF" stroke="' + K.sea2 + '" stroke-width="2.5" filter="url(#soft)"/>' + icon("storm", 198, 299, 0.5);
+    var chat = '<rect x="1300" y="70" width="240" height="150" rx="16" fill="#F4F5F1" stroke="#D6D2C2" stroke-width="2" filter="url(#soft)"/>' +
+      '<path d="M1300 106V86a16 16 0 0 1 16-16h208a16 16 0 0 1 16 16v20Z" fill="#6B7A86"/>' +
+      '<circle cx="1322" cy="90" r="6" fill="#DDE3E6"/><circle cx="1336" cy="85" r="7.5" fill="#FFFFFF"/><circle cx="1350" cy="90" r="6" fill="#DDE3E6"/><rect x="1368" y="83" width="96" height="9" rx="4.5" fill="#DDE3E6"/>' +
+      '<rect x="1314" y="120" width="92" height="18" rx="9" fill="#DDE3E6" opacity=".55"/><rect x="1314" y="146" width="64" height="18" rx="9" fill="#DDE3E6" opacity=".35"/>' +
+      copy("kept", 1478, 164, 0, 0, 0.9) +
+      '<g transform="translate(1346 192) rotate(-35)" fill="none" stroke="' + K.sea + '" stroke-width="3.2"><rect x="-14" y="-5.5" width="17" height="11" rx="5.5"/><rect x="-3" y="-5.5" width="17" height="11" rx="5.5"/></g>' +
+      '<path class="flow" d="M' + f(AWAKE[7].at[0]) + " " + f(AWAKE[7].at[1] - 36) + 'Q1500 250 1482 222" fill="none" stroke="' + K.green + '" stroke-width="2.6" stroke-dasharray="2 14" stroke-linecap="round"/>';
+    var phoneNoon = '<g transform="rotate(-6 435 710)"><rect x="360" y="572" width="150" height="256" rx="16" fill="url(#screen-glow)"/>' +
+      '<text class="ui ui-t" x="435" y="622" text-anchor="middle" fill="' + K.ink + '">12:00</text>' +
+      '<g transform="translate(435 700) scale(1.2)">' + copy("kept", 0, 0, 0) + "</g>" +
+      '<rect x="383" y="770" width="104" height="36" rx="18" fill="' + K.cream + '"/>' +
+      '<g transform="translate(406 788) scale(1.35)"><path d="M-7 5h14l-2.5-3.5V-3a4.5 4.5 0 0 0-9 0v4.5ZM-2 7a2 2 0 0 0 4 0Z" fill="#785808"/></g>' +
+      '<text class="ui ui-chip" x="449" y="794" text-anchor="middle" fill="#785808">4:30</text></g>';
+
+    out += lay(4,
+      grp('data-show="today"', lit) + awake +
+      grp('data-show="today"', rain) + grp('data-show="campus"', '<g opacity=".45">' + rain.replace('class="rain"', 'class="rain light"') + "</g>") +
+      grp('data-show="campus"', routes) + kept +
+      objX("copies", AWAKE[5].at[0], AWAKE[5].at[1] - 44, 'data-show="today"', arcs + copies) +
+      objX("notice", 250, 140, 'data-show="today"', '<g class="wake n0">' + halo + notice(150, 150, false) + "</g>") +
+      objX("page", 250, 140, 'data-show="campus"', page) +
+      objX("wais", 198, 330, 'data-show="campus" data-delay="500"', wais) +
+      objX("share-card", 1420, 70, 'data-show="campus" data-delay="900"', chat) +
+      grp('data-show="today"', asks) +
+      objX("phone-today", 435, 548, 'data-show="today"', phoneToday) +
+      objX("phone-network", 435, 548, 'data-show="campus"', phoneNoon));
+
+    return svg("Before dawn, in rain, seen from a student's room: across the yard, dormitory windows light one by one. One announcement is in the sky; from it, copies travel from window to window, and some have lost the mark of who posted them, or their date. Her phone shows 4:30 and three versions. With CAMPUS, at noon: one page, and the same notice, with its label, source, and date, at every window and on her phone", out, "#C6D4D8");
+  }
+
+  root.CampusArt = { campus: campus, building: building, lab: lab, screen: screen, outside: outside, phone: phone, elsewhere: elsewhere, aPlace: aPlace, morning: morning };
 })(typeof window !== "undefined" ? window : this);

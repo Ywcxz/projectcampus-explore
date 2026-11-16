@@ -168,6 +168,29 @@ body.moving .labels { opacity: 0; }
 .key { animation: hand-on 9s ease-in-out infinite; transform-box: view-box; }
 .cap { animation: cap-on 9s ease-in-out infinite; transform-box: fill-box; }
 
+/* A morning at VSU: before dawn the announcement appears, then windows light one by
+   one, each with the copy that reached it. The still picture is the lit one, so
+   less motion shows the whole scene. It plays again each time today comes back. */
+@keyframes wake { from { opacity: 0; } to { opacity: 1; } }
+.frame[data-state="today"] .wake { animation: wake .6s ease both; }
+.frame[data-state="today"] .wake.n0 { animation-delay: .4s; }
+.frame[data-state="today"] .wake.n1 { animation-delay: 1.3s; }
+.frame[data-state="today"] .wake.n2 { animation-delay: 1.75s; }
+.frame[data-state="today"] .wake.n3 { animation-delay: 2.2s; }
+.frame[data-state="today"] .wake.n4 { animation-delay: 2.65s; }
+.frame[data-state="today"] .wake.n5 { animation-delay: 3.1s; }
+.frame[data-state="today"] .wake.n6 { animation-delay: 3.55s; }
+.frame[data-state="today"] .wake.n7 { animation-delay: 4s; }
+.frame[data-state="today"] .wake.n8 { animation-delay: 4.45s; }
+.frame[data-state="today"] .wake.n9 { animation-delay: 4.9s; }
+.frame[data-state="today"] .wake.n10 { animation-delay: 5.35s; }
+/* Rain slides one tile of its pattern along the wind's lean, so the loop has no seam. */
+@keyframes rain { to { transform: translate(-33.3px, 156.5px); } }
+.rain { animation: rain .5s linear infinite; }
+.rain.light { animation-duration: .8s; }
+@keyframes sway { 0%, 100% { transform: rotate(-1.2deg); } 50% { transform: rotate(1.6deg); } }
+.sway { animation: sway 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+
 /* Text inside a mock-up is part of the picture (D-171). */
 .ui { font-family: var(--font-body); }
 .ui-h { font-size: 30px; font-weight: 600; }
