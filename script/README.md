@@ -4,7 +4,7 @@ The script is the interactive site written before it is drawn: the scenes, how e
 
 A claim enters the script only once the master doc has it. If writing a scene refines an idea, the change goes into the master doc first, as a [Proposed] row or a chapter edit by pull request, and the sheet then cites it.
 
-**Status:** step 2, the model scene, 16 November 2026. `morning` is directed in full and drawn, and is the model. `three-jobs` is the second sample, directed in a shorter, lean form and drawn, and awaits the owner's yes on that form. Step 1, extraction (30 October), drew every scene out of the master doc into one sheet; the other sheets are still raw, their words drafts and their beats rough. Step 3 scripts the rest after the model and runs campus-review on the whole script; step 4 draws.
+**Status:** step 2, the model scene, 16 November 2026. `morning` is directed in full and drawn, and is the model. `three-jobs` is the second sample, directed in a shorter, lean form, which the owner accepted for the remaining scenes. Step 1, extraction (30 October), drew every scene out of the master doc into one sheet; the other sheets are still raw, their words drafts and their beats rough. Step 3 scripts the rest after the model and runs campus-review on the whole script; step 4 draws.
 
 ## The scene sheet
 

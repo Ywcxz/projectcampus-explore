@@ -1,6 +1,6 @@
 # Where a question goes (`three-jobs`)
 
-*Directed and drawn, 16 November 2026: the second sample, in the lean form (see "The lean form"). The pitch plan's C2. Step 7 of the offices path (Ch 2.4). Chapters 2, 2.2, 8. campus-review is not yet run on this sheet; it runs before the pull request is merged.*
+*Directed and drawn, 16 November 2026: the second sample, in the lean form (see "The lean form"). The pitch plan's C2. Step 7 of the offices path (Ch 2.4). Chapters 2, 2.2, 8. campus-review was skipped at Leo's word.*
 
 One idea: today a question splits three ways; with the network it takes one route, and the answer stays.
 
@@ -81,9 +81,12 @@ Reused: `world`, `hills`, `copy` (now takes an icon), `mark`, `isoPerson`, `.wak
 
 From this scene on, a sheet is directed in this shorter form, to keep the cost of each scene down: the words live only in `data/scenes.json`; the picture is the kit's backdrop plus a few marks; cards are reused where one already says it; and a scene gets one look per state in a headless browser.
 
-## Questions for Leo
+## Settled by Leo, 16 November 2026
 
-1. **The lean form:** is this enough detail for the remaining scenes?
-2. **The made-up label** is "Illustration" in both states, since the picture has no words. The plan asked for "Mock-up on made-up content" in the second state.
-3. **"What it will never have"** (the plan's N7) is left out of this scene; it gets its own.
-4. **Talking across roles** has no object here. D-201 makes it part of routing; `across-roles` carries it.
+1. The lean form is enough detail for the remaining scenes.
+2. The made-up label stays "Illustration" in both states.
+3. "What it will never have" (N7) gets its own scene.
+4. Talking across roles is carried by `across-roles`.
+5. The switch labels stay "Today" and "With CAMPUS".
+
+campus-review was skipped for this scene at Leo's word.
