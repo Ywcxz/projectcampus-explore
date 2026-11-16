@@ -6,7 +6,7 @@
 
 - **Place:** the whole campus, drawn as kinds of place, not to scale (D-153).
 - **Parent:** none. Every scene's back button leads here in the end; Home returns here.
-- **Opens today:** the academic building (`building`), a student between classes (`outside`), "A question finds its answer" (card `route`), and three places that open the card `to-come`: the dormitories, the faculty offices, and the services offices (object ID `orgs`).
+- **Opens today:** the academic building (`building`), a student between classes (`outside`), "A question finds its answer" (card `route`), and three places that open the card `to-come`: the dormitories, the faculty offices, and the services offices (object ID `services`). Since 16 November the services offices open `who-to-ask`.
 - **Opens once scripted:** dormitories → `morning`; services offices → `who-to-ask`; faculty offices → `across-roles`; the unopened building → `batch`, if it becomes organizations; the route → `three-jobs`, or keep the card and add a way into `three-jobs`.
 - **Edge objects, proposed:** a board by the main walk → `told-us`; the sky → `typhoon`; a gate or signpost at the edge → `the-ask` and `behind`; the parking lot's motorcycles → `hop-it`; the road out → `housing`; a bench where two students trade → `marketplace`. Each is a proposal for step 2, not a drawing decision.
 
@@ -31,7 +31,7 @@ None on the home.
 | A question finds its answer | card `route` | `three-jobs` |
 | Dormitories | card `to-come`, later `morning` | — |
 | Faculty offices | card `to-come`, later `across-roles` | — |
-| Services offices (`orgs`) | card `to-come`, later `who-to-ask` | — |
+| Services offices (`services`) | `who-to-ask` | — |
 
 ## Words
 
