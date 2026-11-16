@@ -616,7 +616,7 @@
     var dormB = bldg(P, -9, -4, 4, 1.6, 2.4, dorm) + bldg(P, -9, -1.6, 4, 1.6, 2.4, dorm, 1, ["1:0", "1:2", "1:3"]) +
       balc(-8.95, 1.1, 0, 1.2, 8, 10, -6, 7, dorm[1], 0.6) + balc(-6.85, 1.7, 0, 1.2, 3, 7, -1, 10, dorm[1], 0.6);
     items.push({ d: -7 - 0.8, svg: place("dorms", P(-6.4, 0.6)[0], P(-6.4, 0.6)[1] + 6, dormB) });
-    items.push({ d: -4.7 + 6, svg: place("orgs", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, bldg(P, -6, 5, 2.6, 2, 1.9, org, 1)) });
+    items.push({ d: -4.7 + 6, svg: place("services", P(-4.7, 7.2)[0], P(-4.7, 7.2)[1] + 10, bldg(P, -6, 5, 2.6, 2, 1.9, org, 1)) });
     items.push({ d: 7.1 + 2.9, svg: place("offices", P(7.6, 4.4)[0], P(7.6, 4.4)[1] + 10, bldg(P, 5.5, 1.8, 3.2, 2.2, 1.8, office, 1)) });
     // A building nobody opens yet, with two people talking by it, and its path.
     items.push({ d: -9.8 + 8.5, svg: bldg(P, -11, 7.5, 2.4, 2, 1.6, ["#E3EBD6", "#BFD0B0", "#A9BD98", "#5B7F8F"], 1) });
@@ -1420,21 +1420,25 @@
      marks, a shelf that keeps it, and a card into the group chat.
      Drawn light on purpose: the campus is the kit's, the rest is marks.
      ============================================================ */
+  /* Marks the question scenes share: an arc between two points, a dotted line,
+     a question in its bubble, a chat panel 240 wide, and a line of chat. No words. */
+  function arcTo(a, b, up) { return "M" + f(a[0]) + " " + f(a[1]) + "Q" + f((a[0] + b[0]) / 2) + " " + f((a[1] + b[1]) / 2 - up) + " " + f(b[0]) + " " + f(b[1]); }
+  function dots(d, col) { return '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="4" stroke-dasharray="3 12" stroke-linecap="round"/>'; }
+  function askMark(x, y, k, op) {
+    return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + k + ')" opacity="' + (op || 1) + '"><rect x="-30" y="-56" width="60" height="44" rx="10" fill="' + K.sea + '"/><path d="M-8 -12l8 12l8-12z" fill="' + K.sea + '"/>' +
+      '<text class="ui" y="-23" text-anchor="middle" font-size="30" font-weight="700" fill="#fff">?</text></g>';
+  }
+  function chatPanel(x, y, h, head) {
+    return '<rect x="' + x + '" y="' + y + '" width="240" height="' + h + '" rx="16" fill="#F4F5F1" stroke="#D6D2C2" stroke-width="2" filter="url(#soft)"/>' +
+      '<path d="M' + x + " " + (y + 36) + "V" + (y + 16) + "a16 16 0 0 1 16-16h208a16 16 0 0 1 16 16v20Z" + '" fill="' + head + '"/>' +
+      '<circle cx="' + (x + 24) + '" cy="' + (y + 18) + '" r="7" fill="#FFFFFF"/><rect x="' + (x + 42) + '" y="' + (y + 13) + '" width="96" height="9" rx="4.5" fill="#DDE3E6"/>';
+  }
+  function chatLine(x, y, wd, op) { return '<rect x="' + x + '" y="' + y + '" width="' + wd + '" height="20" rx="10" fill="#C9D3D8" opacity="' + op + '"/>'; }
+
   function threeJobs() {
     var P = WORLD, w = world(false), out = lay(1, hills()) + lay(2, w.ground) + lay(3, '<g opacity=".8">' + w.places + "</g>");
     var Q = P(-7, -2.5, 3.9), OF = P(7.1, 2.9, 3.0), G = [P(-7, -2.5, 2.2), P(-4.7, 6, 0.6), P(4.8, -7.8, 0.6), P(7.1, 2.9, 1.2)];
-    var arc = function (a, b, up) { return "M" + f(a[0]) + " " + f(a[1]) + "Q" + f((a[0] + b[0]) / 2) + " " + f((a[1] + b[1]) / 2 - up) + " " + f(b[0]) + " " + f(b[1]); };
-    var dash = function (d, col) { return '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="4" stroke-dasharray="3 12" stroke-linecap="round"/>'; };
-    var ask = function (x, y, k, op) {
-      return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + k + ')" opacity="' + (op || 1) + '"><rect x="-30" y="-56" width="60" height="44" rx="10" fill="' + K.sea + '"/><path d="M-8 -12l8 12l8-12z" fill="' + K.sea + '"/>' +
-        '<text class="ui" y="-23" text-anchor="middle" font-size="30" font-weight="700" fill="#fff">?</text></g>';
-    };
-    var panel = function (x, y, h, head) {
-      return '<rect x="' + x + '" y="' + y + '" width="240" height="' + h + '" rx="16" fill="#F4F5F1" stroke="#D6D2C2" stroke-width="2" filter="url(#soft)"/>' +
-        '<path d="M' + x + " " + (y + 36) + "V" + (y + 16) + "a16 16 0 0 1 16-16h208a16 16 0 0 1 16 16v20Z" + '" fill="' + head + '"/>' +
-        '<circle cx="' + (x + 24) + '" cy="' + (y + 18) + '" r="7" fill="#FFFFFF"/><rect x="' + (x + 42) + '" y="' + (y + 13) + '" width="96" height="9" rx="4.5" fill="#DDE3E6"/>';
-    };
-    var bubble = function (x, y, wd, op) { return '<rect x="' + x + '" y="' + y + '" width="' + wd + '" height="20" rx="10" fill="#C9D3D8" opacity="' + op + '"/>'; };
+    var arc = arcTo, dash = dots, ask = askMark, panel = chatPanel, bubble = chatLine;
 
     // The group chat, in both states: newer messages on top of whatever was asked.
     var chat = panel(60, 70, 190, "#6B7A86") + bubble(76, 118, 120, 1) + bubble(144, 146, 140, 1) + bubble(76, 174, 96, 1);
@@ -1467,7 +1471,8 @@
     var campus = objX("routing", mid[0], mid[1] - 40, 'data-show="campus"', route) +
       objX("trust", back[0], back[1] - 56, 'data-show="campus" data-delay="500"', trust) +
       objX("memory", sh[0], sh[1] - 60, 'data-show="campus" data-delay="900"', shelf) +
-      grp('data-show="campus" data-delay="1300"', dash(arc([back[0] - 60, back[1]], [250, 230], 70), K.green));
+      grp('data-show="campus" data-delay="1300"', dash(arc([back[0] - 60, back[1]], [250, 230], 70), K.green)) +
+      objX("leaves-out", 150, 800, 'data-show="campus" data-delay="1700"', emptySlot(150, 860, 0.5, ""));
 
     out += lay(4, today + campus +
       objX("chat", 180, 62, 'data-show="today"', '<g class="wake n1">' + chat + sunk + "</g>") +
@@ -1476,5 +1481,135 @@
     return svg("The campus from above. Today, one question leaves a dormitory and splits three ways: into a group chat, where it sinks under newer messages; into a community group, where three answers look alike; and on a walk past two wrong doors to an office. With the network, the same question takes one route by way of a front desk to one office; an answer comes back with its label, source, and date; it stays on a shelf, where a later student finds it; and a card carries it into the group chat.", out);
   }
 
-  root.CampusArt = { campus: campus, building: building, lab: lab, screen: screen, outside: outside, phone: phone, elsewhere: elsewhere, aPlace: aPlace, morning: morning, threeJobs: threeJobs };
+  /* An empty outline, 200 by 150 at scale 1, centred on (x, y): where a feature
+     would be, with a faint ghost of it inside. */
+  function emptySlot(x, y, k, ghost) {
+    return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + k + ')"><rect x="-100" y="-75" width="200" height="150" rx="18" fill="#FFFFFF" fill-opacity=".55" stroke="' + K.ink3 + '" stroke-width="' + f(3 / k) + '" stroke-dasharray="10 9"/>' +
+      '<g opacity=".3">' + ghost + "</g></g>";
+  }
+  /* A small clock: time passing on a question. */
+  function clock(x, y, k) {
+    return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + (k || 1) + ')" filter="url(#soft)"><circle r="15" fill="' + K.white + '" stroke="' + K.ink2 + '" stroke-width="3"/><path d="M0 -8V0L6 4" fill="none" stroke="' + K.ink2 + '" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>';
+  }
+  /* The campus from above, faded, as a backdrop: layers 1 to 3. */
+  function backdrop(op) {
+    var w = world(false);
+    return lay(1, hills()) + lay(2, w.ground) + lay(3, '<g opacity="' + op + '">' + w.places + "</g>");
+  }
+
+  /* ============================================================
+     Scene: who do I ask? Today the question goes to everyone; with
+     CAMPUS it is routed to a few who chose the topic, then to the
+     office responsible (D-071). Lean form.
+     ============================================================ */
+  function whoToAsk() {
+    var P = WORLD, out = backdrop(0.8);
+    var Q = P(-7, -2.5, 3.9), SV = P(-4.7, 6, 2.7), FO = P(7.1, 2.9, 2.6), AC = P(4.8, -7.8, 3.8);
+    // Today: it goes out to everyone at once, and two who happen to be online look up.
+    var wave = function (r) { return '<ellipse cx="' + f(Q[0]) + '" cy="' + f(Q[1] + 110) + '" rx="' + r + '" ry="' + f(r * 0.5) + '" fill="none" stroke="' + K.sea2 + '" stroke-width="4" stroke-dasharray="3 12" stroke-linecap="round"/>'; };
+    var seen = function (i, j, n) { var g = P(i, j); return '<ellipse cx="' + f(g[0]) + '" cy="' + f(g[1]) + '" rx="24" ry="10" fill="#FFFFFF" fill-opacity=".6" stroke="' + K.sea2 + '" stroke-width="3"/>' + isoPerson(P, i, j, n, 0, true); };
+    var online = seen(-1.6, 3.6, 3) + seen(6.4, -2.6, 6);
+    var unsure = function (p) {
+      return '<circle cx="' + f(p[0]) + '" cy="' + f(p[1]) + '" r="22" fill="#FFFFFF" fill-opacity=".7" stroke="' + K.gold + '" stroke-width="4" stroke-dasharray="6 5"/>' +
+        '<text class="ui" x="' + f(p[0]) + '" y="' + f(p[1] + 10) + '" text-anchor="middle" font-size="28" font-weight="700" fill="' + K.ink2 + '">?</text>';
+    };
+    var today = objX("everyone", Q[0] + 330, Q[1] + 40, 'data-show="today"',
+        '<ellipse cx="' + f(Q[0]) + '" cy="' + f(Q[1] + 110) + '" rx="420" ry="210" fill="#000" fill-opacity="0" class="hit"/>' +
+        '<g class="wake n1">' + wave(150) + '</g><g class="wake n2">' + wave(285) + online + '</g><g class="wake n3">' + wave(420) + "</g>") +
+      objX("which-office", FO[0], FO[1] - 34, 'data-show="today"', '<g class="wake n4">' + unsure(SV) + unsure(FO) + unsure(AC) + "</g>");
+
+    // With CAMPUS: three who chose the topic, lit; then on to the office responsible.
+    var H = [[-2.4, 1.2], [2.2, -3.2], [3, 4]], lit = "", routes = "";
+    H.forEach(function (h, n) {
+      var g = P(h[0], h[1]), top = [g[0], g[1] - 46], d = arcTo(Q, top, 60 + n * 24);
+      routes += '<path d="' + d + '" fill="none" stroke="' + K.green + '" stroke-width="4" stroke-linecap="round" filter="url(#glow)"/><path class="flow" d="' + d + '" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="2 14" stroke-linecap="round"/>';
+      lit += '<ellipse cx="' + f(g[0]) + '" cy="' + f(g[1]) + '" rx="26" ry="11" fill="' + K.gold3 + '" stroke="' + K.gold + '" stroke-width="3" filter="url(#glow)"/>' + isoPerson(P, h[0], h[1], n + 1, 0, true);
+    });
+    var h0 = P(H[0][0], H[0][1]), leg = arcTo([h0[0] - 20, h0[1] - 20], SV, 70), mid = [(h0[0] - 20 + SV[0]) / 2, (h0[1] - 20 + SV[1]) / 2 - 35];
+    var office = '<path d="' + leg + '" fill="none" stroke="#000" stroke-opacity="0" stroke-width="26" class="hit"/>' + dots(leg, K.green) + clock(mid[0], mid[1], 1.1) +
+      '<circle cx="' + f(SV[0]) + '" cy="' + f(SV[1]) + '" r="22" fill="none" stroke="' + K.gold + '" stroke-width="4" filter="url(#glow)"/>';
+    // VSU's own system, beside the office: the question is handed in, not tracked twice.
+    var T = [SV[0] - 150, SV[1] - 70];
+    var hand = dots("M" + f(SV[0] - 24) + " " + f(SV[1]) + "L" + f(T[0] + 44) + " " + f(T[1]), K.sea2) +
+      '<g filter="url(#soft)"><rect x="' + f(T[0] - 40) + '" y="' + f(T[1] - 34) + '" width="80" height="68" rx="14" fill="' + KIND.office.bg + '" stroke="' + K.sea2 + '" stroke-width="3"/></g>' + icon("pin", T[0], T[1] + 4, 0.9);
+    var campus = objX("helpers", P(2.2, -3.2)[0], P(2.2, -3.2)[1] - 70, 'data-show="campus"', routes + grp('data-show="campus" data-delay="500"', lit)) +
+      objX("office", mid[0], mid[1] - 34, 'data-show="campus" data-delay="900"', office) +
+      objX("hand-off", T[0], T[1] - 48, 'data-show="campus" data-delay="1300"', hand);
+
+    out += lay(4, today + campus + '<g class="wake n0">' + askMark(Q[0], Q[1], 1) + "</g>");
+    return svg("The campus from above, with people on its grounds. Today, one question leaves a dormitory and spreads to everyone at once; two people who happen to be online look up, and three buildings each carry a question mark. With the network, the same question takes three routes to three people who chose its topic; unanswered, it moves on, past a clock, to one office; and from there it is handed into one of the university's own systems.", out);
+  }
+
+  /* ============================================================
+     Scene: every batch starts over. Today, chat after chat with the
+     same question; with CAMPUS, one answer stays on a shelf at a
+     place and conversation fades (D-070). Lean form.
+     ============================================================ */
+  function batch() {
+    var P = WORLD, out = backdrop(0.8);
+    var SH = [P(-4.7, 6, 3.6)[0] - 40, P(-4.7, 6, 3.6)[1] - 30], LS = P(-4.4, 8.4), CH = [660, 70];
+    var chatOf = function (x, op, fade) {
+      return '<g opacity="' + op + '">' + chatPanel(x, 70, 190, "#6B7A86") + chatLine(x + 16, 118, 120, 1) + chatLine(x + 84, 146, 140, fade ? 0.6 : 1) + chatLine(x + 16, 174, 96, fade ? 0.3 : 1) + "</g>";
+    };
+    // Today: one chat a batch, the same question sunk in each, a year between them.
+    var years = '<g class="wake n1">' + chatOf(60, 0.5) + askMark(110, 256, 0.62, 0.3) + "</g>" +
+      '<g class="wake n2">' + icon("calendar", 330, 165, 0.7) + chatOf(360, 0.75) + askMark(410, 256, 0.62, 0.4) + "</g>" +
+      '<g class="wake n3">' + icon("calendar", 630, 165, 0.7) + chatOf(CH[0], 1) + askMark(CH[0] + 50, 256, 0.62, 0.55) + "</g>";
+    // An officer in a cap walks off the edge, and a folder goes too.
+    var L = [1190, 925];
+    var leaving = '<rect x="' + (L[0] - 70) + '" y="' + (L[1] - 150) + '" width="330" height="170" fill="#000" fill-opacity="0" class="hit"/>' +
+      dots("M" + (L[0] + 40) + " " + (L[1] - 4) + "H1590", K.brown) + personAt(L[0], L[1], 4, 3.2, false) +
+      '<path d="M' + (L[0] - 36) + " " + (L[1] - 108) + "l36 -14l36 14l-36 14Z" + '" fill="' + K.ink + '"/><path d="M' + (L[0] + 30) + " " + (L[1] - 106) + 'v22" stroke="' + K.gold + '" stroke-width="3" stroke-linecap="round"/>' +
+      '<g opacity=".5"><path d="M' + (L[0] + 110) + " " + (L[1] - 74) + 'h30l8 10h42v50h-80Z" fill="' + K.gold3 + '" stroke="' + K.brown + '" stroke-width="3" stroke-dasharray="6 5"/></g>';
+    var today = objX("chats", 480, 62, 'data-show="today"', years) + objX("leaving", L[0] + 60, L[1] - 150, 'data-show="today"', '<g class="wake n4">' + leaving + "</g>");
+
+    // With CAMPUS: the answer stays on a shelf at a place; a later student finds it.
+    var shelf = '<circle cx="' + f(SH[0]) + '" cy="' + f(SH[1]) + '" r="58" fill="' + K.gold3 + '" opacity=".55" filter="url(#glow)"/>' +
+      '<rect x="' + f(SH[0] - 80) + '" y="' + f(SH[1] + 42) + '" width="160" height="9" rx="3" fill="' + K.brown + '" filter="url(#soft)"/>' + copy("kept", SH[0], SH[1], 0, 0, 1, "id");
+    var later = isoPerson(P, -4.4, 8.4, 2, 0, true) + askMark(LS[0] - 34, LS[1] - 44, 0.5, 0.9) +
+      dots("M" + f(LS[0] + 6) + " " + f(LS[1] - 50) + "L" + f(SH[0] + 20) + " " + f(SH[1] + 56), K.gold);
+    var KY = [SH[0] - 122, SH[1] + 16];
+    var handed = badge("key", KY[0], KY[1], 1.5);
+    var out4 = arcTo([SH[0] + 50, SH[1] - 20], [CH[0] + 110, 262], 60);
+    var campus = objX("shelf", SH[0], SH[1] - 66, 'data-show="campus"', shelf) +
+      objX("later", LS[0] - 40, LS[1] + 34, 'data-show="campus" data-delay="500"', later) +
+      grp('data-show="campus" data-delay="900"', dots(out4, K.green)) +
+      objX("card-out", CH[0] + 120, 62, 'data-show="campus"', chatOf(CH[0], 1, true) + grp('data-show="campus" data-delay="900"', copy("kept", CH[0] + 120, 222, 0, 0, 0.62, "id"))) +
+      objX("key", KY[0], KY[1] - 34, 'data-show="campus" data-delay="1300"', handed);
+
+    out += lay(4, today + campus);
+    return svg("The campus from above. Today, three group chats stand in a row, a year between each, the same question sunk at the bottom of every one; at the edge, a figure in a graduation cap walks off, and a folder fades behind. With the network, one chat is left and its messages fade; one answer, with its label, source, and date, stays lit on a shelf at a place; a later student with a question finds it there; a card carries it into the chat; and the place's key hangs at the end of the shelf.", out);
+  }
+
+  /* ============================================================
+     Scene: what it leaves out. Four empty outlines where features
+     would be, and four people the network depends on. Lean form.
+     ============================================================ */
+  function leavesOut() {
+    var out = backdrop(0.45), X = [280, 600, 920, 1240], top = "", cast = "";
+    var stub = function (y, op) { return '<g opacity="' + op + '"><rect x="-70" y="' + y + '" width="140" height="30" rx="8" fill="' + K.ink3 + '"/></g>'; };
+    var ghosts = [
+      icon("megaphone", 0, 0, 1.7),
+      stub(-58, 1) + stub(-20, 0.75) + stub(18, 0.5) + '<path d="M-14 56l14 12l14-12" fill="none" stroke="' + K.ink3 + '" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>',
+      '<rect x="-66" y="-4" width="40" height="56" rx="5" fill="' + K.ink3 + '"/><rect x="-20" y="-40" width="40" height="92" rx="5" fill="' + K.ink3 + '"/><rect x="26" y="14" width="40" height="38" rx="5" fill="' + K.ink3 + '"/>',
+      '<path d="M-36 -52l9 23l23 9l-23 9l-9 23l-9 -23l-23 -9l23 -9Z" fill="' + K.ink3 + '"/><rect x="-6" y="-8" width="72" height="12" rx="6" fill="' + K.ink3 + '"/><rect x="-60" y="18" width="126" height="12" rx="6" fill="' + K.ink3 + '"/><rect x="-60" y="42" width="84" height="12" rx="6" fill="' + K.ink3 + '"/>'
+    ];
+    ["ads", "feed", "rankings", "ai"].forEach(function (id, n) {
+      top += obj(id, X[n], 96, emptySlot(X[n], 210, 1, ghosts[n]));
+    });
+    var held = [
+      function (x) { return copy("kept", x + 92, 700, 0, 6, 0.8, "id"); },
+      function (x) { return badge("star", x + 84, 690, 2.2); },
+      function (x) { return badge("shield", x + 84, 690, 2.2); },
+      function (x) { return '<g filter="url(#soft)">' + mark("source", x + 84, 690, 2.9) + "</g>"; }
+    ];
+    var shirts = [K.sea2, K.gold2, K.green2, "#6A5A8C"];
+    ["office", "helper", "moderator", "owner"].forEach(function (id, n) {
+      cast += obj(id, X[n], 560, standPerson(X[n], 900, n + 1, 0.82, shirts[n]) + held[n](X[n]));
+    });
+    out += lay(4, top + cast);
+    return svg("The campus, faded. Above it, four empty dashed outlines, each with a faint ghost of what is left out: a megaphone, a feed that runs on downward, a podium, and a spark writing lines. Below, four people step forward: one holding an answer with its label, source, and date; one with a star; one with a shield; and one with the mark of a university office.", out);
+  }
+
+  root.CampusArt = { campus: campus, building: building, lab: lab, screen: screen, outside: outside, phone: phone, elsewhere: elsewhere, aPlace: aPlace, morning: morning, threeJobs: threeJobs, whoToAsk: whoToAsk, batch: batch, leavesOut: leavesOut };
 })(typeof window !== "undefined" ? window : this);

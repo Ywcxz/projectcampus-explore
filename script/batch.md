@@ -1,68 +1,69 @@
 # Every batch starts over (`batch`)
 
-*Extracted. Step 4 of the offices path (Ch 2.4; D-175). Chapters 2, 2.2, 8.1, 8.*
+*Directed and drawn, 16 November 2026, in the lean form (`three-jobs.md`). The pitch plan's N6, "Memory". Step 4 of the offices path (Ch 2.4; D-175). Chapters 2, 2.2, 8.*
+
+One idea: today each batch's chat starts empty; with the network one confirmed answer would stay at a place, and conversation would fade.
 
 ## Place and access
 
-- **Place:** organizations, if the unopened building on the campus becomes theirs (README, question 1); otherwise the dormitories, where batch group chats live.
-- **Parent:** `campus`.
-- **Opens:** the group chat (a card on group chats); the officers' handover → `a-place`; with CAMPUS, the kept guide (card `kept`).
+- **Place:** the campus from above, the kit's own, a little faded. The shelf stands over one kind of place; no organizations place is drawn (README, question 1, still open).
+- **Parent:** `three-jobs`, from "Kept for the next batch" (`memory`), which now opens this scene instead of the card `kept`. See Questions.
+- **Opens, drawn:** six cards (see Objects). Four are cards the site already had.
+- **Opens, waiting:** `a-place` already has its parent, `elsewhere`; the card `steward` stands in for it.
 
 ## Problem
 
-| P- | Hypothesis (Ch 8) | Shown as | How we'd find out |
-| --- | --- | --- | --- |
-| P-10 | The same questions are asked and answered again in each batch, because answers given in group chats cannot be found later | A question | Survey: "Finding an old answer" (no, so I asked again; no, and I gave up), "Asking first"; interviews |
-| P-08 | Knowledge is lost when students graduate or organization officers change | A question | Interviews, with the officers' follow-up as a lead (Ch 8; D-123); Facebook study H3 |
+| P- | Shown as | How we'd find out |
+| --- | --- | --- |
+| P-10 | Three chats, a year apart, the same question sunk in each | Survey: "Finding an old answer", "Asking first"; interviews |
+| P-08 | A figure in a graduation cap walking off, a folder fading | Interviews (D-123); Facebook study H3 |
 
-D-175: it stays on the path, shown as a question with how we'd find out until it clears the D-038 bars. P-23 is not here; it has `concerns`. P-08 has no survey problem question (D-123), so it can't clear the survey bar as Chapter 8 reads.
+Both are [Unresolved] and worded as questions (D-175). P-08 has no survey question, so it can't clear the survey's bar as Chapter 8 reads (README, "What the master doc needs", 2).
 
 ## Today / with CAMPUS
 
-- **Today** [Unresolved]: answers about scholarships, enrollment, dormitories, and subjects are given in batch group chats, buried within days, and given again; each new batch starts its own chat; seniors who answered year after year stop. Organizations' records live on Facebook pages and officers' personal accounts. All by the author's observation (Ch 2).
-- **With CAMPUS** [Proposed]: before a first-year's question posts, the network shows a guide a student wrote two years earlier, confirmed by the office for this academic year, with a note of what changed. She doesn't post. The author, now graduated, sees privately that it keeps helping (Ch 2.2, scene 3). The organization's officers hand on its place; nothing depended on a graduating student's account (Ch 2.2, scene 5).
-
-## Related work
-
-| Card | How CAMPUS differs | VSU need | Source |
-| --- | --- | --- | --- |
-| Messenger group chats | Kept answers and notices that link into chats | Answers lost and asked again each batch, by the author's observation | Ch 2; D-074 |
-| Stack Overflow's duplicate links | Existing answers shown before a question posts | Seniors spared answering the same question every year | E-039; D-071 |
-| Organization platforms | Organizations inside a wider campus network, on open components | 57 accredited organizations whose records turn over with their officers | Ch 2; E-027 |
+- **Today** [Unresolved]: one group chat a batch, each with the same question at the bottom; an officer leaves and the records go too.
+- **With CAMPUS** [Proposed]: one chat is left, its messages fading; one answer stays, dated, on a lit shelf at a place; a later student with the same question finds it before she posts; a card carries it into the chat; the place's key hangs on the shelf, for the next officers.
 
 ## Objects
 
-| Object | Opens | Callback |
-| --- | --- | --- |
-| The batch group chat | card: group chats | `morning` |
-| A senior who stops answering | card: helpers who stay | `three-jobs` |
-| The officers' handover | `a-place` | `governed` |
-| With CAMPUS: the kept guide | card `kept` | `screen` |
+| Object | State | Label | Opens |
+| --- | --- | --- | --- |
+| `chats` | Today | The same question, each batch? | card `buried` |
+| `leaving` | Today | Do records leave with officers? | card `handover-lost` (new) |
+| `shelf` | With CAMPUS | One answer stays, dated | card `kept` |
+| `later` | With CAMPUS | A later student finds it | card `shown-first` (new) |
+| `card-out` | With CAMPUS | A card back into the chat | card `share-cards` |
+| `key` | With CAMPUS | The place is handed on | card `steward` |
 
 ## Words
 
-- **Title:** Every batch starts over.
-- **Summary, today, draft:** "Each batch starts its own group chat and asks the same questions. Seniors answer, then stop; officers graduate with the records. Is this common at VSU? Not yet known: the survey and the interviews will ask." (36 words)
-- **Summary, with CAMPUS, draft:** "On the network, a first-year's question would meet the answer a senior gave two years ago, confirmed by the office for this year. A place would pass to the next officers with its records." (34 words)
-- **Narration:** to write.
+The words are in `data/scenes.json`, which is their one copy: the scene `batch`, its second state, and the cards `handover-lost` and `shown-first`. The second summary is the plan's N6 line, put in "would".
 
-| State | Claim | Tag | Source |
-| --- | --- | --- | --- |
-| Today | Are the same questions asked again each batch because answers in group chats can't be found later? Not yet known. | Unresolved | P-10 |
-| Today | Is knowledge lost when officers change? Not yet known: the interviews will ask. | Unresolved | P-08 |
-| Today | VSU's list of accredited organizations for 2022–23 had 57 entries, under a college structure VSU replaced with faculties in January 2025. | Established | E-027 |
-| With CAMPUS | The network keeps knowledge and lets conversation fade. | Established | D-070 |
-| With CAMPUS | Answers that already exist are shown before a new question posts. | Established | D-071 |
-| With CAMPUS | Stewards look after a place for a term, then hand it on. | Established | D-144 |
-| With CAMPUS | Because every kept answer makes the next question easier, the network's value compounds over years. | Proposed | Ch 2 |
+| Claim | Tag | Source |
+| --- | --- | --- |
+| The two problems above, each as a question with how it will be found out | Unresolved | P-08, P-10 |
+| Organizations lose their records when officers graduate, by the author's observation | Unresolved | Ch 2 |
+| The network keeps knowledge and lets conversation fade | Established | D-070 |
+| Existing answers are shown before a new question posts | Established | D-071 |
+| Stack Overflow links accidental duplicates to the original | Established | E-039 |
+| Answers travel into chats as cards, shared by hand, with source and date | Established | D-074, D-182 |
+| Stewards look after a place for a term, then hand it on | Established | D-144 |
+
+E-027's count of organizations is left out: it was not opened again for this sheet, and the site shows only numbers re-checked when the script is written.
+
+## The picture
+
+No words. Layers 1 to 3 are the kit's. Layer 4:
+
+- **Today:** three chat panels in a row along the top, the oldest palest, a calendar between each, a faded question at the bottom of every one; lower right, a large figure in a graduation cap, a dotted line running off the edge, and a folder in dashed outline.
+- **With CAMPUS:** the newest chat alone, its lines fading; a lit shelf over one place with one answer carrying its label, source, and date; a key at the shelf's end; below, a student with a small question, tied to the shelf by a gold dotted line; a dotted green arc from the shelf to the chat, where the same answer sits as a card.
 
 ## Animation beats
 
-1. A group chat fills; a question scrolls up and out of sight.
-2. A year turns (a calendar); a new chat, the same question.
-3. A senior answers, again, then the reply bubbles stop.
-4. Officers in caps walk off; a folder fades with them.
-5. With CAMPUS: the question meets the kept guide before it posts; the steward's key passes to the next officer.
+Today, on entering: the chats in turn, oldest first (1.3 s, 1.75 s, 2.2 s), then the officer (2.65 s). With CAMPUS, on switching: the shelf at once, the later student at 0.5 s, the card into the chat at 0.9 s, the key at 1.3 s. Nothing loops.
+
+**Less motion:** the finished picture of each state, at once.
 
 ## Findings slot
 
@@ -70,4 +71,9 @@ The survey's share for "Finding an old answer", by year; interview incidents of 
 
 ## Kit pieces
 
-Reuse: `post`, `chip`, `standPerson`, `badge` ("key"), `isoChar`. New: a calendar page, a graduation cap.
+Reused: `backdrop`, `chatPanel`, `chatLine`, `askMark`, `copy`, `badge`, `icon`, `personAt`, `isoPerson`, `.wake`. New, inside `batch()`: the cap and the folder. No new CSS.
+
+## Questions for Leo
+
+1. **Its parent.** README's question 1 (an organizations place, or the dormitories) is yours and still open, so this scene hangs from `three-jobs` for now, where "memory" is one of the three jobs. Moving it is one line in `data/scenes.json` once the place is settled.
+2. The senior who stops answering is not drawn; the card `chose-topic` carries the helper's weekly limit. Say if it should be.

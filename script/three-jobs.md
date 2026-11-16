@@ -8,8 +8,8 @@ One idea: today a question splits three ways; with the network it takes one rout
 
 - **Place:** the campus from above, the kit's own (`world(false)`), a little faded. Kinds of place only (D-153).
 - **Parent:** `campus`, from "A question finds its answer", which now opens this scene instead of the card `route`.
-- **Opens, drawn:** seven cards (see Objects). Four are cards the site already had.
-- **Opens, waiting:** `who-to-ask`, `across-roles`, `batch`. None is drawn yet.
+- **Opens, drawn:** six cards and two scenes (see Objects): `batch`, from the shelf, and `leaves-out`, from a small empty outline at the lower left. Both since 16 November, with their sheets.
+- **Opens, waiting:** `across-roles`. `who-to-ask` is drawn and opens from the services offices on `campus`.
 
 ## Problem
 
@@ -38,8 +38,9 @@ Switch labels: "Today" and "With CAMPUS", as in `morning` and `elsewhere`. The p
 | `walk` | Today | Two doors before the right one | card `several-visits` (new) |
 | `routing` | With CAMPUS | One route, by the front desk | card `route` |
 | `trust` | With CAMPUS | Label, source, and date | card `labels` |
-| `memory` | With CAMPUS | Kept for the next batch | card `kept` |
+| `memory` | With CAMPUS | Kept for the next batch | scene `batch` |
 | `chat-card` | With CAMPUS | A card into the group chat | card `share-cards` |
+| `leaves-out` | With CAMPUS | What it leaves out | scene `leaves-out` |
 
 ## Words
 

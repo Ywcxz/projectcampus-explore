@@ -4,7 +4,7 @@ The script is the interactive site written before it is drawn: the scenes, how e
 
 A claim enters the script only once the master doc has it. If writing a scene refines an idea, the change goes into the master doc first, as a [Proposed] row or a chapter edit by pull request, and the sheet then cites it.
 
-**Status:** step 2, the model scene, 16 November 2026. `morning` is directed in full and drawn, and is the model. `three-jobs` is the second sample, directed in a shorter, lean form, which the owner accepted for the remaining scenes. Step 1, extraction (30 October), drew every scene out of the master doc into one sheet; the other sheets are still raw, their words drafts and their beats rough. Step 3 scripts the rest after the model and runs campus-review on the whole script; step 4 draws.
+**Status:** step 2, the model scene, 16 November 2026. `morning` is directed in full and drawn, and is the model. `three-jobs` is the second sample, directed in a shorter, lean form, which the owner accepted for the remaining scenes. `who-to-ask`, `batch`, and `leaves-out` followed in that form the same day. Step 1, extraction (30 October), drew every scene out of the master doc into one sheet; the other sheets are still raw, their words drafts and their beats rough. Step 3 scripts the rest after the model and runs campus-review on the whole script; step 4 draws.
 
 ## The scene sheet
 
@@ -41,13 +41,14 @@ Built means drawn and in `scenes.json`; extracted means a sheet only.
 | Stewards, not owners | `a-place.md` | Off the map | — | 2.2 | Built |
 | 4:30 a.m. | `morning.md` | Dormitories | P-06, P-11, P-20 | 2, 2.2, 8, 8.1 | Built: the model |
 | What students told us | `told-us.md` | Edge | All 23, as a board | 8, 2.1 | Extracted |
-| Every batch starts over | `batch.md` | Organizations (see questions) | P-08, P-10 | 2, 2.2, 8.1 | Extracted |
-| Who do I ask? | `who-to-ask.md` | Services offices | P-01, P-02, P-07, P-09 | 2, 2.1, 2.2, 3 | Extracted |
+| Every batch starts over | `batch.md` | The campus, above it (see questions) | P-08, P-10 | 2, 2.2, 8 | Built: lean |
+| Who do I ask? | `who-to-ask.md` | Services offices | P-01, P-02, P-03, P-09 | 2, 2.2, 2.3, 8 | Built: lean |
 | Where concerns go | `concerns.md` | Services offices | P-23 | 2.2, 2.1, 8 | Extracted |
 | Talking across roles | `across-roles.md` | Faculty offices | P-04, P-05 | 2, 2.1, 2.2 | Extracted |
 | A lecture hall at class time | `hall.md` | Academic building | P-15, P-16, P-18, P-19 | 4, 4.2, 8 | Extracted |
 | What VSU already has | `vsu-has.md` | Edge | — | 2.3, 7, 10 | Extracted |
 | Where a question goes | `three-jobs.md` | The campus, above it | P-01, P-02, P-03, P-06, P-10 | 2, 2.2, 8 | Built: the second sample |
+| What it leaves out | `leaves-out.md` | The campus, above it | — | 2, 2.2 | Built: lean |
 | How it would be governed | `governed.md` | Edge | P-12 | 2, 2.2, 9 | Extracted |
 | Typhoon day | `typhoon.md` | Edge, over the whole campus | P-16, P-17, P-20 | 4, 4.1 | Extracted |
 | The test | `test.md` | Edge | — | 2, 2.4, 11 | Extracted |
@@ -59,7 +60,7 @@ Built means drawn and in `scenes.json`; extracted means a sheet only.
 | Housing, a later module | `housing.md` | Edge: later | P-22 | 2.6 | Extracted |
 | Hop-It, a later module | `hop-it.md` | Edge: later | P-14 | 2.7 | Extracted |
 
-Every P- row in Chapter 8 has a scene: P-01, P-02, P-07, and P-09 at the services offices; P-03 and P-06 in the feed; P-04 and P-05 at the faculty offices; P-06, P-11, and P-20 at the dormitories at dawn; P-08 and P-10 with the organizations; P-12 in governance; P-13 in the twin; P-14, P-21, and P-22 in the later modules; P-15, P-16, P-18, and P-19 in the lecture hall; P-16, P-17, and P-20 on typhoon day; P-23 at the services offices.
+Every P- row in Chapter 8 has a scene: P-01, P-02, and P-09 at the services offices, where P-07 waits for a later pass; P-03 and P-06 in the feed; P-04 and P-05 at the faculty offices; P-06, P-11, and P-20 at the dormitories at dawn; P-08 and P-10 with the organizations; P-12 in governance; P-13 in the twin; P-14, P-21, and P-22 in the later modules; P-15, P-16, P-18, and P-19 in the lecture hall; P-16, P-17, and P-20 on typhoon day; P-23 at the services offices.
 
 ## The tree
 
@@ -74,8 +75,10 @@ Main Campus (campus)
 ├── Services offices ─────── Who do I ask? (who-to-ask)
 │                              └── Where concerns go (concerns)
 ├── Faculty offices ──────── Talking across roles (across-roles)
-├── The unopened building ── Every batch starts over (batch), if it becomes organizations
-├── A question finds its answer ─ Three jobs, kept by memory (three-jobs)
+├── The unopened building ── nothing yet (question 1)
+├── A question finds its answer ─ Where a question goes (three-jobs)
+│                              ├── Every batch starts over (batch), until its place is settled
+│                              └── What it leaves out (leaves-out)
 │
 ├── One feed for everything (elsewhere), today and with CAMPUS
 │     └── Stewards, not owners (a-place)
@@ -112,7 +115,7 @@ The other paths named in D-152 (VSU ICT, faculty and staff, students after the s
 
 ## Questions for Leo
 
-1. **No organizations place.** The campus draws dormitories, services offices, faculty offices, the academic building, and one building nothing opens yet. "Every batch starts over" needs a place. Should the unopened building become organizations (D-153 names organizations among the kinds of place), or should the scene sit at the dormitories, where batch group chats live?
+1. **No organizations place.** (Still open. `batch` is drawn and hangs from `three-jobs` meanwhile.) The campus draws dormitories, services offices, faculty offices, the academic building, and one building nothing opens yet. "Every batch starts over" needs a place. Should the unopened building become organizations (D-153 names organizations among the kinds of place), or should the scene sit at the dormitories, where batch group chats live?
 2. **Two scenes at the services offices.** `who-to-ask` and `concerns` both sit there. The sheets make `who-to-ask` the services offices scene and `concerns` its child. The alternative is a services offices scene with both as children, which adds a level.
 3. **Edge scenes with no bar.** D-174 makes the scenes the navigation, entered by clicking their places. Edge scenes have no place. The sheets propose objects on Main Campus for each: a board by the main walk (`told-us`), the sky (`typhoon`), the gate (`the-ask`, `behind`), and so on. Or the start could carry an edge ring of small signs.
 4. **"Who do I ask?" on the path.** It is not one of Chapter 2.4's eleven steps. The sheets reach it from step 2's board and from step 7. Should it be on the offices path?
@@ -127,9 +130,10 @@ Found while extracting. None is fixed here; each needs a chapter edit or a row i
 3. **The spatial interface.** The site's own campus is a way of browsing by place, which D-093 keeps as research only for the network. The handoff's open item stands: revise D-093, or say on `twin` that browsing the site by place is not the network's interface.
 4. **The script-first rule** has no row yet (handoff, still open).
 5. **E-025 could say who announces, and has a newer check.** Its source was opened again on 16 November 2026 while `morning` was directed, and still says what the row says. It also says the announcement is made by the local chief executive or the head of the institution, or their authorized representatives, which the row leaves out. The row's check date, and that detail if the owner wants it, are a small edit in projectcampus-docs.
+6. **E-020 has a newer check.** Its source was opened again on 16 November 2026 for `who-to-ask` and still says what the row says.
+7. **An untagged sentence.** Chapter 2.2's "Most social platforms broadcast…" carries no tag; the card `broadcast` shows it as [Proposed].
 
 ## Smaller notes
 
 - The campus-review skill already names `Ywcxz/projectcampus-docs`, so that open item in the 30 October handoff looks done.
-- In `scenes.json`, the services offices object has the ID `orgs`. Rename it when `who-to-ask` is drawn, so the ID says what it is.
 - This repository's README still lists the I and S keys and a navigation bar, which D-174 dropped.

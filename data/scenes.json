@@ -284,6 +284,101 @@
         { "text": "Does reaching the right office or person take several visits? Not yet known: the survey asks how many tries a task took, and what students did first at an office new to them.", "tag": "Unresolved", "source": { "ref": "P-02" } }
       ],
       "chapter": { "chapter": "evidence", "label": "Chapter 8" }
+    },
+    {
+      "id": "broadcast",
+      "title": "To everyone, and to no one",
+      "text": "In a group, a question goes to everyone, and whoever happens to be online answers. Does a student's question reach someone who knows? Not yet known: the survey asks where students asked first.",
+      "claims": [
+        { "text": "Most social platforms broadcast: a question goes to everyone in a group, and whoever happens to be online answers.", "tag": "Proposed", "source": { "chapter": "network-design", "label": "Ch 2.2" } },
+        { "text": "Do students take institutional questions to unofficial groups, where a wrong answer carries no consequence? Not yet known: the survey asks where students looked or asked first.", "tag": "Unresolved", "source": { "ref": "P-03" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 2.2" }
+    },
+    {
+      "id": "chose-topic",
+      "title": "Helpers who chose the topic",
+      "text": "Members would opt in to help with topics, such as scholarships, a program, or a dormitory. A question would reach a few of them, each told why, and no helper would get more than a set number a week.",
+      "claims": [
+        { "text": "In the network's design, a question reaches a few members who opted in to help with its topic, each told why, and no helper receives more than a set number of routed questions a week.", "tag": "Established", "source": { "ref": "D-071" } },
+        { "text": "Routing uses only the topics members declare and the communities they join, never inferred profiles.", "tag": "Established", "source": { "ref": "D-071" } },
+        { "text": "Showing answers that already exist first would spare helpers the fatigue of answering the same question every year.", "tag": "Proposed", "source": { "chapter": "network-design", "label": "Ch 2.2" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 2.2" }
+    },
+    {
+      "id": "hand-off",
+      "title": "Handed in, not tracked twice",
+      "text": "VSU already runs a helpdesk and a document request tracker. The network would help a student find the right one and hand her in. Requests would stay in VSU's systems.",
+      "claims": [
+        { "text": "VSU runs a document request and tracking system and a helpdesk with ticket status.", "tag": "Established", "source": { "ref": "E-004" } },
+        { "text": "The network hands off rather than duplicates: service and document requests stay in VSU's systems, and the network helps people find them.", "tag": "Established", "source": { "ref": "D-064" } }
+      ],
+      "chapter": { "chapter": "network-fit", "label": "Chapter 2.3" }
+    },
+    {
+      "id": "handover-lost",
+      "title": "Do records leave with officers?",
+      "text": "We think an organization's records sit on pages and personal accounts, and are lost when its officers graduate. Not yet known: the interviews will ask, and the Facebook study counts groups that replace an earlier one.",
+      "claims": [
+        { "text": "Is knowledge lost when students graduate or organization officers change? Not yet known: the interviews will ask, and the Facebook study counts community groups that replace an earlier group.", "tag": "Unresolved", "source": { "ref": "P-08" } },
+        { "text": "Organizations lose their records when officers graduate: the author's observation, with no field evidence yet.", "tag": "Unresolved", "source": { "chapter": "social-network", "label": "Ch 2" } }
+      ],
+      "chapter": { "chapter": "evidence", "label": "Chapter 8" }
+    },
+    {
+      "id": "shown-first",
+      "title": "Shown before she posts",
+      "text": "Before a first-year's question posts, the network would show a guide a student wrote two years earlier, confirmed by the office for this year. She reads it and doesn't post.",
+      "claims": [
+        { "text": "In the network's design, answers that already exist are shown before a new question posts.", "tag": "Established", "source": { "ref": "D-071" } },
+        { "text": "Stack Overflow closes accidental duplicate questions with a link to the original, and keeps differently worded ones as signposts.", "tag": "Established", "source": { "ref": "E-039" } },
+        { "text": "A guide's author, since graduated, would see privately that it keeps being read.", "tag": "Proposed", "source": { "chapter": "network-design", "label": "Ch 2.2" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 2.2" }
+    },
+    {
+      "id": "no-ads-feed",
+      "title": "Not built to hold attention",
+      "text": "No ads, reels, or stories, and no feed built for endless scrolling. The home would be a digest that ends once a member is caught up, judged by questions answered, never by time spent.",
+      "claims": [
+        { "text": "The network is designed with no ads, reels, stories, or feeds built for endless scrolling.", "tag": "Established", "source": { "ref": "D-035" } },
+        { "text": "The network is judged by the knowledge it moves and the tasks it helps finish, not by attention, and its home ends once the member is caught up.", "tag": "Established", "source": { "ref": "D-061" } }
+      ],
+      "chapter": { "chapter": "social-network", "label": "Chapter 2" }
+    },
+    {
+      "id": "no-ai-answers",
+      "title": "No AI writing answers",
+      "text": "The front desk writes no answers. It only finds and points to what people on campus wrote, with label, source, and date. Its first version is plain search.",
+      "claims": [
+        { "text": "The network's front door is a receptionist, not a chatbot: it writes no answers of its own and promises none, and its first version is plain search.", "tag": "Established", "source": { "ref": "D-181" } },
+        { "text": "AI is not foundational to the MVP.", "tag": "Established", "source": { "ref": "D-013" } },
+        { "text": "A first version leaves out artificial intelligence of any kind.", "tag": "Established", "source": { "chapter": "network-design", "label": "Ch 2.2" } }
+      ],
+      "chapter": { "chapter": "network-design", "label": "Chapter 2.2" }
+    },
+    {
+      "id": "office-commits",
+      "title": "Offices that answer",
+      "text": "Office responsiveness comes before software. No pilot would start without one office's commitment to answer students within an agreed time, on a channel it already uses.",
+      "claims": [
+        { "text": "Office responsiveness comes before software: no network pilot starts without one office's commitment to answer students within an agreed time, on a channel it already uses.", "tag": "Established", "source": { "ref": "D-068" } },
+        { "text": "Which offices will commit to answering students on the network, and how fast, is open.", "tag": "Unresolved", "source": { "ref": "Q-17" } },
+        { "text": "The network would be disproved if no office will commit to answer.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } }
+      ],
+      "chapter": { "chapter": "social-network", "label": "Chapter 2" }
+    },
+    {
+      "id": "owner-inside",
+      "title": "An owner inside VSU",
+      "text": "The network would be governed by VSU and its students together. Who at VSU would own its rules and moderation is an open question. If VSU cannot or will not own it, the proposal is disproved.",
+      "claims": [
+        { "text": "What VSU lacks is a community space that joins its pieces, governed by VSU and its students together.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } },
+        { "text": "Who at VSU would own moderation and the community rules is open.", "tag": "Unresolved", "source": { "ref": "Q-05" } },
+        { "text": "The network would be disproved if VSU cannot or will not own it.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } }
+      ],
+      "chapter": { "chapter": "social-network", "label": "Chapter 2" }
     }
   ],
   "scenes": [
@@ -305,7 +400,7 @@
         { "id": "route", "label": "A question finds its answer", "opens": { "scene": "three-jobs" } },
         { "id": "dorms", "label": "Dormitories, before dawn", "opens": { "scene": "morning" } },
         { "id": "offices", "label": "Faculty offices", "opens": { "card": "to-come" } },
-        { "id": "orgs", "label": "Services offices", "opens": { "card": "to-come" } }
+        { "id": "services", "label": "Services offices", "opens": { "scene": "who-to-ask" } }
       ]
     },
     {
@@ -473,8 +568,110 @@
         { "id": "walk", "label": "Two doors before the right one", "state": "today", "opens": { "card": "several-visits" } },
         { "id": "routing", "label": "One route, by the front desk", "state": "campus", "opens": { "card": "route" } },
         { "id": "trust", "label": "Label, source, and date", "state": "campus", "opens": { "card": "labels" } },
-        { "id": "memory", "label": "Kept for the next batch", "state": "campus", "opens": { "card": "kept" } },
-        { "id": "chat-card", "label": "A card into the group chat", "state": "campus", "opens": { "card": "share-cards" } }
+        { "id": "memory", "label": "Kept for the next batch", "state": "campus", "opens": { "scene": "batch" } },
+        { "id": "chat-card", "label": "A card into the group chat", "state": "campus", "opens": { "card": "share-cards" } },
+        { "id": "leaves-out", "label": "What it leaves out", "state": "campus", "opens": { "scene": "leaves-out" } }
+      ]
+    },
+    {
+      "id": "who-to-ask",
+      "art": "whoToAsk",
+      "parent": "campus",
+      "title": "Who do I ask?",
+      "summary": "A first-year student has a question for an office. Asked in a group, it goes to everyone and to no one in particular. Does it reach someone who knows? We haven't measured it.",
+      "madeUp": "illustration",
+      "claims": [
+        { "text": "Does reaching the right office or person take several visits? Not yet known: the survey asks how many tries a task took, and what students did first at an office new to them.", "tag": "Unresolved", "source": { "ref": "P-02" } },
+        { "text": "Do first-generation students lack knowledge of how the university works that peers and offices could supply? Not yet known: the interviews will ask.", "tag": "Unresolved", "source": { "ref": "P-09" } },
+        { "text": "Of 2,604 first-year students enrolled at the Main Campus in 2026, 1,248 (47.9%) are first-generation college students.", "tag": "Established", "source": { "ref": "E-020" } },
+        { "text": "Is the information people need scattered across offices, websites, documents, group chats, and word of mouth? Not yet known: the survey and the Facebook study will ask.", "tag": "Unresolved", "source": { "ref": "P-01" } }
+      ],
+      "states": [
+        { "id": "today", "label": "Today" },
+        {
+          "id": "campus",
+          "label": "With CAMPUS",
+          "title": "Routed, not broadcast",
+          "summary": "If nothing answers her, the question would be routed, not broadcast. She would pick a topic and whom to ask. It would reach a few people who chose that topic. Unanswered, it would move to the office responsible.",
+          "madeUp": "illustration",
+          "claims": [
+            { "text": "In the network's design, questions are routed, not broadcast: the asker chooses a topic and whom to ask, and the question reaches a few members who opted in to help with that topic, each told why.", "tag": "Established", "source": { "ref": "D-071" } },
+            { "text": "Unanswered questions, and questions only an office can settle, move to the office responsible.", "tag": "Established", "source": { "ref": "D-071" } },
+            { "text": "Routing uses only the topics members declare and the communities they join, never inferred profiles.", "tag": "Established", "source": { "ref": "D-071" } },
+            { "text": "The network hands off rather than duplicates: service and document requests stay in VSU's systems.", "tag": "Established", "source": { "ref": "D-064" } }
+          ]
+        }
+      ],
+      "chapters": [{ "chapter": "social-network", "label": "Chapter 2" }, { "chapter": "network-design", "label": "Chapter 2.2" }, { "chapter": "evidence", "label": "Chapter 8" }],
+      "objects": [
+        { "id": "everyone", "label": "To everyone, or to no one?", "state": "today", "opens": { "card": "broadcast" } },
+        { "id": "which-office", "label": "Which office handles this?", "state": "today", "opens": { "card": "several-visits" } },
+        { "id": "helpers", "label": "Three who chose the topic", "state": "campus", "opens": { "card": "chose-topic" } },
+        { "id": "office", "label": "Unanswered? On to the office", "state": "campus", "opens": { "card": "route" } },
+        { "id": "hand-off", "label": "Then into VSU's own systems", "state": "campus", "opens": { "card": "hand-off" } }
+      ]
+    },
+    {
+      "id": "batch",
+      "art": "batch",
+      "parent": "three-jobs",
+      "title": "Every batch starts over",
+      "summary": "We think each batch starts its own group chat and asks the same questions again, and that an organization's records leave with its officers. We haven't measured it: the survey and the interviews will ask.",
+      "madeUp": "illustration",
+      "claims": [
+        { "text": "Are the same questions asked again in each batch, because answers in group chats can't be found later? Not yet known: the survey asks whether students found an old answer or asked again.", "tag": "Unresolved", "source": { "ref": "P-10" } },
+        { "text": "Is knowledge lost when students graduate or organization officers change? Not yet known: the interviews will ask, and the Facebook study counts community groups that replace an earlier group.", "tag": "Unresolved", "source": { "ref": "P-08" } }
+      ],
+      "states": [
+        { "id": "today", "label": "Today" },
+        {
+          "id": "campus",
+          "label": "With CAMPUS",
+          "title": "Memory: what stays, what fades",
+          "summary": "The network keeps knowledge and lets conversation fade. A confirmed answer would stay, dated, for the next batch. Students would carry it back into their group chats as a card, with its source and date.",
+          "madeUp": "illustration",
+          "claims": [
+            { "text": "The network keeps knowledge and lets conversation fade: confirmed answers, guides, official notices, and event records are kept, dated and findable.", "tag": "Established", "source": { "ref": "D-070" } },
+            { "text": "In the network's design, answers that already exist are shown before a new question posts.", "tag": "Established", "source": { "ref": "D-071" } },
+            { "text": "The network complements group chats rather than replacing them: every notice, answer, guide, and event can be shared into a chat as a card that links back to its current version.", "tag": "Established", "source": { "ref": "D-074" } },
+            { "text": "A share card carries the answer itself as plain text, with its source and the date it was checked, and students share it by hand: no bot posts it for them.", "tag": "Established", "source": { "ref": "D-182" } },
+            { "text": "No one owns a place: stewards look after it for a term, then hand it on.", "tag": "Established", "source": { "ref": "D-144" } }
+          ]
+        }
+      ],
+      "chapters": [{ "chapter": "social-network", "label": "Chapter 2" }, { "chapter": "network-design", "label": "Chapter 2.2" }, { "chapter": "evidence", "label": "Chapter 8" }],
+      "objects": [
+        { "id": "chats", "label": "The same question, each batch?", "state": "today", "opens": { "card": "buried" } },
+        { "id": "leaving", "label": "Do records leave with officers?", "state": "today", "opens": { "card": "handover-lost" } },
+        { "id": "shelf", "label": "One answer stays, dated", "state": "campus", "opens": { "card": "kept" } },
+        { "id": "later", "label": "A later student finds it", "state": "campus", "opens": { "card": "shown-first" } },
+        { "id": "card-out", "label": "A card back into the chat", "state": "campus", "opens": { "card": "share-cards" } },
+        { "id": "key", "label": "The place is handed on", "state": "campus", "opens": { "card": "steward" } }
+      ]
+    },
+    {
+      "id": "leaves-out",
+      "art": "leavesOut",
+      "parent": "three-jobs",
+      "title": "What it leaves out",
+      "summary": "The network would have no ads, no endless feed, no rankings, and no AI writing answers. The software is the easy part. The hard parts are people: offices that answer, helpers who stay, moderators who act, an owner inside VSU.",
+      "madeUp": "illustration",
+      "claims": [
+        { "text": "The network is designed with no ads, reels, stories, or feeds built for endless scrolling.", "tag": "Established", "source": { "ref": "D-035" } },
+        { "text": "The network shows no public reputation scores, levels, or rankings.", "tag": "Established", "source": { "ref": "D-072" } },
+        { "text": "The network's front door writes no answers of its own and promises none.", "tag": "Established", "source": { "ref": "D-181" } },
+        { "text": "The software is the easy part. The hard parts are people: offices that answer, helpers who stay, moderators who act, and an owner inside VSU.", "tag": "Proposed", "source": { "chapter": "social-network", "label": "Ch 2" } }
+      ],
+      "chapters": [{ "chapter": "social-network", "label": "Chapter 2" }, { "chapter": "network-design", "label": "Chapter 2.2" }],
+      "objects": [
+        { "id": "ads", "label": "No ads", "opens": { "card": "no-ads-feed" } },
+        { "id": "feed", "label": "No endless feed", "opens": { "card": "no-ads-feed" } },
+        { "id": "rankings", "label": "No rankings", "opens": { "card": "peer-guide" } },
+        { "id": "ai", "label": "No AI writing answers", "opens": { "card": "no-ai-answers" } },
+        { "id": "office", "label": "Offices that answer", "opens": { "card": "office-commits" } },
+        { "id": "helper", "label": "Helpers who stay", "opens": { "card": "chose-topic" } },
+        { "id": "moderator", "label": "Moderators who act", "opens": { "card": "moderator" } },
+        { "id": "owner", "label": "An owner inside VSU", "opens": { "card": "owner-inside" } }
       ]
     },
     {

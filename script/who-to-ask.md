@@ -1,76 +1,83 @@
 # Who do I ask? (`who-to-ask`)
 
-*Extracted. Not on Chapter 2.4's eleven steps; reached from `told-us` and `three-jobs` (README, question 4). Chapters 2, 2.1, 2.2, 2.3, 3, 10.*
+*Directed and drawn, 16 November 2026, in the lean form (`three-jobs.md`). The pitch plan's N4, "Routed, not broadcast". Not on Chapter 2.4's eleven steps. Chapters 2, 2.2, 2.3, 8.*
+
+One idea: today a question goes to everyone and to no one in particular; with the network it would go to a few people who chose its topic, then to the office responsible.
 
 ## Place and access
 
-- **Place:** the services offices: a counter, a queue, a door, a notice on the wall.
-- **Parent:** `campus`, from the services offices (object `orgs`, now the card `to-come`).
-- **Opens:** a wall of signs (card: VSU's Citizen's Charter and helpdesk); the student's second visit (card: what reaching an office costs); with CAMPUS, the question routed (card `route`); a concerns box → `concerns`; a place guide → `twin`.
+- **Place:** the campus from above, the kit's own (`world(false)`), a little faded. Kinds of place only (D-153).
+- **Parent:** `campus`, from the services offices. That object's ID is now `services` (it was `orgs`), and it opens this scene instead of the card `to-come`.
+- **Opens, drawn:** five cards (see Objects). Two are cards the site already had.
+- **Opens, waiting:** `concerns` and `twin`. Neither is drawn yet.
 
 ## Problem
 
-| P- | Hypothesis (Ch 8) | Shown as | How we'd find out |
-| --- | --- | --- | --- |
-| P-01 | Information people need is scattered across offices, websites, documents, group chats, and word of mouth | A question | Survey: "A class change", "Heard too late", "Heard first", "Group chats", "Official pages"; Facebook study H1 |
-| P-02 | Reaching the right office or person takes several visits before a conversation even starts | A question | Survey: "Tries it took" (four or more; it still isn't done), "A new office", "Which office", "Missing class" |
-| P-07 | Finding something doesn't tell people what to do next | A question | Survey: "How-to guides" |
-| P-09 | First-generation students lack knowledge of how the university works that peers and offices could supply | A question | Interviews, with a breakdown by family at VSU (Ch 8) |
+| P- | Shown as | How we'd find out |
+| --- | --- | --- |
+| P-03 | A question that spreads to everyone at once | Survey: "Asking first" |
+| P-02 | Three buildings, each with a question mark | Survey: "Tries it took", "A new office", "Which office" |
+| P-01, P-09 | Claims only, not drawn | Survey; Facebook study H1; interviews, by family at VSU |
+
+All are [Unresolved], and each is worded as a question. The picture must not say that VSU's offices are hard to deal with (D-016; Ch 8). P-07 is left for a later pass: nothing in this picture shows it.
 
 ## Today / with CAMPUS
 
-- **Today** [Unresolved]: a first-year student, the first in her family at college, needs an office. She asks around, goes to one door, is sent to another. What students lack, by the author's account, is a way to learn which office handles a question before the first visit (Ch 2).
-- **With CAMPUS** [Proposed]: before her question posts, the network shows answers that already exist; then it reaches a few members who chose the topic, and the office responsible; the confirmed answer stays (D-071). The network hands her into VSU's own systems, the helpdesk or document tracker, rather than tracking requests itself (D-064; Ch 10).
+- **Today** [Unresolved]: one question leaves a dormitory and spreads to everyone; two people who happen to be online look up; which office handles it is not shown anywhere.
+- **With CAMPUS** [Proposed]: the same question takes three routes to three people who chose its topic. Unanswered after a set time, it moves on to the office responsible. From there the student is handed into one of VSU's own systems (D-064).
 
-What the site must not say: that VSU's offices are hard to deal with. CAMPUS does not claim that VSU's systems are inadequate (D-016; Ch 8).
-
-## Related work
-
-| Card | How CAMPUS differs | VSU need | Source |
-| --- | --- | --- | --- |
-| VSU's helpdesk and document tracker | The network helps people find the right office or system and hands them in; tracking stays with VSU's tools | Learning which office handles a question before the first visit | E-004; Ch 2.1; Ch 10 |
-| VSU's Citizen's Charter 2026 | The network and the twin's office guide would cite it, never restate it as their own authority | Services, steps, and times, findable from a question | Ch 2.1; Ch 3 |
-| EVSU's apps portal | A neighboring state university invests in administrative portals while questions still go to Facebook pages | A community side the official portals don't cover | Ch 10 |
-| 311 apps and help desks | Routing to people who chose a topic, not only to a queue | Peers and offices both able to answer | Ch 2.1; Ch 10 |
+Existing answers shown first is `batch`'s part and the front desk's; this scene starts where nothing has answered her, as the plan's line does.
 
 ## Objects
 
-| Object | Opens | Callback |
-| --- | --- | --- |
-| The wall of signs | card: Citizen's Charter and helpdesk | `vsu-has` |
-| The second door | card: what reaching an office costs | — |
-| With CAMPUS: the routed question | card `route` | `three-jobs` |
-| A concerns box | `concerns` | — |
-| A place guide on the wall | `twin` | — |
+| Object | State | Label | Opens |
+| --- | --- | --- | --- |
+| `everyone` | Today | To everyone, or to no one? | card `broadcast` (new) |
+| `which-office` | Today | Which office handles this? | card `several-visits` |
+| `helpers` | With CAMPUS | Three who chose the topic | card `chose-topic` (new) |
+| `office` | With CAMPUS | Unanswered? On to the office | card `route` |
+| `hand-off` | With CAMPUS | Then into VSU's own systems | card `hand-off` (new) |
 
 ## Words
 
-- **Title:** Who do I ask?
-- **Summary, today, draft:** "A first-year student needs an office. She asks around, finds a door, is sent to another. How many tries does it take at VSU? Not yet known: the survey will ask." (31 words)
-- **Summary, with CAMPUS, draft:** "On the network, she would first see answers that already exist. Her question would then reach members who chose the topic and the office responsible, and she'd be handed into VSU's own systems." (33 words)
-- **Narration:** to write.
+The words are in `data/scenes.json`, which is their one copy: the scene `who-to-ask`, its second state, and the cards `broadcast`, `chose-topic`, and `hand-off`. The second summary is the plan's N4 line, put in "would".
 
-| State | Claim | Tag | Source |
-| --- | --- | --- | --- |
-| Today | Does reaching the right office take several visits before a conversation even starts? Not yet known. | Unresolved | P-02 |
-| Today | Of 2,604 first-year students at the Main Campus in 2026, 1,248 (47.9%) are first-generation college students. | Established | E-020 |
-| Today | VSU publishes a Citizen's Charter and runs a helpdesk and a document request tracker. | Established | E-004; Ch 2 |
-| With CAMPUS | Questions are routed, not broadcast: existing answers first, then members who opted in to the topic, then the office responsible. | Established | D-071 |
-| With CAMPUS | The network hands off rather than duplicates: service and document requests stay in VSU's systems. | Established | D-064 |
+| Claim | Tag | Source |
+| --- | --- | --- |
+| The problems above, each as a question with how it will be found out | Unresolved | P-01, P-02, P-03, P-09 |
+| Of 2,604 first-year students at the Main Campus in 2026, 1,248 (47.9%) are first-generation college students | Established | E-020 |
+| Most social platforms broadcast a question to everyone in a group | Proposed | Ch 2.2 |
+| Questions are routed, not broadcast; a few members who opted in, each told why; a weekly limit for each helper | Established | D-071 |
+| Unanswered questions move to the office responsible | Established | D-071 |
+| Routing uses only declared topics and joined communities, never inferred profiles | Established | D-071 |
+| The network hands off rather than duplicates | Established | D-064 |
+| VSU runs a document request tracker and a helpdesk | Established | E-004 |
 
-Check: 1,248 ÷ 2,604 = 47.9%. ✓
+E-020's source was opened again on 16 November 2026 and says what the row says. Check: 1,248 ÷ 2,604 = 47.9%.
+
+## The picture
+
+No words. Layers 1 to 3 are the kit's hills, ground, and places, with the kit's own people on the grounds. Layer 4:
+
+- **Both states:** the question, a dark bubble above a dormitory.
+- **Today:** three dotted rings spreading from the question; two people ringed in blue, phones lit; a gold dashed ring with a question mark on three buildings.
+- **With CAMPUS:** three green routes to three people standing on gold; a dotted green leg from one of them, past a small clock, to one office ringed in gold; a dotted blue line from that office to a tile holding a pinned slip, one of VSU's own systems.
 
 ## Animation beats
 
-1. Queue at a counter. The student arrives, holding a slip.
-2. She's pointed to another door; a dotted path loops back past the first door.
-3. Hold on her among the signs.
-4. With CAMPUS: on her phone, an existing answer appears; a thin route rises to two helpers and to one office window; the answer comes back and settles.
+Today, on entering: the question (0.4 s), the rings one by one (1.3 s, 1.75 s, 2.2 s), the question marks (2.65 s). With CAMPUS, on switching: the routes at once, the three people at 0.5 s, the leg to the office at 0.9 s, the hand-off at 1.3 s. Nothing loops but the routes' moving dashes.
+
+**Less motion:** the finished picture of each state, at once.
 
 ## Findings slot
 
-"Tries it took" by year; which kinds of office ("Which office"); whether an errand made students miss a class; P-09's interview incidents, split by first in the family at VSU.
+"Tries it took" by year; which kinds of office ("Which office"); where students asked first; P-09's interview incidents, split by first in the family at VSU.
 
 ## Kit pieces
 
-Reuse: `isoChar`, `standPerson`, `journey`, the route from `campus`. New: a counter front on, a queue, door signs with no words (D-171).
+Reused: `world`, `hills`, `isoPerson`, `icon`, `.wake`, `.flow`. New in the kit, shared from here on: `backdrop`, `arcTo`, `dots`, `askMark`, `chatPanel`, `chatLine` (lifted out of `threeJobs`), and `clock`. No new CSS.
+
+## Questions for Leo
+
+1. Chapter 2.2's sentence "Most social platforms broadcast…" has no tag. The card `broadcast` shows it as [Proposed]. If it should carry another tag, the chapter is the place to say so.
+2. The related-work cards in the first extraction (the Citizen's Charter, EVSU's portal, 311 apps) are not drawn. They fit `vsu-has` better; say if one belongs here.
