@@ -1244,9 +1244,9 @@
      share: forwarded whole, by someone. shot: a screenshot with the header cut off,
      so its source is gone. crop: cut again, so its date is gone too. told: retold
      in a chat, with neither. kept: the network's own, whole, with its label. */
-  function copy(kind, x, y, n, tilt, k) {
+  function copy(kind, x, y, n, tilt, k, ic) {
     var g = '<g transform="translate(' + f(x) + " " + f(y) + ")" + (tilt ? " rotate(" + tilt + ")" : "") + (k ? " scale(" + k + ")" : "") + '" filter="url(#soft)">';
-    var body = icon("storm", -28, 2, 0.4) + '<rect x="-8" y="-6" width="46" height="7" rx="3.5" fill="#D9DCD2"/><rect x="-8" y="6" width="34" height="7" rx="3.5" fill="#E4E6DE"/>';
+    var body = icon(ic || "storm", -28, 2, 0.4) + '<rect x="-8" y="-6" width="46" height="7" rx="3.5" fill="#D9DCD2"/><rect x="-8" y="6" width="34" height="7" rx="3.5" fill="#E4E6DE"/>';
     var zig = "l10 6l10-6l10 6l10-6l10 6l10-6l10 6l10-6l10 6l10-6", zag = "l-10 6l-10-6l-10 6l-10-6l-10 6l-10-6l-10 6l-10-6l-10 6l-10-6";
     if (kind === "share" || kind === "kept") {
       g += '<rect x="-50" y="-35" width="100" height="70" rx="9" fill="#FFFFFF" stroke="' + (kind === "kept" ? K.green : "#D6D2C2") + '" stroke-width="' + (kind === "kept" ? 3 : 1.6) + '"/>' +
@@ -1414,5 +1414,67 @@
     return svg("Before dawn, in rain, seen from a student's room: across the yard, dormitory windows light one by one. One announcement is in the sky; from it, copies travel from window to window, and some have lost the mark of who posted them, or their date. Her phone shows 4:30 and three versions. With CAMPUS, at noon: one page, and the same notice, with its label, source, and date, at every window and on her phone", out, "#C6D4D8");
   }
 
-  root.CampusArt = { campus: campus, building: building, lab: lab, screen: screen, outside: outside, phone: phone, elsewhere: elsewhere, aPlace: aPlace, morning: morning };
+  /* ============================================================
+     Scene: where a question goes (three-jobs). Today: one question
+     splits three ways. With CAMPUS: one route, an answer with its
+     marks, a shelf that keeps it, and a card into the group chat.
+     Drawn light on purpose: the campus is the kit's, the rest is marks.
+     ============================================================ */
+  function threeJobs() {
+    var P = WORLD, w = world(false), out = lay(1, hills()) + lay(2, w.ground) + lay(3, '<g opacity=".8">' + w.places + "</g>");
+    var Q = P(-7, -2.5, 3.9), OF = P(7.1, 2.9, 3.0), G = [P(-7, -2.5, 2.2), P(-4.7, 6, 0.6), P(4.8, -7.8, 0.6), P(7.1, 2.9, 1.2)];
+    var arc = function (a, b, up) { return "M" + f(a[0]) + " " + f(a[1]) + "Q" + f((a[0] + b[0]) / 2) + " " + f((a[1] + b[1]) / 2 - up) + " " + f(b[0]) + " " + f(b[1]); };
+    var dash = function (d, col) { return '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="4" stroke-dasharray="3 12" stroke-linecap="round"/>'; };
+    var ask = function (x, y, k, op) {
+      return '<g transform="translate(' + f(x) + " " + f(y) + ") scale(" + k + ')" opacity="' + (op || 1) + '"><rect x="-30" y="-56" width="60" height="44" rx="10" fill="' + K.sea + '"/><path d="M-8 -12l8 12l8-12z" fill="' + K.sea + '"/>' +
+        '<text class="ui" y="-23" text-anchor="middle" font-size="30" font-weight="700" fill="#fff">?</text></g>';
+    };
+    var panel = function (x, y, h, head) {
+      return '<rect x="' + x + '" y="' + y + '" width="240" height="' + h + '" rx="16" fill="#F4F5F1" stroke="#D6D2C2" stroke-width="2" filter="url(#soft)"/>' +
+        '<path d="M' + x + " " + (y + 36) + "V" + (y + 16) + "a16 16 0 0 1 16-16h208a16 16 0 0 1 16 16v20Z" + '" fill="' + head + '"/>' +
+        '<circle cx="' + (x + 24) + '" cy="' + (y + 18) + '" r="7" fill="#FFFFFF"/><rect x="' + (x + 42) + '" y="' + (y + 13) + '" width="96" height="9" rx="4.5" fill="#DDE3E6"/>';
+    };
+    var bubble = function (x, y, wd, op) { return '<rect x="' + x + '" y="' + y + '" width="' + wd + '" height="20" rx="10" fill="#C9D3D8" opacity="' + op + '"/>'; };
+
+    // The group chat, in both states: newer messages on top of whatever was asked.
+    var chat = panel(60, 70, 190, "#6B7A86") + bubble(76, 118, 120, 1) + bubble(144, 146, 140, 1) + bubble(76, 174, 96, 1);
+    var sunk = ask(110, 256, 0.62, 0.38);
+    var carried = copy("kept", 180, 222, 0, 0, 0.62, "id");
+    // A community group: three answers that look alike, none with a source or a date.
+    var feed = panel(1300, 70, 250, "#7A8794") + copy("told", 1420, 150, 0, 0, 0.8) + copy("told", 1420, 212, 0, 0, 0.8) + copy("told", 1420, 274, 0, 0, 0.8);
+    // The walk: two doors that were not the one, then the one.
+    var miss = function (p) { return '<circle cx="' + f(p[0]) + '" cy="' + f(p[1]) + '" r="20" fill="#FFFFFF" fill-opacity=".6" stroke="' + K.red + '" stroke-width="4" stroke-dasharray="6 5"/><path d="M' + f(p[0] - 7) + " " + f(p[1] - 7) + "l14 14m0-14l-14 14" + '" stroke="' + K.red + '" stroke-width="4" stroke-linecap="round"/>'; };
+    var walk = '<path d="M' + pts(G).replace(/ /g, "L") + '" fill="none" stroke="#000" stroke-opacity="0" stroke-width="26" class="hit"/>' +
+      dash("M" + pts(G).replace(/ /g, "L"), K.brown) + miss(G[1]) + miss(G[2]) +
+      '<circle cx="' + f(G[3][0]) + '" cy="' + f(G[3][1]) + '" r="20" fill="none" stroke="' + K.gold + '" stroke-width="5"/>';
+    var today = grp('data-show="today"', '<g class="wake n1">' + dash(arc(Q, [250, 170], 90), K.sea2) + "</g>" + '<g class="wake n2">' + dash(arc(Q, [1300, 190], 150), K.sea2) + "</g>") +
+      objX("group", 1420, 62, 'data-show="today"', '<g class="wake n2">' + feed + "</g>") +
+      objX("walk", G[2][0], G[2][1] - 30, 'data-show="today"', '<g class="wake n3">' + walk + "</g>");
+
+    // With CAMPUS: one route by way of the front desk, to one place.
+    var c1 = [(Q[0] + OF[0]) / 2 - 150, (Q[1] + OF[1]) / 2 + 40], back = [Q[0] + 150, Q[1] - 20];
+    var r = "M" + f(Q[0]) + " " + f(Q[1]) + "Q" + f(c1[0]) + " " + f(c1[1]) + " " + f(OF[0]) + " " + f(OF[1]), mid = [(Q[0] + OF[0]) / 4 + c1[0] / 2, (Q[1] + OF[1]) / 4 + c1[1] / 2];
+    var route = '<path d="' + r + '" fill="none" stroke="#000" stroke-opacity="0" stroke-width="26" class="hit"/><path d="' + r + '" fill="none" stroke="' + K.green + '" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>' +
+      '<path class="flow" d="' + r + '" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-dasharray="2 14" stroke-linecap="round"/>' +
+      '<g transform="translate(' + f(mid[0]) + " " + f(mid[1]) + ')" filter="url(#soft)"><rect x="-34" y="-6" width="68" height="26" rx="6" fill="' + K.brown + '"/><rect x="-40" y="-12" width="80" height="10" rx="5" fill="' + K.cream + '"/>' +
+      '<path d="M-9 -12a9 9 0 0 1 18 0Z" fill="' + K.gold + '"/><circle cy="-23" r="3" fill="' + K.gold + '"/></g>' +
+      '<circle cx="' + f(OF[0]) + '" cy="' + f(OF[1]) + '" r="22" fill="none" stroke="' + K.gold + '" stroke-width="4" filter="url(#glow)"/>';
+    var trust = dash("M" + f(OF[0]) + " " + f(OF[1]) + "Q" + f(OF[0] + 60) + " " + f(Q[1] + 80) + " " + f(back[0] + 30) + " " + f(back[1] + 46), K.green) + copy("kept", back[0], back[1], 0, -3, 1.25, "id");
+    var sh = [OF[0] + 110, OF[1] - 20], later = P(10.4, 4.2, 0);
+    var shelf = '<rect x="' + f(sh[0] - 70) + '" y="' + f(sh[1] + 30) + '" width="140" height="9" rx="3" fill="' + K.brown + '" filter="url(#soft)"/>' +
+      '<circle cx="' + f(sh[0]) + '" cy="' + f(sh[1]) + '" r="52" fill="' + K.gold3 + '" opacity=".55" filter="url(#glow)"/>' + copy("kept", sh[0], sh[1], 0, 0, 0.8, "id") + isoPerson(P, 10.4, 4.2, 2, 0, true) +
+      dash("M" + f(later[0]) + " " + f(later[1] - 50) + "L" + f(sh[0] + 30) + " " + f(sh[1] + 34), K.gold);
+    var campus = objX("routing", mid[0], mid[1] - 40, 'data-show="campus"', route) +
+      objX("trust", back[0], back[1] - 56, 'data-show="campus" data-delay="500"', trust) +
+      objX("memory", sh[0], sh[1] - 60, 'data-show="campus" data-delay="900"', shelf) +
+      grp('data-show="campus" data-delay="1300"', dash(arc([back[0] - 60, back[1]], [250, 230], 70), K.green));
+
+    out += lay(4, today + campus +
+      objX("chat", 180, 62, 'data-show="today"', '<g class="wake n1">' + chat + sunk + "</g>") +
+      objX("chat-card", 180, 62, 'data-show="campus"', chat + grp('data-show="campus" data-delay="1300"', carried)) +
+      '<g class="wake n0">' + ask(Q[0], Q[1], 1) + "</g>");
+    return svg("The campus from above. Today, one question leaves a dormitory and splits three ways: into a group chat, where it sinks under newer messages; into a community group, where three answers look alike; and on a walk past two wrong doors to an office. With the network, the same question takes one route by way of a front desk to one office; an answer comes back with its label, source, and date; it stays on a shelf, where a later student finds it; and a card carries it into the group chat.", out);
+  }
+
+  root.CampusArt = { campus: campus, building: building, lab: lab, screen: screen, outside: outside, phone: phone, elsewhere: elsewhere, aPlace: aPlace, morning: morning, threeJobs: threeJobs };
 })(typeof window !== "undefined" ? window : this);

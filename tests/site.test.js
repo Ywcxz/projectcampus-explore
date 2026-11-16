@@ -265,12 +265,13 @@ section("zoom, cards, words, keys", () => {
   check(app.state.scene.id === data.start, "trail: a step in the trail goes back there");
 
   // A card unfolds in place, with its claims and sources.
-  doc.querySelector('#frame [data-object="route"]').dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
+  const opener = app.state.scene.objects.find((o) => o.opens.card), opened = cards.get(opener.opens.card);
+  doc.querySelector(`#frame [data-object="${opener.id}"]`).dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
   const card = doc.getElementById("card");
-  check(!card.hidden && card.dataset.card === "route", "card: an object opens its card");
+  check(!card.hidden && card.dataset.card === opened.id, "card: an object opens its card");
   const cl = [...card.querySelectorAll(".claim")];
-  check(cl.length === cards.get("route").claims.length && cl.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), "card: shows each claim's tag and source");
-  check(card.querySelector("a.chapter-link").href === `${MASTER}social-network.html`, "card: links its chapter");
+  check(cl.length === opened.claims.length && cl.every((c) => c.querySelector(".tag") && c.querySelector("a.source[href^='https://']")), "card: shows each claim's tag and source");
+  check(card.querySelector("a.chapter-link").href === `${MASTER}${opened.chapter.chapter}.html`, "card: links its chapter");
   key(win, "Escape");
   check(card.hidden && app.state.scene.id === data.start, "card: Esc closes the card and stays in the scene");
 
